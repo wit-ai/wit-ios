@@ -1,0 +1,28 @@
+# OSX
+.DS_Store
+
+# XCode
+xcuserdata
+*~.nib
+build/
+
+# Dropbox
+*conflicted copy*
+
+# Maya
+.mayaSwatches
+
+# Vim
+*.swp
+*.swo
+
+# iOS app
+/Pods
+/fifty/Pods
+
+#IntelliJ
+*.idea*
+
+# Node.js server
+/fifty_server/*.db
+/fifty_server/node_modules
