@@ -7,7 +7,7 @@
 //
 
 #import "WITRecorder.h"
-#import "Wit.h"
+#import "WitPrivate.h"
 #import <AVFoundation/AVFoundation.h>
 
 static NSString *const kSampleFilename = @"%@%d-wit.wav";

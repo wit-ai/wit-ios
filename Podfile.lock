@@ -1,5 +1,5 @@
 PODS:
-  - AFNetworking (1.2.1)
+  - AFNetworking (1.3.3)
   - GHUnitIOS (0.5.6)
   - JRSwizzle (1.0)
   - libextobjc/EXTConcreteProtocol (0.2.5):
@@ -22,17 +22,17 @@ PODS:
     - ReactiveCocoa/Core
 
 DEPENDENCIES:
-  - AFNetworking (~> 1.2.1)
+  - AFNetworking (~> 1.3.3)
   - GHUnitIOS (~> 0.5.6)
   - OCMock (~> 2.0.1)
   - ReactiveCocoa (~> 1.3.1)
 
 SPEC CHECKSUMS:
-  AFNetworking: a44069e3c9c89867544f6639482f155c7e5f9b41
+  AFNetworking: 0700ec7a58c36ad217173e167f6e4df7270df66b
   GHUnitIOS: bf149b2c44084eee2785ce4ac3675c3a699e509d
   JRSwizzle: 6242ff38485d870fc2636899048ee1ab883ae587
   libextobjc: 2cbc74caf8bdc74a86fdf24673f773c83424ea98
-  OCMock: 77a9c4c57af6bf258a537d34cf09abf422affede
-  ReactiveCocoa: c4749c6995c65a7decf46bd4a0cff1da86724e50
+  OCMock: f0c099603f851d07f8d7f2efe26d05da721ec43f
+  ReactiveCocoa: 8b3f4689c0ebf217d58263dac8bb0d3271b0c603
 
-COCOAPODS: 0.19.1
+COCOAPODS: 0.27.1

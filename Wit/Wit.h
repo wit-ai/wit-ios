@@ -5,7 +5,6 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
-#import <AFNetworking/AFNetworking.h>
 #import "WITMicButton.h"
 
 @protocol WitDelegate;
@@ -93,21 +92,3 @@
 - (void)witDidStopRecording;
 
 @end
-
-static __unused NSString* const kWitNotificationUploadProgress = @"WITUploaderProgress";
-static __unused NSString* const kWitNotificationRecordingStarted = @"WITRecordingStarted";
-static __unused NSString* const kWitNotificationRecordingCompleted = @"WITRecordingStopped";
-static __unused NSString* const kWitNotificationResponseReceived = @"WITResponseReceived";
-
-static __unused NSString* const kWitKeyResponse = @"response";
-static __unused NSString* const kWitKeyError = @"error";
-static __unused NSString* const kWitKeyOutcome = @"outcome";
-static __unused NSString* const kWitKeyProgress = @"progress"; // file upload, etc.
-static __unused NSString* const kWitKeyURL = @"url"; // record completed
-static __unused NSString* const kWitKeyBody = @"msg_body"; // response's msg body
-
-#if DEBUG
-#define debug(x, ...) NSLog(x, ##__VA_ARGS__);
-#else
-#define debug(x, ...) ;
-#endif

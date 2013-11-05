@@ -3,7 +3,7 @@
 //  Copyright (c) 2012년 Willy Blandin. All rights reserved.
 //
 
-#import "Wit.h"
+#import "WitPrivate.h"
 #import "WITState.h"
 
 @interface Wit ()

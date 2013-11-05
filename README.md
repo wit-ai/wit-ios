@@ -1,6 +1,6 @@
 # Install
 ## CocoaPods
-    pod 'Wit', :path => './Wit'
+    pod 'Wit', '~> 0.1.0'
 ## .framework
 Link with QuartzCore, AVFoundation, MobileCoreServices, SystemConfiguration, Security
 

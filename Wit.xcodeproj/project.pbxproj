@@ -25,6 +25,7 @@
 /* Begin PBXBuildFile section */
 		2B10D7A9175561F900973536 /* WITCircleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B10D7A7175561F900973536 /* WITCircleView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B10D7AA175561F900973536 /* WITCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B10D7A8175561F900973536 /* WITCircleView.m */; };
+		2B25FE451829A36800F698ED /* WitPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B25FE441829A25700F698ED /* WitPrivate.h */; };
 		2B2F81D1174C1BC4001A12BE /* WITCircleLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B2F81CF174C1BC4001A12BE /* WITCircleLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B2F81D2174C1BC4001A12BE /* WITCircleLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2F81D0174C1BC4001A12BE /* WITCircleLayer.m */; };
 		2B80E60B1755A1AA000C3A7B /* microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B80E60A1755A1AA000C3A7B /* microphone.png */; };
@@ -90,6 +91,7 @@
 /* Begin PBXFileReference section */
 		2B10D7A7175561F900973536 /* WITCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITCircleView.h; sourceTree = "<group>"; };
 		2B10D7A8175561F900973536 /* WITCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITCircleView.m; sourceTree = "<group>"; };
+		2B25FE441829A25700F698ED /* WitPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WitPrivate.h; sourceTree = "<group>"; };
 		2B2F81CF174C1BC4001A12BE /* WITCircleLayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITCircleLayer.h; sourceTree = "<group>"; };
 		2B2F81D0174C1BC4001A12BE /* WITCircleLayer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITCircleLayer.m; sourceTree = "<group>"; };
 		2B80E60A1755A1AA000C3A7B /* microphone.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = microphone.png; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 			isa = PBXGroup;
 			children = (
 				B9C0166F15DD32D400C025BD /* Wit.h */,
+				2B25FE441829A25700F698ED /* WitPrivate.h */,
 				B95D958815DD34D000DBBABD /* Wit.m */,
 				B9A892B3163E7083005100F2 /* WITState.h */,
 				B9A892B4163E7083005100F2 /* WITState.m */,
@@ -310,6 +313,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9BA7F4216355AD500C95D37 /* Wit.h in Headers */,
+				2B25FE451829A36800F698ED /* WitPrivate.h in Headers */,
 				C50E65671709251C009F81E9 /* WITRecorder.h in Headers */,
 				B9A892B2163E7009005100F2 /* WITUploader.h in Headers */,
 				B9A892B5163E7083005100F2 /* WITState.h in Headers */,

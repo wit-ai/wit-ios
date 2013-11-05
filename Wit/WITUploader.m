@@ -6,9 +6,9 @@
 //  Copyright (c) 2012년 Willy Blandin. All rights reserved.
 //
 
+#import "WitPrivate.h"
 #import "WITUploader.h"
 #import "WITState.h"
-#import "Wit.h"
 
 static NSString* const kWitUploaderURL = @"https://api.wit.ai/";
 static NSString* const kFormName = @"file";

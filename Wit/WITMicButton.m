@@ -6,9 +6,10 @@
 //  Copyright (c) 2013 Willy Blandin. All rights reserved.
 //
 
+#import <math.h>
+#import "WitPrivate.h"
 #import "WITMicButton.h"
 #import "WITState.h"
-#import <math.h>
 
 static NSString* const kMicrophoneImage = @"microphone.png";
 static const CGFloat kMicHeight = 75.0f;

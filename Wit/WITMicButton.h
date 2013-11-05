@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Wit.h"
+//#import "Wit.h"
 #import "WITCircleLayer.h"
 #import "WITCircleView.h"
 

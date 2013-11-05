@@ -5,7 +5,7 @@
 //  Copyright (c) 2013 Willy Blandin. All rights reserved.
 //
 
-#import "Wit.h"
+#import "WitPrivate.h"
 #import "GHAsyncTestCase.h"
 #import "OCMockObject.h"
 #import "AFHTTPClient.h"
