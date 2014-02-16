@@ -9,8 +9,8 @@ Pod::Spec.new do |s|
   s.author       = { "Willy Blandin" => "willy@wit.ai" }
   s.source       = { :git => "https://github.com/wit-ai/wit-ios-sdk.git", :tag => "0.1.0" }
 
-  s.platform = :ios, '5.0'
-  s.ios.deployment_target = "5.0"
+  s.platform = :ios, '6.0'
+  s.ios.deployment_target = "6.0"
   s.license = { :type => 'MIT', :file => 'LICENSE' }
 
   s.requires_arc = true
@@ -20,5 +20,5 @@ Pod::Spec.new do |s|
   s.resources = ['WitResources/Images/*.png']
 
   s.dependency 'ReactiveCocoa', '~> 1.3.1'
-  s.dependency 'AFNetworking', '~>1.3.3'
+  s.dependency 'AFNetworking'
 end

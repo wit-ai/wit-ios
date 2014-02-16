@@ -5,7 +5,7 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>4534482E-52EE-4A72-8571-86FDA8BB1366</string>
+	<string>F279FD7A-1261-42C1-B65D-667DF1B73399</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Wit</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
@@ -14,11 +14,11 @@
 		<string>https://github.com/hactar/wit-ios-sdk.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>Wit.xcodeproj/project.xcworkspace</string>
+	<string>Wit.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>B0A333A3-FA2F-482A-8FF8-3F8E82701E79</key>
-		<string>../..</string>
+		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/hactar/wit-ios-sdk.git</string>

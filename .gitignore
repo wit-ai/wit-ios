@@ -19,6 +19,7 @@ build/
 # iOS app
 /Pods
 /fifty/Pods
+Podfile.lock
 
 #IntelliJ
 *.idea*
