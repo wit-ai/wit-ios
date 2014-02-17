@@ -43,10 +43,10 @@ static NSString *const kSampleFilename = @"%@%d-wit.wav";
     recorder.delegate = self;
 
     if (!recorder) {
-        NSLog(@"Recorder, not allocated: %@ %@ %d %@",
+        NSLog(@"Recorder, not allocated: %@ %@ %ld %@",
                 [err description],
                 [err domain],
-                [err code],
+                (long)[err code],
                 [[err userInfo] description]);
     }
 
@@ -109,19 +109,26 @@ static NSString *const kSampleFilename = @"%@%d-wit.wav";
         return;
     }
     [player play];
-
-    double delayInSeconds = player.duration;
-    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(delayInSeconds * NSEC_PER_SEC));
-    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
-        [noiseLock unlock];
-    });
 }
 
 #pragma mark - AVAudioRecorderDelegate
 - (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)r successfully:(BOOL)success {
     if (success) {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationRecordingCompleted object:nil
-                                                          userInfo:@{kWitKeyURL: r.url}];
+        AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:r.url options:nil];
+        CMTime time = asset.duration;
+        double durationInSeconds = CMTimeGetSeconds(time);
+        if (durationInSeconds > self.minimalRecordingDuration) {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationRecordingCompleted object:nil
+                                                              userInfo:@{kWitKeyURL: r.url}];
+        } else {
+            debug(@"Recording too short, not uploading");
+            NSError* e = [NSError errorWithDomain:@"WitRecorder" code:2
+                                         userInfo:@{NSLocalizedDescriptionKey: @"Recording too short to upload..."}];
+            
+            [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationRecordingCompleted object:nil
+                                                              userInfo:@{kWitKeyError: e}];
+        }
+        
     } else {
         debug(@"Recorder, failed recording audio file");
         NSError* e = [NSError errorWithDomain:@"WitRecorder" code:1
@@ -135,6 +142,7 @@ static NSString *const kSampleFilename = @"%@%d-wit.wav";
 #pragma mark - AVAudioPlayerDelegate
 - (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
     debug(@"Played successfully? %@", flag?@"YES":@"NO");
+     [noiseLock unlock];
 }
 
 - (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
@@ -159,8 +167,9 @@ static NSString *const kSampleFilename = @"%@%d-wit.wav";
 
 - (void)initialize {
     // create audio session and add listener
+    self.minimalRecordingDuration = .5;
     session = [AVAudioSession sharedInstance];
-    [session setCategory:AVAudioSessionCategoryRecord error:nil];
+    [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
 
     noiseLock = [[NSLock alloc] init];
     displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updatePower)];

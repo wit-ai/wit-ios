@@ -12,7 +12,7 @@
 /**
 * Uploader class that will upload the wav file and return back the response as NSString to the delegate
 */
-@interface WITUploader : AFHTTPClient
+@interface WITUploader : AFHTTPRequestOperationManager
 
 +(WITUploader*)sharedInstance;
 -(BOOL)uploadSampleWithURL:(NSURL*)url;

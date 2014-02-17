@@ -18,6 +18,7 @@
  Delegate to send feedback for the application
  */
 @property (atomic) float power; // recording volume power
+@property (atomic) float minimalRecordingDuration; // default is .5 seconds
 
 #pragma mark - Recording
 -(BOOL)record;

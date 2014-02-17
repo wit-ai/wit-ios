@@ -29,22 +29,29 @@ static NSString* const kFileName = @"sample.wav";
     WITState* state = [WITState sharedInstance];
     NSString* path = [self.baseURL.absoluteString stringByAppendingString:@"message"];
     NSDictionary* params = @{@"convid": [WITState UUID]};
+    
+
+    NSError *reqSerializerError = nil;
 
     NSMutableURLRequest *req =
-    [self multipartFormRequestWithMethod:@"POST"
-                                    path:path
+    [self.requestSerializer multipartFormRequestWithMethod:@"POST"
+                                    URLString:path
                               parameters:params
                constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
                    NSData* data = [NSData dataWithContentsOfURL:url];
-                   debug(@"Uploader, %@ (%d bytes) to %@ (access token: %@, instance id: %@)",
-                         [url lastPathComponent], [data length], path, state.accessToken, state.instanceId);
+                   debug(@"Uploader, %@ (%lu bytes) to %@ (access token: %@, instance id: %@)",
+                         [url lastPathComponent], (unsigned long)[data length], path, state.accessToken, state.instanceId);
                    [formData appendPartWithFileData:data
                                                name:kFormName
                                            fileName:kFileName
                                            mimeType:@"audio/wav"];
                }
+     error:&reqSerializerError
      ];
 
+    if (reqSerializerError) {
+        debug(@"Error occured during request generation: %@", reqSerializerError);
+    }
     NSString *authValue = [NSString stringWithFormat:@"Bearer %@", state.accessToken];
     [req setValue:authValue forHTTPHeaderField:@"Authorization"];
     [req setValue:state.instanceId forHTTPHeaderField:@"X-Wit-Instance"];
