@@ -117,7 +117,7 @@ static NSString *const kSampleFilename = @"%@%d-wit.wav";
         AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:r.url options:nil];
         CMTime time = asset.duration;
         double durationInSeconds = CMTimeGetSeconds(time);
-        if (durationInSeconds > .5) {
+        if (durationInSeconds > self.minimalRecordingDuration) {
             [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationRecordingCompleted object:nil
                                                               userInfo:@{kWitKeyURL: r.url}];
         } else {
