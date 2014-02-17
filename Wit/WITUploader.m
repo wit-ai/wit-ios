@@ -39,8 +39,8 @@ static NSString* const kFileName = @"sample.wav";
                               parameters:params
                constructingBodyWithBlock:^(id<AFMultipartFormData> formData) {
                    NSData* data = [NSData dataWithContentsOfURL:url];
-                   debug(@"Uploader, %@ (%d bytes) to %@ (access token: %@, instance id: %@)",
-                         [url lastPathComponent], [data length], path, state.accessToken, state.instanceId);
+                   debug(@"Uploader, %@ (%lu bytes) to %@ (access token: %@, instance id: %@)",
+                         [url lastPathComponent], (unsigned long)[data length], path, state.accessToken, state.instanceId);
                    [formData appendPartWithFileData:data
                                                name:kFormName
                                            fileName:kFileName

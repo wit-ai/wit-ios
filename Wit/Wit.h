@@ -22,7 +22,7 @@
 
 /**
  Paths to sounds played at various eventss
- keys are startRecording, stopRecording
+ keys are startRecording, stopRecording, failedRecording
  */
 @property (strong) NSDictionary* sounds;
 

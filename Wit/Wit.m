@@ -21,10 +21,7 @@
     if ([self isRecording]) {
         [state.recorder performSelectorInBackground:@selector(stop) withObject:nil];
 
-        NSString* soundPath = self.sounds[@"stopRecording"];
-        if (soundPath) {
-            [state.recorder performSelectorOnMainThread:@selector(play:) withObject:soundPath waitUntilDone:NO];
-        }
+
     } else {
         [state.recorder performSelectorInBackground:@selector(record) withObject:nil];
         NSString* soundPath = self.sounds[@"startRecording"];
@@ -63,12 +60,25 @@
 }
 
 - (void)recordingCompleted:(NSNotification*)n {
+    
+    
     NSDictionary* data = [n userInfo];
     NSError* e = data[kWitKeyError];
+    
+
 
     if (e) {
         [self error:e];
+        NSString* soundPath = self.sounds[@"failedRecording"];
+        if (soundPath) {
+            [state.recorder performSelectorOnMainThread:@selector(play:) withObject:soundPath waitUntilDone:NO];
+        }
         return;
+    }
+    
+    NSString* soundPath = self.sounds[@"stopRecording"];
+    if (soundPath) {
+        [state.recorder performSelectorOnMainThread:@selector(play:) withObject:soundPath waitUntilDone:NO];
     }
 
     [state.uploader uploadSampleWithURL:data[kWitKeyURL]];
