@@ -77,9 +77,9 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
         [self.delegate gotResponse:nil error:error];
     }];
 
-    [op setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
-        debug(@"Uploaded %lld", totalBytesWritten);
-    }];
+//    [op setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
+//        debug(@"Uploaded %lld", totalBytesWritten);
+//    }];
 
     [[NSOperationQueue mainQueue] addOperation:op];
 
@@ -123,7 +123,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
             break;
         case NSStreamEventHasSpaceAvailable:
             if (s == outStream) {
-                debug(@"outStream has space, resuming dispatch");
+//                debug(@"outStream has space, resuming dispatch");
                 if ([q isSuspended]) {
                     [q setSuspended:NO];
                 }

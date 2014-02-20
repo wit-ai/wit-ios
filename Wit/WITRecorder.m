@@ -101,7 +101,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     if (![self isRecording]) {
         return;
     }
-    debug(@"Recorder: updating power");
+//    debug(@"Recorder: updating power");
     AudioQueueLevelMeterState meters[1];
     UInt32 dlen = sizeof(meters);
     int err;
