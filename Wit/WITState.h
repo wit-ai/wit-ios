@@ -14,7 +14,6 @@
 @property (nonatomic, strong) WITRecorder* recorder;
 @property (nonatomic, strong) WITUploader* uploader;
 @property (nonatomic, weak) NSString *accessToken;
-@property (nonatomic, weak) NSString *instanceId;
 
 +(WITState*)sharedInstance;
 +(NSString*)UUID;

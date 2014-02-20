@@ -220,7 +220,7 @@ static const CGFloat kMicMargin = 40.0f;
         [self recomputePositions];
         return;
     }
-    
+
     float power = [change[@"new"] floatValue];
     [self newAudioLevel:power];
 }
@@ -231,14 +231,14 @@ static const CGFloat kMicMargin = 40.0f;
 }
 
 #pragma mark - NSNoticationCenter
-- (void)recordingStarted:(NSNotification*)n {
+- (void)audiostart:(NSNotification*)n {
     // send 2 pulses and change color
     dispatch_async(dispatch_get_main_queue(), ^{
         [self twoPulses];
     });
 }
 
-- (void)recordingCompleted:(NSNotification*)n {
+- (void)audioend:(NSNotification*)n {
 }
 
 #pragma mark - Audio Levels
@@ -274,11 +274,11 @@ static const CGFloat kMicMargin = 40.0f;
     
     [self addObserver:self forKeyPath:@"frame" options:0 context:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordingStarted:)
-                                                 name:kWitNotificationRecordingStarted object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
+                                                 name:kWitNotificationAudioStart object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordingCompleted:)
-                                                 name:kWitNotificationRecordingCompleted object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioend:)
+                                                 name:kWitNotificationAudioEnd object:nil];
     
     // retinarize
     if ([self respondsToSelector:@selector(setContentScaleFactor:)]) {

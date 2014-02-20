@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Wit"
-  s.version      = "0.1.0"
+  s.version      = "1.0.0"
   s.summary      = "Wit.AI Official SDK"
   s.description  = <<-DESC
                      Official Wit SDK, https://wit.ai/docs/ios-tutorial/
@@ -14,7 +14,7 @@ Pod::Spec.new do |s|
   s.license = { :type => 'MIT', :file => 'LICENSE' }
 
   s.requires_arc = true
-  s.frameworks = 'AVFoundation', 'QuartzCore'
+  s.frameworks = 'QuartzCore', 'AudioToolbox'
   s.source_files = 'Classes', 'Classes/**/*.{h,m}', 'Wit/*.{h,m}'
   s.preserve_path = 'WitResources/Images'
   s.resources = ['WitResources/Images/*.png']

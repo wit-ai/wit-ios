@@ -9,23 +9,21 @@
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
 
-//
-// Wraps AVAudioRecorder
-//
-@interface WITRecorder : NSObject <AVAudioPlayerDelegate, AVAudioRecorderDelegate>
+@protocol WITRecorderDelegate;
 
-/**
- Delegate to send feedback for the application
- */
+//
+// Handles recording of audio data using Audio Queue Services
+//
+@interface WITRecorder : NSObject
+@property (atomic) id<WITRecorderDelegate> delegate;
 @property (atomic) float power; // recording volume power
-@property (atomic) float minimalRecordingDuration; // default is .5 seconds
 
 #pragma mark - Recording
--(BOOL)record;
+-(BOOL)start;
 -(BOOL)stop;
--(void)cancel;
 -(BOOL)isRecording;
+@end
 
-#pragma mark - Playing
--(void)play:(NSString*)soundPath;
+@protocol WITRecorderDelegate <NSObject>
+-(void)recorderGotChunk:(NSData*)chunk;
 @end

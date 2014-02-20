@@ -9,11 +9,20 @@
 #import <Foundation/Foundation.h>
 #import <AFNetworking/AFNetworking.h>
 
+@protocol WITUploaderDelegate;
+
 /**
 * Uploader class that will upload the wav file and return back the response as NSString to the delegate
 */
-@interface WITUploader : AFHTTPRequestOperationManager
+@interface WITUploader : AFHTTPRequestOperationManager <NSStreamDelegate>
+@property (nonatomic, strong) id<WITUploaderDelegate> delegate;
 
 +(WITUploader*)sharedInstance;
--(BOOL)uploadSampleWithURL:(NSURL*)url;
+-(BOOL)startRequest;
+-(void)sendChunk:(NSData*)chunk;
+-(void)endRequest;
+@end
+
+@protocol WITUploaderDelegate <NSObject>
+-(void)gotResponse:(NSDictionary*)resp error:(NSError*)err;
 @end

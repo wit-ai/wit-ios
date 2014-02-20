@@ -8,177 +8,189 @@
 
 #import "WITRecorder.h"
 #import "WitPrivate.h"
-#import <AVFoundation/AVFoundation.h>
+#import <AudioToolbox/AudioToolbox.h>
 
-static NSString *const kSampleFilename = @"%@%d-wit.wav";
+#define kNumberRecordBuffers 5
+
+struct RecorderState {
+    AudioStreamBasicDescription fmt;
+    AudioQueueRef queue;
+    AudioQueueBufferRef buffers[kNumberRecordBuffers];
+    BOOL recording;
+};
+typedef struct RecorderState RecorderState;
 
 @interface WITRecorder ()
-@property (nonatomic, copy) AVAudioSession *session;
-@property (strong) AVAudioRecorder *recorder;
-@property (strong) AVAudioPlayer* player;
+@property (nonatomic, assign) RecorderState *state;
+@property (strong) NSOperationQueue* chunksQueue;
 @end
 
 @implementation WITRecorder {
-    NSLock* noiseLock; // lock to prevent playing sfx while recording
     CADisplayLink* displayLink;
 }
-@synthesize recorder, session, player;
 
-#pragma mark - Recording
-- (BOOL)record {
-    NSError *err = nil;
-    NSString *path = [NSString stringWithFormat:kSampleFilename,
-                                                NSTemporaryDirectory(), (int) [[NSDate date] timeIntervalSince1970]];
-    NSURL *url = [NSURL fileURLWithPath:path];
-    NSDictionary *settings = [NSDictionary dictionaryWithObjectsAndKeys:
-            [NSNumber numberWithInt:kAudioFormatLinearPCM], AVFormatIDKey,
-            [NSNumber numberWithFloat:16000], AVSampleRateKey,
-            [NSNumber numberWithInt:1], AVNumberOfChannelsKey,
-            [NSNumber numberWithInt:16], AVLinearPCMBitDepthKey,
-            [NSNumber numberWithBool:NO], AVLinearPCMIsBigEndianKey,
-            [NSNumber numberWithBool:NO], AVLinearPCMIsFloatKey,
-            nil];
+#pragma mark - AudioQueue callbacks
+static void audioQueueInputCallback(void* data,
+                                    AudioQueueRef q,
+                                    AudioQueueBufferRef buffer,
+                                    const AudioTimeStamp *ts,
+                                    UInt32 numberPacketDescriptions,
+                                    const AudioStreamPacketDescription *packetDescs) {
+    void * const bytes = buffer->mAudioData;
+    UInt32 size        = buffer->mAudioDataByteSize;
 
-    recorder = [[AVAudioRecorder alloc] initWithURL:url settings:settings error:&err];
-    recorder.delegate = self;
-
-    if (!recorder) {
-        NSLog(@"Recorder, not allocated: %@ %@ %ld %@",
-                [err description],
-                [err domain],
-                (long)[err code],
-                [[err userInfo] description]);
+    if (WIT_DEBUG) {
+        const UInt32 capa = buffer->mAudioDataBytesCapacity;
+        debug(@"Audio chunk %u/%u", (unsigned int)size, (unsigned int)capa);
     }
 
-    debug(@"Recorder, initialized with %@", [url lastPathComponent]);
-    debug(@"Recorder, recording to %@", [[recorder url] lastPathComponent]);
+    if (size > 0) {
+        WITRecorder* recorder = (__bridge WITRecorder*)data;
+        [recorder.chunksQueue addOperationWithBlock:^{
+            NSData* audio = [NSData dataWithBytes:bytes length:size];
+            [recorder.delegate recorderGotChunk:audio];
+        }];
+    }
 
-    [session setActive:YES error:nil];
-    [recorder prepareToRecord];
-    [recorder setMeteringEnabled:YES];
+    AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
+}
 
-    [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationRecordingStarted object:nil];
+static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePropertyID propertyID) {
+    if (propertyID == kAudioQueueProperty_IsRunning)
+        debug(@"Queue running state changed");
+}
 
-    // acquire lock to make sure there is no sound playing at the same time
-    [noiseLock lock];
-    [recorder record];
-    [noiseLock unlock];
+#pragma mark - Recording
+- (BOOL) start {
+    [[AVAudioSession sharedInstance] setActive:YES error:nil];
+    self.state->recording = YES;
+    int err = AudioQueueStart(self.state->queue, NULL);
+    if (err) {
+        debug(@"ERROR while starting audio queue: %d", err);
+        return NO;
+    }
 
-    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
-    
+    [displayLink setPaused:NO];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioStart object:nil];
+
     return YES;
 }
 
 - (BOOL)stop {
-    [recorder stop];
-    [session setActive:NO error:nil];
-    [displayLink removeFromRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    AudioQueuePause(self.state->queue);
+    [[AVAudioSession sharedInstance] setActive:NO error:nil];
+    self.state->recording = NO;
+    [self.chunksQueue cancelAllOperations];
+
+    [displayLink setPaused:YES];
     self.power = -999;
-    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioEnd object:nil];
+
     return YES;
 }
 
-- (void)cancel {
-    [self stop];
-}
-
 - (BOOL)isRecording {
-    return self.recorder.recording;
+    return self.state->recording;
 }
 
 - (void)clean {
-    [recorder deleteRecording];
-}
-
-#pragma mark - Playing
-- (void)play:(NSString*)soundPath {
-    [noiseLock lock];
-    
-    NSURL* url = [[NSBundle mainBundle] URLForResource:soundPath withExtension:nil];
-    NSData* data = [NSData dataWithContentsOfURL:url];
-    NSError* error;
-
-    player = [[AVAudioPlayer alloc] initWithData:data error:&error];
-    player.volume = 1.0;
-    player.delegate = self;
-
-    BOOL ok = [player prepareToPlay];
-
-    if (!ok) {
-        debug(@"ERROR: couldn't prepare to play: %@", soundPath);
-        return;
-    }
-    [player play];
-}
-
-#pragma mark - AVAudioRecorderDelegate
-- (void)audioRecorderDidFinishRecording:(AVAudioRecorder *)r successfully:(BOOL)success {
-    if (success) {
-        AVURLAsset *asset = [[AVURLAsset alloc] initWithURL:r.url options:nil];
-        CMTime time = asset.duration;
-        double durationInSeconds = CMTimeGetSeconds(time);
-        if (durationInSeconds > self.minimalRecordingDuration) {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationRecordingCompleted object:nil
-                                                              userInfo:@{kWitKeyURL: r.url}];
-        } else {
-            debug(@"Recording too short, not uploading");
-            NSError* e = [NSError errorWithDomain:@"WitRecorder" code:2
-                                         userInfo:@{NSLocalizedDescriptionKey: @"Recording too short to upload..."}];
-            
-            [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationRecordingCompleted object:nil
-                                                              userInfo:@{kWitKeyError: e}];
-        }
-        
-    } else {
-        debug(@"Recorder, failed recording audio file");
-        NSError* e = [NSError errorWithDomain:@"WitRecorder" code:1
-                                     userInfo:@{NSLocalizedDescriptionKey: @"Failed uploading audio file"}];
-        
-        [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationRecordingCompleted object:nil
-                                                    userInfo:@{kWitKeyError: e}];
-    }
-}
-
-#pragma mark - AVAudioPlayerDelegate
-- (void)audioPlayerDidFinishPlaying:(AVAudioPlayer *)player successfully:(BOOL)flag {
-    debug(@"Played successfully? %@", flag?@"YES":@"NO");
-     [noiseLock unlock];
-}
-
-- (void)audioPlayerDecodeErrorDidOccur:(AVAudioPlayer *)player error:(NSError *)error {
-    debug(@"ERROR: AVAudioPlayer decode: %@", error.localizedDescription);
 }
 
 #pragma mark - CADisplayLink target
 - (void)updatePower {
-    [recorder updateMeters];
-    self.power = [recorder averagePowerForChannel:0];
+    if (![self isRecording]) {
+        return;
+    }
+    debug(@"Recorder: updating power");
+    AudioQueueLevelMeterState meters[1];
+    UInt32 dlen = sizeof(meters);
+    int err;
+    err = AudioQueueGetProperty(self.state->queue, kAudioQueueProperty_CurrentLevelMeterDB, meters, &dlen);
+    if (err) {
+        debug(@"Error while reading meters %d", err);
+        return;
+    }
+
+    self.power = meters[0].mAveragePower;
 }
 
 #pragma mark - Lifecycle
+- (void)initialize {
+    // init recorder
+    displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updatePower)];
+    [displayLink setPaused:YES];
+    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+
+    // create dispatch queue to process audio chunks
+    self.chunksQueue = [[NSOperationQueue alloc] init];
+
+    // create audio session
+    AVAudioSession* session = [AVAudioSession sharedInstance];
+    [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    [session setActive:YES error: nil];
+    [session requestRecordPermission:^(BOOL granted) {
+        debug(@"Permission granted: %d", granted);
+    }];
+
+    // create audio queue
+    int err;
+    RecorderState* state = (RecorderState*)malloc(sizeof(RecorderState));
+    AudioStreamBasicDescription fmt;
+    memset(&fmt, 0, sizeof(fmt));
+    fmt.mFormatID         = kAudioFormatLinearPCM;
+    fmt.mFormatFlags      = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+    fmt.mChannelsPerFrame = 1;
+    fmt.mSampleRate       = 16000.0;
+    fmt.mBitsPerChannel	  = 16;
+    fmt.mBytesPerPacket	  = fmt.mBytesPerFrame = (fmt.mBitsPerChannel / 8) * fmt.mChannelsPerFrame;
+    fmt.mFramesPerPacket  = 1;
+    AudioQueueNewInput(&fmt,
+                       audioQueueInputCallback,
+                       (__bridge void *)(self), // user data
+                       NULL,   // run loop
+                       NULL,   // run loop mode
+                       0,      // flags
+                       &state->queue);
+
+    int bytes = (int)ceil(0.1 /* seconds */ * fmt.mSampleRate) * fmt.mBytesPerFrame;
+    debug(@"AudioQueue buffer size: %d bytes", bytes);
+
+    for (int i = 0; i < kNumberRecordBuffers; i++) {
+        err = AudioQueueAllocateBuffer(state->queue, bytes, &state->buffers[i]);
+        if (err) {
+            debug(@"error while allocating buffer %d", err);
+        }
+        err = AudioQueueEnqueueBuffer(state->queue, state->buffers[i], 0, NULL);
+        if (err) {
+            debug(@"error while enqueuing buffer %d", err);
+        }
+    }
+
+    UInt32 on = 1;
+    AudioQueueSetProperty(state->queue, kAudioQueueProperty_EnableLevelMetering, &on, sizeof(on));
+    err = AudioQueueAddPropertyListener(state->queue, kAudioQueueProperty_IsRunning,
+                                        MyPropertyListener, &state);
+    if (err) {
+        debug(@"error while adding listener buffer %d", err);
+    }
+
+    state->fmt = fmt;
+    state->recording = NO;
+    self.state = state;
+}
+
 - (id)init {
     self = [super init];
     if (self) {
         [self initialize];
     }
-    
+
     return self;
 }
 
-- (void)initialize {
-    // create audio session and add listener
-    self.minimalRecordingDuration = .5;
-    session = [AVAudioSession sharedInstance];
-    [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
-
-    noiseLock = [[NSLock alloc] init];
-    displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updatePower)];
-
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(clean)
-                                                 name:kWitNotificationResponseReceived object:nil];
-}
-
 - (void)dealloc {
+    [displayLink invalidate];
+    free(self.state);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 @end

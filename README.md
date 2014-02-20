@@ -1,8 +1,19 @@
+# Breaking changes from 0.1 to 1.0
+- Notifications overhaul to match Javascript widget more closely, only notifications are now:
+  - kWitNotificationAudioStart: recording started
+  - kWitNotificationAudioEnd: recording ended
+- Some redundant delegate methods have been removed, to keep the interface lean.
+  - witDidStartAnalyzing: analysis starts when recording ends (kWitNotificationAudioEnd)
+  - witDidStopAnalyzing: analysis stops when response arrives...
+- Unused [Wit sharedInstance].instanceId has been removed
+- Sounds are gone! Apps can play sounds when reacting to Wit events, but that's not the role of Wit SDK
+
 # Install
 ## CocoaPods
-    pod 'Wit', '~> 0.1.0'
-## .framework
-Link with QuartzCore, AVFoundation, MobileCoreServices, SystemConfiguration, Security
+    pod 'Wit', '~> 1.0.0'
+## .framework & .bundle
+- Drag and drop both files in project
+- Link with QuartzCore, SystemConfiguration (and maybe AudioToolbox, Security, MobileCoreServices)
 
 ## FooViewController.h
     @interface FooController : UIViewController <WitDelegate>
@@ -18,13 +29,7 @@ Link with QuartzCore, AVFoundation, MobileCoreServices, SystemConfiguration, Sec
     - (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body error:(NSError *)e {
     }
 
-# Notifications
-    kWitNotificationUploadProgress = userInfo.progress shows current upload progress
-    kWitNotificationRecordingStarted = recording just started
-    kWitNotificationRecordingCompleted = recording stopped (userInfo.error shows error, if any)
-    kWitNotificationResponseReceived = received Wit API response
-
-# Wit.framework
+# Using Wit.framework in a project
 cf. https://github.com/jverkoey/iOS-Framework#first_parties
 
 1. `git submodule update --init`
@@ -36,3 +41,8 @@ cf. https://github.com/jverkoey/iOS-Framework#first_parties
     - AVFoundation `# audio recording`
     - QuartzCore `# drawing`
 9. Build and test!
+
+# Building Wit.framework
+- Build for iPhone simulator
+- Build for iOS device
+- Grab .framework and .bundle from Products

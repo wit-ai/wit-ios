@@ -37,10 +37,6 @@
 
 #pragma mark - Defaults
 - (void)readPlist {
-    self.instanceId = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"WitInstanceId"];
-    NSString *instanceId = [[NSUserDefaults standardUserDefaults] stringForKey:@"instanceId"];
-    if (instanceId && [instanceId length] > 0) self.instanceId = instanceId;
-
     self.accessToken = [[NSBundle mainBundle] objectForInfoDictionaryKey:@"WitAccessToken"];
     NSString *accessToken = [[NSUserDefaults standardUserDefaults] stringForKey:@"accessToken"];
     if (accessToken && [accessToken length] > 0) self.accessToken = accessToken;

@@ -5,83 +5,65 @@
 
 #import "WitPrivate.h"
 #import "WITState.h"
+#import "WITRecorder.h"
+#import "WITUploader.h"
 
-@interface Wit ()
+@interface Wit () <WITRecorderDelegate, WITUploaderDelegate>
 @property (strong) WITState *state;
 @end
 
 @implementation Wit {
-    NSDictionary* _sounds;
 }
 @synthesize delegate, state;
-@dynamic sounds;
 
 #pragma mark - Public API
 - (void)toggleCaptureVoiceIntent:(id)sender {
     if ([self isRecording]) {
-        [state.recorder performSelectorInBackground:@selector(stop) withObject:nil];
-
-
+        [self stop];
     } else {
-        [state.recorder performSelectorInBackground:@selector(record) withObject:nil];
-        NSString* soundPath = self.sounds[@"startRecording"];
-        if (soundPath) {
-            [state.recorder performSelectorOnMainThread:@selector(play:) withObject:soundPath waitUntilDone:NO];
-        }
+        [self start];
     }
 }
 
-- (void)cancel {
-    [state.recorder cancel];
+- (void)start {
+    [state.uploader startRequest];
+    [state.recorder start];
+}
+
+- (void)stop {
+    [state.recorder stop];
+    [state.uploader endRequest];
 }
 
 - (BOOL)isRecording {
     return [self.state.recorder isRecording];
 }
 
-#pragma mark - NSNotificationCenter
-- (void)responseReceived:(NSNotification*)n {
-    NSDictionary* resp = [n userInfo];
-    NSError* e = resp[kWitKeyError];
-    
-    if (e) {
-        [self error:e];
-        return;
-    }
-    
-    resp = resp[kWitKeyResponse];
-    [self processMessage:resp];
+#pragma mark - WITRecorderDelegate
+-(void)recorderGotChunk:(NSData*)chunk {
+    [state.uploader sendChunk:chunk];
 }
 
-- (void)recordingStarted:(NSNotification*)n {
+#pragma mark - NSNotificationCenter
+- (void)audioend:(NSNotification*)n {
+    if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {
+        [self.delegate witDidStopRecording];
+    }
+}
+
+- (void)audiostart:(NSNotification*)n {
     if ([self.delegate respondsToSelector:@selector(witDidStartRecording)]) {
         [self.delegate witDidStartRecording];
     }
 }
 
-- (void)recordingCompleted:(NSNotification*)n {
-    
-    
-    NSDictionary* data = [n userInfo];
-    NSError* e = data[kWitKeyError];
-    
-
-
-    if (e) {
-        [self error:e];
-        NSString* soundPath = self.sounds[@"failedRecording"];
-        if (soundPath) {
-            [state.recorder performSelectorOnMainThread:@selector(play:) withObject:soundPath waitUntilDone:NO];
-        }
+#pragma mark - WITUploaderDelegate
+- (void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
+    if (err) {
+        [self error:err];
         return;
     }
-    
-    NSString* soundPath = self.sounds[@"stopRecording"];
-    if (soundPath) {
-        [state.recorder performSelectorOnMainThread:@selector(play:) withObject:soundPath waitUntilDone:NO];
-    }
-
-    [state.uploader uploadSampleWithURL:data[kWitKeyURL]];
+    [self processMessage:resp];
 }
 
 #pragma mark - Response processing
@@ -160,14 +142,6 @@
 }
 
 #pragma mark - Getters and setters
-- (NSString *)instanceId {
-    return state.instanceId;
-}
-
-- (void)setInstanceId:(NSString *)instanceId {
-    state.instanceId = instanceId;
-}
-
 - (NSString *)accessToken {
     return state.accessToken;
 }
@@ -176,33 +150,27 @@
     state.accessToken = accessToken;
 }
 
-- (NSDictionary *)sounds {
-    return _sounds;
-}
-
-- (void)setSounds:(NSDictionary *)sounds {
-    _sounds = sounds;
-}
-
 #pragma mark - Lifecycle
+- (void)initialize {
+    state = [WITState sharedInstance];
+    [self observeNotifications];
+    self.state.recorder.delegate = self;
+    self.state.uploader.delegate = self;
+}
 - (id)init {
     self = [super init];
     if (self) {
-        state = [WITState sharedInstance];
-        [self observeNotifications];
+        [self initialize];
     }
     return self;
 }
 
 - (void)observeNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(responseReceived:)
-                                                 name:kWitNotificationResponseReceived object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
+                                                 name:kWitNotificationAudioStart object:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordingStarted:)
-                                                 name:kWitNotificationRecordingStarted object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recordingCompleted:)
-                                                 name:kWitNotificationRecordingCompleted object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioend:)
+                                                 name:kWitNotificationAudioEnd object:nil];
 }
 
 - (void)dealloc {

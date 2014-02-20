@@ -5,36 +5,36 @@
 	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
 	<false/>
 	<key>IDESourceControlProjectIdentifier</key>
-	<string>F279FD7A-1261-42C1-B65D-667DF1B73399</string>
+	<string>84D4ED1C-742B-4E8A-B0DA-F0EE665C45EA</string>
 	<key>IDESourceControlProjectName</key>
 	<string>Wit</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>B0A333A3-FA2F-482A-8FF8-3F8E82701E79</key>
-		<string>https://github.com/hactar/wit-ios-sdk.git</string>
+		<key>133F3488-8375-44F4-B6A0-979FE820C70B</key>
+		<string>ssh://github.com/wit-ai/wit-ios-sdk.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>Wit.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>B0A333A3-FA2F-482A-8FF8-3F8E82701E79</key>
+		<key>133F3488-8375-44F4-B6A0-979FE820C70B</key>
 		<string>..</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
-	<string>https://github.com/hactar/wit-ios-sdk.git</string>
+	<string>ssh://github.com/wit-ai/wit-ios-sdk.git</string>
 	<key>IDESourceControlProjectVersion</key>
 	<integer>110</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>B0A333A3-FA2F-482A-8FF8-3F8E82701E79</string>
+	<string>133F3488-8375-44F4-B6A0-979FE820C70B</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>B0A333A3-FA2F-482A-8FF8-3F8E82701E79</string>
+			<string>133F3488-8375-44F4-B6A0-979FE820C70B</string>
 			<key>IDESourceControlWCCName</key>
-			<string>wit-ios-sdk</string>
+			<string>Wit</string>
 		</dict>
 	</array>
 </dict>
