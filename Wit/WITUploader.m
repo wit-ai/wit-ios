@@ -10,7 +10,7 @@
 #import "WITUploader.h"
 #import "WITState.h"
 
-static NSString* const kWitSpeechURL = @"http://localhost:8081/speech";
+static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
 
 @implementation WITUploader {
     NSOutputStream *outStream;
