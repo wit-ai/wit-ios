@@ -128,9 +128,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     AVAudioSession* session = [AVAudioSession sharedInstance];
     [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
     [session setActive:YES error: nil];
-    [session requestRecordPermission:^(BOOL granted) {
-        debug(@"Permission granted: %d", granted);
-    }];
+    if([[AVAudioSession sharedInstance] respondsToSelector:@selector(requestRecordPermission:)])
+    {
+        [session requestRecordPermission:^(BOOL granted) {
+            debug(@"Permission granted: %d", granted);
+        }];
+    }
 
     // create audio queue
     int err;
