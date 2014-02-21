@@ -211,6 +211,11 @@ static const CGFloat kMicMargin = 40.0f;
     return nil;
 }
 
+- (void) didMoveToSuperview {
+    [super didMoveToSuperview];
+    [self recomputePositions];
+}
+
 #pragma mark - KVO
 - (void)observeValueForKeyPath:(NSString *)keyPath
                       ofObject:(id)object
