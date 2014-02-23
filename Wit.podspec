@@ -20,5 +20,5 @@ Pod::Spec.new do |s|
   s.resources = ['WitResources/Images/*.png']
 
   s.dependency 'ReactiveCocoa', '~> 1.3.1'
-  s.dependency 'AFNetworking', '~> 2.1.0'
+  s.dependency 'AFNetworking/NSURLConnection', '~> 2.1.0'
 end
