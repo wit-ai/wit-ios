@@ -5,11 +5,3 @@
 #ifdef __OBJC__
     #import <Foundation/Foundation.h>
 #endif
-
-#import <AFNetworking/AFNetworking.h>
-
-#if DEBUG
-#define debug(x, ...) NSLog(x, ##__VA_ARGS__);
-#else
-#define debug(x, ...) ;
-#endif

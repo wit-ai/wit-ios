@@ -7,6 +7,7 @@
 //
 
 #import <QuartzCore/QuartzCore.h>
+#import <UIKit/UIKit.h>
 
 @interface WITCircleLayer : CALayer
 @property (nonatomic) NSNumber* radius;
