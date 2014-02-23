@@ -6,7 +6,6 @@
     #import <Foundation/Foundation.h>
 #endif
 
-#import <AFNetworking/AFNetworking.h>
 
 #if DEBUG
 #define debug(x, ...) NSLog(x, ##__VA_ARGS__);

@@ -9,7 +9,6 @@
 #ifndef Wit_WitPrivate_h
 #define Wit_WitPrivate_h
 
-#import <AFNetworking/AFNetworking.h>
 #import "Wit.h"
 
 static __unused NSString* const kWitNotificationAudioStart = @"WITRecordingStarted";
