@@ -41,47 +41,41 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     [outStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [outStream open];
 
-    // build and send HTTP request
+    // build HTTP request
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kWitSpeechURL]];
     [req setHTTPMethod:@"POST"];
     [req setCachePolicy:NSURLCacheStorageNotAllowed];
+    [req setTimeoutInterval:15.0];
     [req setHTTPBodyStream:inStream];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"wit/ios" forHTTPHeaderField:@"Content-type"];
     [req setValue:@"chunked" forHTTPHeaderField:@"Transfer-encoding"];
 
-    AFHTTPRequestOperation *op = [[AFHTTPRequestOperation alloc] initWithRequest:req];
-    [op setCompletionBlockWithSuccess:^(AFHTTPRequestOperation *operation, id responseObject) {
-        if (WIT_DEBUG) {
-            NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
-            NSLog(@"Wit response (%f s): %@", t, [operation responseString]);
-        }
+    // send HTTP request
+    [NSURLConnection sendAsynchronousRequest:req
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                               if (WIT_DEBUG) {
+                                   NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
+                                   NSLog(@"Wit response (%f s)", t);
+                               }
 
-        NSError *parsingError;
-        NSString* responseString = [operation responseString];
-        NSDictionary* response = [NSJSONSerialization JSONObjectWithData:[responseString dataUsingEncoding:NSUTF8StringEncoding]
-                                                                 options:0 error:&parsingError];
+                               if (connectionError) {
+                                   [self.delegate gotResponse:nil error:connectionError];
+                                   return;
+                               }
 
-        if (parsingError) {
-            [self.delegate gotResponse:nil error:parsingError];
-            return;
-        }
+                               NSError *serializationError;
+                               NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data
+                                                                                      options:0
+                                                                                        error:&serializationError];
+                               if (serializationError) {
+                                   [self.delegate gotResponse:nil error:serializationError];
+                                   return;
+                               }
 
-        [self.delegate gotResponse:response error:nil];
-    } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
-        if (WIT_DEBUG) {
-            NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
-            NSLog(@"Wit error (%f s): %@", t, error);
-        }
-
-        [self.delegate gotResponse:nil error:error];
-    }];
-
-//    [op setUploadProgressBlock:^(NSUInteger bytesWritten, long long totalBytesWritten, long long totalBytesExpectedToWrite) {
-//        debug(@"Uploaded %lld", totalBytesWritten);
-//    }];
-
-    [[NSOperationQueue mainQueue] addOperation:op];
+                               [self.delegate gotResponse:object error:nil];
+                           }];
 
     return YES;
 }
@@ -143,13 +137,13 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     static WITUploader *instance;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        instance = [[WITUploader alloc] initWithBaseURL:[NSURL URLWithString:kWitSpeechURL]];
+        instance = [[WITUploader alloc] init];
     });
 
     return instance;
 }
--(instancetype)initWithBaseURL:(NSURL *)url {
-    self = [super initWithBaseURL:url];
+-(id)init {
+    self = [super init];
     if (self) {
         q = [[NSOperationQueue alloc] init];
         [q setMaxConcurrentOperationCount:1];

@@ -10,7 +10,7 @@
 
 # Install
 ## CocoaPods
-    pod 'Wit', '~> 1.0.0'
+    pod 'Wit', '~> 1.1.0'
 ## .framework & .bundle
 - Drag and drop both files in project
 - Link with QuartzCore, SystemConfiguration (and maybe AudioToolbox, Security, MobileCoreServices)

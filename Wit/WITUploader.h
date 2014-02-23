@@ -7,14 +7,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <AFNetworking/AFNetworking.h>
 
 @protocol WITUploaderDelegate;
 
 /**
 * Uploader class that will upload the wav file and return back the response as NSString to the delegate
 */
-@interface WITUploader : AFHTTPRequestOperationManager <NSStreamDelegate>
+@interface WITUploader : NSObject  <NSStreamDelegate>
 @property (nonatomic, strong) id<WITUploaderDelegate> delegate;
 
 +(WITUploader*)sharedInstance;

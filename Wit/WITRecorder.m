@@ -77,7 +77,15 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 }
 
 - (BOOL)stop {
-    AudioQueuePause(self.state->queue);
+    int err;
+    err = AudioQueueFlush(self.state->queue);
+    if (err) {
+        NSLog(@"[Wit] ERROR: could not flush audio queue (%d)", err);
+    }
+    err = AudioQueuePause(self.state->queue);
+    if (err) {
+        NSLog(@"[Wit] ERROR: could not pause audio queue (%d)", err);
+    }
     [[AVAudioSession sharedInstance] setActive:NO error:nil];
     self.state->recording = NO;
     [self.chunksQueue cancelAllOperations];
@@ -155,7 +163,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
                        0,      // flags
                        &state->queue);
 
-    int bytes = (int)ceil(0.1 /* seconds */ * fmt.mSampleRate) * fmt.mBytesPerFrame;
+    int bytes = (int)ceil(0.5 /* seconds */ * fmt.mSampleRate) * fmt.mBytesPerFrame;
     debug(@"AudioQueue buffer size: %d bytes", bytes);
 
     for (int i = 0; i < kNumberRecordBuffers; i++) {
@@ -193,6 +201,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 
 - (void)dealloc {
     [displayLink invalidate];
+    AudioQueueDispose(self.state->queue, YES);
     free(self.state);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
