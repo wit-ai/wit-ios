@@ -62,9 +62,18 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 
 #pragma mark - Recording
 - (BOOL) start {
+    int err;
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     self.state->recording = YES;
-    int err = AudioQueueStart(self.state->queue, NULL);
+
+    for (int i = 0; i < kNumberRecordBuffers; i++) {
+        err = AudioQueueEnqueueBuffer(self.state->queue, self.state->buffers[i], 0, NULL);
+        if (err) {
+            debug(@"error while enqueuing buffer %d", err);
+        }
+    }
+
+    err = AudioQueueStart(self.state->queue, NULL);
     if (err) {
         debug(@"ERROR while starting audio queue: %d", err);
         return NO;
@@ -78,7 +87,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 
 - (BOOL)stop {
     int err;
-    err = AudioQueueFlush(self.state->queue);
+    err = AudioQueueReset(self.state->queue);
     if (err) {
         NSLog(@"[Wit] ERROR: could not flush audio queue (%d)", err);
     }
@@ -88,7 +97,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     }
     [[AVAudioSession sharedInstance] setActive:NO error:nil];
     self.state->recording = NO;
-    [self.chunksQueue cancelAllOperations];
+//    [self.chunksQueue cancelAllOperations];
 
     [displayLink setPaused:YES];
     self.power = -999;
@@ -170,10 +179,6 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
         err = AudioQueueAllocateBuffer(state->queue, bytes, &state->buffers[i]);
         if (err) {
             debug(@"error while allocating buffer %d", err);
-        }
-        err = AudioQueueEnqueueBuffer(state->queue, state->buffers[i], 0, NULL);
-        if (err) {
-            debug(@"error while enqueuing buffer %d", err);
         }
     }
 

@@ -50,6 +50,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     [req setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"wit/ios" forHTTPHeaderField:@"Content-type"];
     [req setValue:@"chunked" forHTTPHeaderField:@"Transfer-encoding"];
+    [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 
     // send HTTP request
     [NSURLConnection sendAsynchronousRequest:req
@@ -57,7 +58,8 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                if (WIT_DEBUG) {
                                    NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
-                                   NSLog(@"Wit response (%f s)", t);
+                                   NSLog(@"Wit response (%f s) %@",
+                                         t, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                                }
 
                                if (connectionError) {
@@ -71,6 +73,16 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
                                                                                         error:&serializationError];
                                if (serializationError) {
                                    [self.delegate gotResponse:nil error:serializationError];
+                                   return;
+                               }
+
+                               if (object[@"error"]) {
+                                   NSDictionary *infos = @{NSLocalizedDescriptionKey: object[@"error"],
+                                                           kWitKeyError: object[@"code"]};
+                                   [self.delegate gotResponse:nil
+                                                        error:[NSError errorWithDomain:@"WitProcessing"
+                                                                                            code:1
+                                                                                        userInfo:infos]];
                                    return;
                                }
 
