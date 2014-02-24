@@ -5,6 +5,8 @@
 xcuserdata
 *~.nib
 build/
+*.xcworkspace
+!default.xcworkspace
 
 # Dropbox
 *conflicted copy*

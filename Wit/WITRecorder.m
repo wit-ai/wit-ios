@@ -40,8 +40,7 @@ static void audioQueueInputCallback(void* data,
     UInt32 size        = buffer->mAudioDataByteSize;
 
     if (WIT_DEBUG) {
-        const UInt32 capa = buffer->mAudioDataBytesCapacity;
-        debug(@"Audio chunk %u/%u", (unsigned int)size, (unsigned int)capa);
+        debug(@"Audio chunk %u/%u", (unsigned int)size, (unsigned int)buffer->mAudioDataBytesCapacity);
     }
 
     if (size > 0) {
