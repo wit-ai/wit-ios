@@ -100,7 +100,6 @@
 		329F90C2BC4241B2A98122BB /* Pods-WitTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WitTests.xcconfig"; path = "Pods/Pods-WitTests.xcconfig"; sourceTree = SOURCE_ROOT; };
 		33496D2620B742B797668671 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7284A2A0BD494CE4BF1E6BF2 /* libPods-WitTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WitTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		74EDFD72479F48399076FEF5 /* Pods.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.xcconfig; path = Pods/Pods.xcconfig; sourceTree = SOURCE_ROOT; };
 		B95283DD15F4459300F1D5E0 /* WITUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITUploader.h; sourceTree = "<group>"; };
 		B95283DE15F4459300F1D5E0 /* WITUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITUploader.m; sourceTree = "<group>"; };
 		B95283E715F448FA00F1D5E0 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -214,7 +213,6 @@
 				C5EC36EF17094E9200E0916B /* WitTests */,
 				B9C0164615DD327500C025BD /* Frameworks */,
 				B9C0164515DD327500C025BD /* Products */,
-				74EDFD72479F48399076FEF5 /* Pods.xcconfig */,
 				329F90C2BC4241B2A98122BB /* Pods-WitTests.xcconfig */,
 			);
 			sourceTree = "<group>";
@@ -345,12 +343,10 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9C0166915DD327600C025BD /* Build configuration list for PBXNativeTarget "Wit" */;
 			buildPhases = (
-				9C3D4180512B4B3FAA1A90A0 /* Check Pods Manifest.lock */,
 				B9C0164015DD327500C025BD /* Sources */,
 				B9C0164115DD327500C025BD /* Frameworks */,
 				B95D95E315DD3B3800DBBABD /* Headers */,
 				B95D958A15DD356000DBBABD /* Prepare framework */,
-				4B2130F714F844B18892A12C /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -447,35 +443,7 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Pods-WitTests-resources.sh\"\n";
 		};
-		4B2130F714F844B18892A12C /* Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-resources.sh\"\n";
-		};
 		97C02DFF3E1D49D4835EFB72 /* Check Pods Manifest.lock */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "Check Pods Manifest.lock";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
-		};
-		9C3D4180512B4B3FAA1A90A0 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -704,7 +672,6 @@
 		};
 		B9C0166A15DD327600C025BD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 74EDFD72479F48399076FEF5 /* Pods.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = domoteam;
 				DEAD_CODE_STRIPPING = NO;
@@ -731,7 +698,6 @@
 		};
 		B9C0166B15DD327600C025BD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 74EDFD72479F48399076FEF5 /* Pods.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_IDENTITY = domoteam;
 				COPY_PHASE_STRIP = NO;
