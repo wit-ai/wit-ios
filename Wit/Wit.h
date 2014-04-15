@@ -52,6 +52,12 @@
 @end
 
 /**
+ Sends an NSString to wit.ai for interpretation
+ */
+- (void) interpretString: (NSString *) string;
+@end
+
+/**
  * Protocol used by Wit to communicate with the app
  */
 @protocol WitDelegate <NSObject>
