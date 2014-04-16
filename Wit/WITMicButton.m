@@ -116,10 +116,10 @@ static const CGFloat kMicMargin = 40.0f;
     
     // fit microphone
     if (w/h > kMicWidth/kMicHeight) {
-        actualMicHeight = h - kMicMargin;
+        actualMicHeight = h - kMicMargin*(h/100.);
         actualMicWidth = actualMicHeight * (kMicWidth/kMicHeight);
     } else {
-        actualMicWidth = w - kMicMargin;
+        actualMicWidth = w - kMicMargin*(w/100.);
         actualMicHeight = actualMicWidth * (kMicHeight/kMicWidth);
     }
     
