@@ -49,6 +49,11 @@
  YES if Wit is recording audio
  */
 - (BOOL)isRecording;
+
+/**
+ Sends an NSString to wit.ai for interpretation
+ */
+- (void) interpretString: (NSString *) string;
 @end
 
 /**

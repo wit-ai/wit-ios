@@ -39,6 +39,70 @@
     return [self.state.recorder isRecording];
 }
 
+- (NSString *)urlencodeString: (NSString *) string {
+    NSMutableString *output = [NSMutableString string];
+    const unsigned char *source = (const unsigned char *)[string UTF8String];
+    long sourceLen = strlen((const char *)source);
+    for (int i = 0; i < sourceLen; ++i) {
+        const unsigned char thisChar = source[i];
+        if (thisChar == ' '){
+            [output appendString:@"+"];
+        } else if (thisChar == '.' || thisChar == '-' || thisChar == '_' || thisChar == '~' ||
+                   (thisChar >= 'a' && thisChar <= 'z') ||
+                   (thisChar >= 'A' && thisChar <= 'Z') ||
+                   (thisChar >= '0' && thisChar <= '9')) {
+            [output appendFormat:@"%c", thisChar];
+        } else {
+            [output appendFormat:@"%%%02X", thisChar];
+        }
+    }
+    return output;
+}
+
+- (void) interpretString: (NSString *) string {
+    NSDate *start = [NSDate date];
+    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.wit.ai/message?q=%@", [self urlencodeString:string]]]];
+    [req setCachePolicy:NSURLCacheStorageNotAllowed];
+    [req setTimeoutInterval:15.0];
+    [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
+    [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    [NSURLConnection sendAsynchronousRequest:req
+                                       queue:[NSOperationQueue mainQueue]
+                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                               if (WIT_DEBUG) {
+                                   NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
+                                   NSLog(@"Wit response (%f s) %@",
+                                         t, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                               }
+                               
+                               if (connectionError) {
+                                   [self gotResponse:nil error:connectionError];
+                                   return;
+                               }
+                               
+                               NSError *serializationError;
+                               NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data
+                                                                                      options:0
+                                                                                        error:&serializationError];
+                               if (serializationError) {
+                                   [self gotResponse:nil error:serializationError];
+                                   return;
+                               }
+                               
+                               if (object[@"error"]) {
+                                   NSDictionary *infos = @{NSLocalizedDescriptionKey: object[@"error"],
+                                                           kWitKeyError: object[@"code"]};
+                                   [self gotResponse:nil
+                                               error:[NSError errorWithDomain:@"WitProcessing"
+                                                                         code:1
+                                                                     userInfo:infos]];
+                                   return;
+                               }
+                               
+                               [self gotResponse:object error:nil];
+                           }];
+}
+
 #pragma mark - WITRecorderDelegate
 -(void)recorderGotChunk:(NSData*)chunk {
     [state.uploader sendChunk:chunk];
