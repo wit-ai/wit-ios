@@ -202,6 +202,20 @@
 #pragma clang diagnostic pop
     } else {
         debug(@"Couldn't find selector: %@", NSStringFromSelector(selector));
+        if ([self.commandDelegate respondsToSelector:@selector(didNotFindIntentSelectorForIntent:entities:body:)]) {
+            NSMethodSignature * mySignature = [self.commandDelegate
+                                               methodSignatureForSelector:@selector(didNotFindIntentSelectorForIntent:entities:body:)];
+            NSInvocation * myInvocation = [NSInvocation
+                                           invocationWithMethodSignature:mySignature];
+            [myInvocation setTarget:self.commandDelegate];
+            [myInvocation setSelector:@selector(didNotFindIntentSelectorForIntent:entities:body:)];
+            [myInvocation setArgument:&intent atIndex:2];
+            [myInvocation setArgument:&entities atIndex:3];
+            [myInvocation setArgument:&body atIndex:4];
+            [myInvocation invoke];
+            
+            
+        }
     }
 }
 
