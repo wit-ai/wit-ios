@@ -20,10 +20,12 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     // queue used to send audio chunks in HTTP body
     // will be suspended / resumed according to stream availability
     NSOperationQueue* q;
+    BOOL requestEnding;
 }
 
 #pragma mark - Stream networking
 -(BOOL)startRequest {
+    requestEnding = NO;
     NSString* token = [[WITState sharedInstance] accessToken];
 
     // CF wiring
@@ -81,8 +83,8 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
                                                            kWitKeyError: object[@"code"]};
                                    [self.delegate gotResponse:nil
                                                         error:[NSError errorWithDomain:@"WitProcessing"
-                                                                                            code:1
-                                                                                        userInfo:infos]];
+                                                                                  code:1
+                                                                              userInfo:infos]];
                                    return;
                                }
 
@@ -92,17 +94,22 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     return YES;
 }
 -(void)sendChunk:(NSData*)chunk {
+    if (outStream.hasSpaceAvailable && q.isSuspended) {
+        [q setSuspended:NO];
+    }
     [q addOperationWithBlock:^{
         if (outStream) {
             debug(@"Uploading %u bytes", (unsigned int)[chunk length]);
             [outStream write:[chunk bytes] maxLength:[chunk length]];
             [q setSuspended:YES];
+            if (requestEnding && q.operationCount < 2) {
+                [self cleanUp];
+            }
         }
     }];
 }
--(void)endRequest {
-    debug(@"Ending request");
 
+- (void) cleanUp {
     if (outStream) {
         start = [NSDate date];
         [outStream close];
@@ -113,6 +120,14 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
 
     [q cancelAllOperations];
     [q setSuspended:NO];
+}
+
+-(void)endRequest {
+    debug(@"Ending request");
+    requestEnding = YES;
+    if (q.operationCount < 1) {
+        [self cleanUp];
+    }
 }
 
 #pragma mark - NSStreamDelegate
