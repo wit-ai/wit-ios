@@ -24,7 +24,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
 }
 
 #pragma mark - Stream networking
--(BOOL)startRequest {
+-(BOOL)startRequestWithContext:(NSString *)context {
     requestEnding = NO;
     NSString* token = [[WITState sharedInstance] accessToken];
 
@@ -50,6 +50,9 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     [req setTimeoutInterval:15.0];
     [req setHTTPBodyStream:inStream];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
+    if (context != nil) {
+        [req setValue:context forHTTPHeaderField:@"context"];
+    }
     [req setValue:@"wit/ios" forHTTPHeaderField:@"Content-type"];
     [req setValue:@"chunked" forHTTPHeaderField:@"Transfer-encoding"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
