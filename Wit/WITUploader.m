@@ -24,7 +24,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
 }
 
 #pragma mark - Stream networking
--(BOOL)startRequest {
+-(BOOL)startRequestWithContext:(NSString *)context {
     requestEnding = NO;
     NSString* token = [[WITState sharedInstance] accessToken];
 
@@ -42,9 +42,26 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     [outStream setDelegate:self];
     [outStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [outStream open];
+    
+    // Building HTTP Request
 
-    // build HTTP request
-    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kWitSpeechURL]];
+    NSMutableURLRequest *req;
+    
+    if (context != nil) {
+        NSDictionary *stateDictionary = @{@"state": context};
+        NSString *encoded = [self prepareURLEncodedContextDataFromContextDictionary:stateDictionary];
+        
+        // After URL encoding, we just include the state data in the context field when making the HTTP request
+        
+        NSString *stringWithContext = [NSString stringWithFormat:@"%@?context=%@", kWitSpeechURL, encoded];
+        req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:stringWithContext]];
+    } else {
+        
+        // But if the user never specified a context, we'll just proceed as normal
+        
+        req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kWitSpeechURL]];
+    }
+    
     [req setHTTPMethod:@"POST"];
     [req setCachePolicy:NSURLCacheStorageNotAllowed];
     [req setTimeoutInterval:15.0];
@@ -58,6 +75,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     [NSURLConnection sendAsynchronousRequest:req
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+                               
                                if (WIT_DEBUG) {
                                    NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
                                    NSLog(@"Wit response (%f s) %@",
@@ -190,4 +208,16 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
         [q cancelAllOperations];
     }
 }
+
+#pragma mark - Helper Methods
+
+// Private method to prepare context data
+
+- (NSString *)prepareURLEncodedContextDataFromContextDictionary:(NSDictionary *)contextDictionary {
+    NSString *decoded = [NSString stringWithFormat:@"%@", contextDictionary];
+    NSString *encoded = [[[[decoded stringByReplacingOccurrencesOfString:@"=" withString:@":" ] stringByReplacingOccurrencesOfString:@";" withString:@""] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"state" withString:@"%22state%22"];
+    
+    return encoded;
+}
+
 @end

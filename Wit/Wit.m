@@ -25,8 +25,21 @@
     }
 }
 
+- (void)toggleCaptureVoiceIntent:(id)sender withContext:(NSString *)context {
+    if ([self isRecording]) {
+        [self stop];
+    } else {
+        [self startWithContext:context];
+    }
+}
+
 - (void)start {
-    [state.uploader startRequest];
+    [state.uploader startRequestWithContext:nil];
+    [state.recorder start];
+}
+
+- (void)startWithContext:(NSString *)context {
+    [state.uploader startRequestWithContext:context];
     [state.recorder start];
 }
 
