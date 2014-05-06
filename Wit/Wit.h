@@ -36,7 +36,7 @@
 - (void)toggleCaptureVoiceIntent:(id)sender;
 
 /**
- Pops a new view and records user voice. The sender to which the modal will be presented (Can be null if no UI wanted)
+ Pops a new view and records user voice, bearing in mind a context (state). The sender to which the modal will be presented (Can be null if no UI wanted)
  @param context The context (state) to submit to Wit in the API call.
  */
 - (void)toggleCaptureVoiceIntent:(id)sender withContext:(NSString *)context;
