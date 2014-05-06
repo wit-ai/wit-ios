@@ -76,8 +76,6 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
                                
-                               NSLog(@"Wit Response: %@", response);
-                               
                                if (WIT_DEBUG) {
                                    NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
                                    NSLog(@"Wit response (%f s) %@",
