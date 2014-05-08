@@ -17,7 +17,7 @@
 @property (nonatomic, strong) id<WITUploaderDelegate> delegate;
 
 +(WITUploader*)sharedInstance;
--(BOOL)startRequestWithContext:(NSString *)context;
+-(BOOL)startRequestWithContext:(NSDictionary *)context;
 -(void)sendChunk:(NSData*)chunk;
 -(void)endRequest;
 @end

@@ -22,7 +22,6 @@ typedef struct RecorderState RecorderState;
 
 @interface WITRecorder ()
 @property (nonatomic, assign) RecorderState *state;
-@property (strong) NSOperationQueue* chunksQueue;
 @end
 
 @implementation WITRecorder {
@@ -45,10 +44,8 @@ static void audioQueueInputCallback(void* data,
 
     if (size > 0) {
         WITRecorder* recorder = (__bridge WITRecorder*)data;
-        [recorder.chunksQueue addOperationWithBlock:^{
-            NSData* audio = [NSData dataWithBytes:bytes length:size];
-            [recorder.delegate recorderGotChunk:audio];
-        }];
+        NSData* audio = [NSData dataWithBytes:bytes length:size];
+        [recorder.delegate recorderGotChunk:audio];
     }
 
     AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
@@ -96,7 +93,6 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     }
     [[AVAudioSession sharedInstance] setActive:NO error:nil];
     self.state->recording = NO;
-//    [self.chunksQueue cancelAllOperations];
 
     [displayLink setPaused:YES];
     self.power = -999;
@@ -136,9 +132,6 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updatePower)];
     [displayLink setPaused:YES];
     [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
-
-    // create dispatch queue to process audio chunks
-    self.chunksQueue = [[NSOperationQueue alloc] init];
 
     // create audio session
     AVAudioSession* session = [AVAudioSession sharedInstance];

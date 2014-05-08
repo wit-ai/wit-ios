@@ -9,8 +9,9 @@
 #import "WitPrivate.h"
 #import "WITUploader.h"
 #import "WITState.h"
+#import "util.h"
 
-static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
+static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech?v=20140508";
 
 @implementation WITUploader {
     NSOutputStream *outStream;
@@ -24,7 +25,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
 }
 
 #pragma mark - Stream networking
--(BOOL)startRequestWithContext:(NSString *)context {
+-(BOOL)startRequestWithContext:(NSDictionary *)context {
     requestEnding = NO;
     NSString* token = [[WITState sharedInstance] accessToken];
 
@@ -42,26 +43,24 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     [outStream setDelegate:self];
     [outStream scheduleInRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
     [outStream open];
-    
-    // Building HTTP Request
 
-    NSMutableURLRequest *req;
-    
+    NSString* urlString;
+
+    // build HTTP Request
+    // if context, add to URL
     if (context != nil) {
-        NSDictionary *stateDictionary = @{@"state": context};
-        NSString *encoded = [self prepareURLEncodedContextDataFromContextDictionary:stateDictionary];
-        
-        // After URL encoding, we just include the state data in the context field when making the HTTP request
-        
-        NSString *stringWithContext = [NSString stringWithFormat:@"%@?context=%@", kWitSpeechURL, encoded];
-        req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:stringWithContext]];
+        NSError* serializationError;
+        NSData *data = [NSJSONSerialization dataWithJSONObject:context
+                                                       options:0
+                                                         error:&serializationError];
+        NSString *encoded = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        encoded = urlencodeString(encoded);
+        urlString = [NSString stringWithFormat:@"%@&context=%@", kWitSpeechURL, encoded];
     } else {
-        
-        // But if the user never specified a context, we'll just proceed as normal
-        
-        req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:kWitSpeechURL]];
+        urlString = kWitSpeechURL;
     }
-    
+
+    NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [req setHTTPMethod:@"POST"];
     [req setCachePolicy:NSURLCacheStorageNotAllowed];
     [req setTimeoutInterval:15.0];
@@ -70,19 +69,23 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     [req setValue:@"wit/ios" forHTTPHeaderField:@"Content-type"];
     [req setValue:@"chunked" forHTTPHeaderField:@"Transfer-encoding"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
+    debug(@"HTTP %@ %@", req.HTTPMethod, urlString);
 
     // send HTTP request
     [NSURLConnection sendAsynchronousRequest:req
                                        queue:[NSOperationQueue mainQueue]
                            completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               
                                if (WIT_DEBUG) {
+                                   NSHTTPURLResponse* httpResp = (NSHTTPURLResponse*)response;
                                    NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
-                                   NSLog(@"Wit response (%f s) %@",
-                                         t, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
+                                   NSLog(@"Wit response %d (%f s) %@",
+                                         [httpResp statusCode],
+                                         t,
+                                         [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                                }
 
                                if (connectionError) {
+                                   debug(@"Got connection error: %@", connectionError.localizedDescription);
                                    [self.delegate gotResponse:nil error:connectionError];
                                    return;
                                }
@@ -97,6 +100,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
                                }
 
                                if (object[@"error"]) {
+                                   debug(@"Wit error: %@", object[@"error"]);
                                    NSDictionary *infos = @{NSLocalizedDescriptionKey: object[@"error"],
                                                            kWitKeyError: object[@"code"]};
                                    [self.delegate gotResponse:nil
@@ -120,7 +124,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
             debug(@"Uploading %u bytes", (unsigned int)[chunk length]);
             [outStream write:[chunk bytes] maxLength:[chunk length]];
             [q setSuspended:YES];
-            if (requestEnding && q.operationCount < 2) {
+            if (requestEnding && q.operationCount <= 1) {
                 [self cleanUp];
             }
         }
@@ -143,7 +147,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
 -(void)endRequest {
     debug(@"Ending request");
     requestEnding = YES;
-    if (q.operationCount < 1) {
+    if (q.operationCount <= 0) {
         [self cleanUp];
     }
 }
@@ -207,17 +211,6 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech";
     if (q) {
         [q cancelAllOperations];
     }
-}
-
-#pragma mark - Helper Methods
-
-// Private method to prepare context data
-
-- (NSString *)prepareURLEncodedContextDataFromContextDictionary:(NSDictionary *)contextDictionary {
-    NSString *decoded = [NSString stringWithFormat:@"%@", contextDictionary];
-    NSString *encoded = [[[[decoded stringByReplacingOccurrencesOfString:@"=" withString:@":" ] stringByReplacingOccurrencesOfString:@";" withString:@""] stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet URLQueryAllowedCharacterSet]] stringByReplacingOccurrencesOfString:@"state" withString:@"%22state%22"];
-    
-    return encoded;
 }
 
 @end

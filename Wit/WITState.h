@@ -10,10 +10,11 @@
 #import "WITRecorder.h"
 
 @interface WITState : NSObject
-@property (nonatomic, strong) NSString* resourcePath;
-@property (nonatomic, strong) WITRecorder* recorder;
-@property (nonatomic, strong) WITUploader* uploader;
-@property (nonatomic, weak) NSString *accessToken;
+@property (strong) NSString* resourcePath;
+@property (strong) WITRecorder* recorder;
+@property (strong) WITUploader* uploader;
+@property (strong) NSString *accessToken;
+@property (strong) NSDictionary *context;
 
 +(WITState*)sharedInstance;
 +(NSString*)UUID;

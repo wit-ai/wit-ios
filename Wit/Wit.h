@@ -36,20 +36,9 @@
 - (void)toggleCaptureVoiceIntent:(id)sender;
 
 /**
- Pops a new view and records user voice, bearing in mind a context (state). The sender to which the modal will be presented (Can be null if no UI wanted)
- @param context The context (state) to submit to Wit in the API call.
- */
-- (void)toggleCaptureVoiceIntent:(id)sender withContext:(NSString *)context;
-
-/**
  Starts a new recording
  */
 - (void)start;
-
-/**
- Starts a new recording, bearing in mind the state/context of the message.
- */
-- (void)startWithContext:(NSString *)context;
 
 /**
  Stops the current recording if any
@@ -64,7 +53,18 @@
 /**
  Sends an NSString to wit.ai for interpretation
  */
-- (void) interpretString: (NSString *) string;
+- (void)interpretString:(NSString *)string;
+
+#pragma mark - Context management
+
+/**
+ Sets context from NSDictionary. Merge semantics!
+ */
+- (void)setContext:(NSDictionary*)dict;
+/**
+ Returns the current context
+ */
+- (NSDictionary*)getContext;
 @end
 
 /**
@@ -94,6 +94,6 @@
 /**
  Called if no selector is found for received intent
  */
-- (void) didNotFindIntentSelectorForIntent: (NSString *) intent entities: (NSDictionary *) entities body: (NSString *) body;
+- (void)didNotFindIntentSelectorForIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body;
 
 @end

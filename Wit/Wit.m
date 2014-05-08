@@ -7,6 +7,7 @@
 #import "WITState.h"
 #import "WITRecorder.h"
 #import "WITUploader.h"
+#import "util.h"
 
 @interface Wit () <WITRecorderDelegate, WITUploaderDelegate>
 @property (strong) WITState *state;
@@ -25,21 +26,8 @@
     }
 }
 
-- (void)toggleCaptureVoiceIntent:(id)sender withContext:(NSString *)context {
-    if ([self isRecording]) {
-        [self stop];
-    } else {
-        [self startWithContext:context];
-    }
-}
-
 - (void)start {
-    [state.uploader startRequestWithContext:nil];
-    [state.recorder start];
-}
-
-- (void)startWithContext:(NSString *)context {
-    [state.uploader startRequestWithContext:context];
+    [state.uploader startRequestWithContext:state.context];
     [state.recorder start];
 }
 
@@ -52,29 +40,9 @@
     return [self.state.recorder isRecording];
 }
 
-- (NSString *)urlencodeString: (NSString *) string {
-    NSMutableString *output = [NSMutableString string];
-    const unsigned char *source = (const unsigned char *)[string UTF8String];
-    long sourceLen = strlen((const char *)source);
-    for (int i = 0; i < sourceLen; ++i) {
-        const unsigned char thisChar = source[i];
-        if (thisChar == ' '){
-            [output appendString:@"+"];
-        } else if (thisChar == '.' || thisChar == '-' || thisChar == '_' || thisChar == '~' ||
-                   (thisChar >= 'a' && thisChar <= 'z') ||
-                   (thisChar >= 'A' && thisChar <= 'Z') ||
-                   (thisChar >= '0' && thisChar <= '9')) {
-            [output appendFormat:@"%c", thisChar];
-        } else {
-            [output appendFormat:@"%%%02X", thisChar];
-        }
-    }
-    return output;
-}
-
 - (void) interpretString: (NSString *) string {
     NSDate *start = [NSDate date];
-    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.wit.ai/message?q=%@", [self urlencodeString:string]]]];
+    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.wit.ai/message?q=%@", urlencodeString(string)]]];
     [req setCachePolicy:NSURLCacheStorageNotAllowed];
     [req setTimeoutInterval:15.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
@@ -114,6 +82,24 @@
                                
                                [self gotResponse:object error:nil];
                            }];
+}
+
+#pragma mark - Context management
+-(void)setContext:(NSDictionary *)dict {
+    NSMutableDictionary* newContext = [state.context mutableCopy];
+    if (!newContext) {
+        newContext = [@{} mutableCopy];
+    }
+
+    [dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
+        newContext[key] = obj;
+    }];
+
+    state.context = newContext;
+}
+
+-(NSDictionary*)getContext {
+    return state.context;
 }
 
 #pragma mark - WITRecorderDelegate
