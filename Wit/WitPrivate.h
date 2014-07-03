@@ -11,6 +11,8 @@
 
 #import "Wit.h"
 
+static __unused NSString* const kWitAPIVersion = @"20140508";
+
 static __unused NSString* const kWitNotificationAudioStart = @"WITRecordingStarted";
 static __unused NSString* const kWitNotificationAudioEnd = @"WITRecordingStopped";
 

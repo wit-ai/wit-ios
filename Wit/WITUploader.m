@@ -11,12 +11,13 @@
 #import "WITState.h"
 #import "util.h"
 
-static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech?v=20140508";
 
 @implementation WITUploader {
+    NSString* kWitSpeechURL;
     NSOutputStream *outStream;
     NSInputStream *inStream;
     NSDate *start; // used to time requests
+    
 
     // queue used to send audio chunks in HTTP body
     // will be suspended / resumed according to stream availability
@@ -196,6 +197,7 @@ static NSString* const kWitSpeechURL = @"https://api.wit.ai/speech?v=20140508";
     if (self) {
         q = [[NSOperationQueue alloc] init];
         [q setMaxConcurrentOperationCount:1];
+        kWitSpeechURL = [NSString stringWithFormat: @"https://api.wit.ai/speech?v=%@", kWitAPIVersion];
     }
     return self;
 }
