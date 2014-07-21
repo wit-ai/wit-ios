@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
                    DESC
   s.homepage     = "https://github.com/wit-ai/wit-ios-sdk"
   s.author       = { "Willy Blandin" => "willy@wit.ai" }
-  s.source       = { :git => "https://github.com/wit-ai/wit-ios-sdk.git", :tag => "1.2.1" }
+  s.source       = { :git => "https://github.com/wit-ai/wit-ios-sdk.git", :tag => "1.2.2" }
 
   s.platform = :ios, '6.0'
   s.ios.deployment_target = "6.0"
