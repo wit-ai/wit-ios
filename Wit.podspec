@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Wit"
-  s.version      = "1.2.1"
+  s.version      = "1.2.2"
   s.summary      = "Wit.AI Official SDK"
   s.description  = <<-DESC
                      Official Wit SDK, https://wit.ai/docs/ios-tutorial/

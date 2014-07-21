@@ -11,19 +11,21 @@
 #import "WITState.h"
 #import "util.h"
 
+@interface WITUploader ()
+@property (atomic) BOOL requestEnding;
+
+// queue used to send audio chunks in HTTP body
+// will be suspended / resumed according to stream availability
+@property (atomic) NSOperationQueue* q;
+@end
 
 @implementation WITUploader {
     NSString* kWitSpeechURL;
     NSOutputStream *outStream;
     NSInputStream *inStream;
     NSDate *start; // used to time requests
-    
-
-    // queue used to send audio chunks in HTTP body
-    // will be suspended / resumed according to stream availability
-    NSOperationQueue* q;
-    BOOL requestEnding;
 }
+@synthesize requestEnding, q;
 
 #pragma mark - Stream networking
 -(BOOL)startRequestWithContext:(NSDictionary *)context {
@@ -117,28 +119,33 @@
     return YES;
 }
 -(void)sendChunk:(NSData*)chunk {
-    if (outStream.hasSpaceAvailable && q.isSuspended) {
-        [q setSuspended:NO];
-    }
+    debug(@"Adding operation %u bytes", (unsigned int)[chunk length]);
     [q addOperationWithBlock:^{
         if (outStream) {
+            [q setSuspended:YES];
+
             debug(@"Uploading %u bytes", (unsigned int)[chunk length]);
             [outStream write:[chunk bytes] maxLength:[chunk length]];
-            [q setSuspended:YES];
-            if (requestEnding && q.operationCount <= 1) {
-                [self cleanUp];
-            }
+        }
+
+        NSUInteger cnt = q.operationCount;
+        debug(@"Operation count: %d", cnt);
+        if (requestEnding && cnt <= 1) {
+            [self cleanUp];
         }
     }];
 }
 
 - (void) cleanUp {
+    debug(@"Cleaning up");
     if (outStream) {
-        start = [NSDate date];
+        debug(@"Cleaning up output stream");
         [outStream close];
         [outStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
         outStream = nil;
         inStream = nil;
+
+        start = [NSDate date];
     }
 
     [q cancelAllOperations];
@@ -156,9 +163,6 @@
 #pragma mark - NSStreamDelegate
 -(void)stream:(NSStream *)s handleEvent:(NSStreamEvent)eventCode {
     switch (eventCode) {
-        case NSStreamEventErrorOccurred:
-            debug(@"Stream error occured");
-            break;
         case NSStreamEventOpenCompleted:
             debug(@"Stream open completed");
             break;
@@ -173,8 +177,13 @@
                 }
             }
             break;
+        case NSStreamEventErrorOccurred:
+            debug(@"Stream error occurred");
+            [self cleanUp];
+            break;
         case NSStreamEventEndEncountered:
             debug(@"Stream end encountered");
+            [self cleanUp];
             break;
         case NSStreamEventNone:
             debug(@"Stream event none");
