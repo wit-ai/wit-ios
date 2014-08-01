@@ -24,6 +24,7 @@
     NSOutputStream *outStream;
     NSInputStream *inStream;
     NSDate *start; // used to time requests
+    NSURLConnection *currentConnection;
 }
 @synthesize requestEnding, q;
 
@@ -75,47 +76,10 @@
     debug(@"HTTP %@ %@", req.HTTPMethod, urlString);
 
     // send HTTP request
-    [NSURLConnection sendAsynchronousRequest:req
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               if (WIT_DEBUG) {
-                                   NSHTTPURLResponse* httpResp = (NSHTTPURLResponse*)response;
-                                   NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
-                                   NSLog(@"Wit response %d (%f s) %@",
-                                         [httpResp statusCode],
-                                         t,
-                                         [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
-                               }
-
-                               if (connectionError) {
-                                   debug(@"Got connection error: %@", connectionError.localizedDescription);
-                                   [self.delegate gotResponse:nil error:connectionError];
-                                   return;
-                               }
-
-                               NSError *serializationError;
-                               NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data
-                                                                                      options:0
-                                                                                        error:&serializationError];
-                               if (serializationError) {
-                                   [self.delegate gotResponse:nil error:serializationError];
-                                   return;
-                               }
-
-                               if (object[@"error"]) {
-                                   debug(@"Wit error: %@", object[@"error"]);
-                                   NSDictionary *infos = @{NSLocalizedDescriptionKey: object[@"error"],
-                                                           kWitKeyError: object[@"code"]};
-                                   [self.delegate gotResponse:nil
-                                                        error:[NSError errorWithDomain:@"WitProcessing"
-                                                                                  code:1
-                                                                              userInfo:infos]];
-                                   return;
-                               }
-
-                               [self.delegate gotResponse:object error:nil];
-                           }];
-
+    currentConnection = [NSURLConnection connectionWithRequest:req delegate:self];
+    
+    [currentConnection start];
+    
     return YES;
 }
 -(void)sendChunk:(NSData*)chunk {
@@ -158,6 +122,41 @@
     if (q.operationCount <= 0) {
         [self cleanUp];
     }
+}
+
+#pragma mark - NSURLConnectionDataDelegate methods
+
+- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
+    
+    NSError *serializationError;
+    NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data
+                                                           options:0
+                                                             error:&serializationError];
+    if (serializationError) {
+        [self.delegate gotResponse:nil error:serializationError];
+        return;
+    }
+    
+    if (object[@"error"]) {
+        debug(@"Wit error: %@", object[@"error"]);
+        NSDictionary *infos = @{NSLocalizedDescriptionKey: object[@"error"],
+                                kWitKeyError: object[@"code"]};
+        [self.delegate gotResponse:nil
+                             error:[NSError errorWithDomain:@"WitProcessing"
+                                                       code:1
+                                                   userInfo:infos]];
+        return;
+    }
+    
+    [self.delegate gotResponse:object error:nil];
+}
+
+#pragma mark - NSURLConnectionDelegate methods
+
+- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
+    
+    debug(@"Got connection error: %@", connectionError.localizedDescription);
+    [self.delegate gotResponse:nil error:error];
 }
 
 #pragma mark - NSStreamDelegate

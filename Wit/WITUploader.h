@@ -20,6 +20,7 @@
 -(BOOL)startRequestWithContext:(NSDictionary *)context;
 -(void)sendChunk:(NSData*)chunk;
 -(void)endRequest;
+-(void)cancelRequest;
 @end
 
 @protocol WITUploaderDelegate <NSObject>
