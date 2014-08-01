@@ -46,6 +46,11 @@
 - (void)stop;
 
 /**
+ Cancels the current recording if any
+ */
+- (void)cancel;
+
+/**
  YES if Wit is recording audio
  */
 - (BOOL)isRecording;

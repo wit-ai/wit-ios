@@ -36,6 +36,11 @@
     [state.uploader endRequest];
 }
 
+- (void)cancel {
+    [state.recorder stop];
+    [state.uploader cancelRequest];
+}
+
 - (BOOL)isRecording {
     return [self.state.recorder isRecording];
 }
