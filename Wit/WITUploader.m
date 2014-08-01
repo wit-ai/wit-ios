@@ -124,6 +124,13 @@
     }
 }
 
+-(void)cancelRequest {
+    
+    debug(@"Cancelling request");
+    [self cleanUp];
+    [currentConnection cancel];
+}
+
 #pragma mark - NSURLConnectionDataDelegate methods
 
 - (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
