@@ -93,7 +93,13 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     if (err) {
         NSLog(@"[Wit] ERROR: could not pause audio queue (%d)", err);
     }
-    [[AVAudioSession sharedInstance] setActive:NO error:nil];
+    
+    err = AudioQueueStop(self.state->queue, true);
+    if (err) {
+        NSLog(@"[Wit] ERROR: could not stop audio queue (%d)", err);
+    }
+    
+    
     self.state->recording = NO;
 
     [_powerTimer invalidate];
@@ -133,11 +139,13 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 - (void)initialize {
     // init recorder
 
-
     // create audio session
     AVAudioSession* session = [AVAudioSession sharedInstance];
     [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    [session overrideOutputAudioPort:[self isHeadsetPluggedIn]? AVAudioSessionPortOverrideNone : AVAudioSessionPortOverrideSpeaker error:nil];
+    
     [session setActive:YES error: nil];
+    
     if([[AVAudioSession sharedInstance] respondsToSelector:@selector(requestRecordPermission:)])
     {
         [session requestRecordPermission:^(BOOL granted) {
@@ -203,4 +211,14 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     free(self.state);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
+
+- (BOOL)isHeadsetPluggedIn {
+    AVAudioSessionRouteDescription* route = [[AVAudioSession sharedInstance] currentRoute];
+    for (AVAudioSessionPortDescription* desc in [route outputs]) {
+        if ([[desc portType] isEqualToString:AVAudioSessionPortHeadphones])
+            return YES;
+    }
+    return NO;
+}
+
 @end
