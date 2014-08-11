@@ -8,6 +8,7 @@
 
 #import "WITRecorder.h"
 #import "WitPrivate.h"
+#import "WITVad.h"
 #import <AudioToolbox/AudioToolbox.h>
 
 #define kNumberRecordBuffers 5
@@ -22,11 +23,15 @@ typedef struct RecorderState RecorderState;
 
 @interface WITRecorder ()
 @property (nonatomic, assign) RecorderState *state;
+@property (atomic) WITVad *vad;
+
 @end
 
 @implementation WITRecorder {
     CADisplayLink* displayLink;
 }
+
+@synthesize vad;
 
 #pragma mark - AudioQueue callbacks
 static void audioQueueInputCallback(void* data,
@@ -37,6 +42,7 @@ static void audioQueueInputCallback(void* data,
                                     const AudioStreamPacketDescription *packetDescs) {
     void * const bytes = buffer->mAudioData;
     UInt32 size        = buffer->mAudioDataByteSize;
+    int err;
 
     if (WIT_DEBUG) {
         debug(@"Audio chunk %u/%u", (unsigned int)size, (unsigned int)buffer->mAudioDataBytesCapacity);
@@ -46,9 +52,13 @@ static void audioQueueInputCallback(void* data,
         WITRecorder* recorder = (__bridge WITRecorder*)data;
         NSData* audio = [NSData dataWithBytes:bytes length:size];
         [recorder.delegate recorderGotChunk:audio];
-    }
+        [recorder.vad gotAudioSamples:audio];
 
-    AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
+    }
+    err = AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
+    if (err) {
+        debug(@"Error when enqueuing buffer from callback: %d", err);
+    }
 }
 
 static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePropertyID propertyID) {
@@ -61,6 +71,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     int err;
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     self.state->recording = YES;
+    [self setVad: [[WITVad alloc] init]];
 
     for (int i = 0; i < kNumberRecordBuffers; i++) {
         err = AudioQueueEnqueueBuffer(self.state->queue, self.state->buffers[i], 0, NULL);
@@ -96,6 +107,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 
     [displayLink setPaused:YES];
     self.power = -999;
+    self.vad = nil;
     [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioEnd object:nil];
 
     return YES;

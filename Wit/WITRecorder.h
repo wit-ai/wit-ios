@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import "WITVad.h"
 
 @protocol WITRecorderDelegate;
 
