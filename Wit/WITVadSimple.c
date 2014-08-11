@@ -79,14 +79,14 @@ int wvs_still_talking(wvs_state *state, short int *samples, int nb_samples)
             state->avg_activity_started = state->total_avg;
         } else if (state->activity_started == 1) {
             distance = (fabs(state->avg_activity_started - state->last_nth_avg));
-            if (distance < 4) {
-                return 1;
+            if (distance < (state->distance_th / 2)) {
+                return 0;
             }
         }
     }
     free(dbfss);
 
-    return 0;
+    return (state->activity_started ? 1 : -1);
 }
 
 
