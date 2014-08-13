@@ -233,6 +233,7 @@
     [self observeNotifications];
     self.state.recorder.delegate = self;
     self.state.uploader.delegate = self;
+    self.detectSpeechStop = NO;
 }
 - (id)init {
     self = [super init];

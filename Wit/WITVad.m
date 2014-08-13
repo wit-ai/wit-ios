@@ -24,6 +24,7 @@
 }
 
 -(id) init {
+    NSLog(@"WITVad init");
     self = [super init];
     self->vad_state = wvs_init(8.0, 16000);
     
@@ -31,6 +32,7 @@
 }
 
 -(void) dealloc {
+    NSLog(@"WITVad clean");
     wvs_clean(self->vad_state);
 }
 

@@ -8,7 +8,6 @@
 
 #import "WITRecorder.h"
 #import "WitPrivate.h"
-#import "WITVad.h"
 #import <AudioToolbox/AudioToolbox.h>
 
 #define kNumberRecordBuffers 5
@@ -53,12 +52,14 @@ static void audioQueueInputCallback(void* data,
         NSData* audio = [NSData dataWithBytes:bytes length:size];
         [recorder.delegate recorderGotChunk:audio];
         @autoreleasepool {
-            [recorder.vad gotAudioSamples:audio];
+            if ([Wit sharedInstance].detectSpeechStop == YES) {
+                [recorder.vad gotAudioSamples:audio];
+            }
         }
     }
     err = AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
     if (err) {
-        debug(@"Error when enqueuing buffer from callback: %d", err);
+        NSLog(@"Error when enqueuing buffer from callback: %d", err);
     }
 }
 
@@ -68,22 +69,29 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 }
 
 #pragma mark - Recording
+/**
+ * The functions start/stop must be called on the same thread because of the AudioQueue library
+ * internal behavior.
+ * The thread used as of today is the main thread.
+ */
 - (BOOL) start {
     int err;
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     self.state->recording = YES;
-    [self setVad: [[WITVad alloc] init]];
-
+    if ([Wit sharedInstance].detectSpeechStop == YES) {
+        self.vad = [[WITVad alloc] init];
+    }
+    
     for (int i = 0; i < kNumberRecordBuffers; i++) {
         err = AudioQueueEnqueueBuffer(self.state->queue, self.state->buffers[i], 0, NULL);
         if (err) {
-            debug(@"error while enqueuing buffer %d", err);
+            NSLog(@"error while enqueuing buffer %d", err);
         }
     }
 
     err = AudioQueueStart(self.state->queue, NULL);
     if (err) {
-        debug(@"ERROR while starting audio queue: %d", err);
+        NSLog(@"ERROR while starting audio queue: %d", err);
         return NO;
     }
 
@@ -93,6 +101,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     return YES;
 }
 
+
+/**
+ * The functions start/stop must be called on the same thread because of the AudioQueue library
+ * internal behavior.
+ * The thread used as of today is the main thread.
+ */
 - (BOOL)stop {
     int err;
     err = AudioQueueReset(self.state->queue);
@@ -108,7 +122,9 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 
     [displayLink setPaused:YES];
     self.power = -999;
-    self.vad = nil;
+    if ([Wit sharedInstance].detectSpeechStop == YES) {
+        self.vad = nil;
+    }
     [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioEnd object:nil];
 
     return YES;

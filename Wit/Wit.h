@@ -26,6 +26,11 @@
 @property (strong) NSString* accessToken;
 
 /**
+ Enable / Disable voice activity detection
+ */
+@property BOOL detectSpeechStop;
+
+/**
  Singleton instance accessor
  */
 + (Wit*)sharedInstance;

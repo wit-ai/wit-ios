@@ -42,6 +42,7 @@ int wvs_still_talking(wvs_state *state, short int *samples, int nb_samples)
         if (state->current_nb_samples == state->samples_per_frame) {
             result = wvs_check(state, state->samples, state->current_nb_samples);
             if (result == 0) {
+                free(dbfss);
                 return 0;
             }
             state->current_nb_samples = 0;
@@ -49,6 +50,7 @@ int wvs_still_talking(wvs_state *state, short int *samples, int nb_samples)
         state->samples[state->current_nb_samples] = db;
         state->current_nb_samples++;
     }
+    free(dbfss);
     
     return 1;
 }
@@ -108,6 +110,8 @@ wvs_state *wvs_init(double threshold, int sample_rate)
 
 void wvs_clean(wvs_state *state)
 {
+    free(state->samples);
+    free(state->previous_state);
     free(state);
 }
 
