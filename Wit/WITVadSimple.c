@@ -18,100 +18,96 @@
  */
 static double * wvs_pcm16short2dbfs(short int *samples, int size);
 
-/**
- * compute_avg - compute the average based on an initial average and a new value
- *  @avg: initial average
- *  @n: number of item(s) used to compute avg
- *  @new_value: the new value used to compute the new average
- *
- * Return the new average
- */
-static double compute_avg(double avg, int n, double new_value);
-
-/**
- * compute_avg_minus - compute the new average based on an original average,
- * a new value and a value to substract
- *  @avg: original average
- *  @n: number of item(s) used to compute avg
- *  @new_value: the new value to add to the avg
- *  @minus: the value to substract
- *
- * Return the new average
- */
-static double compute_avg_minus(double avg, int n, double new_value, double minus);
-
-/**
- * stack_push_double - push data into a size limited queue
- *  @memory: the queue
- *  @length: maximum number of element into the queue
- *  @value: the element to push at the beginning of the queue
- */
-static void stack_push_double(double *memory, int length, double value);
+static double frames_detector_esf_energy(double *samples, int nb_samples);
+static void detector_esf_minimum(wvs_state *state, double energy, int n);
+static int detector_esf_check_frame(wvs_state *state, double energy);
+static void memory_push(int *memory, int length, int value);
+static int frame_memory_lte(int *memory, int value, int nb);
+static int frame_memory_gte(int *memory, int value, int nb);
+static int wvs_check(wvs_state *state, double *samples, int nb_samples);
 
 
 int wvs_still_talking(wvs_state *state, short int *samples, int nb_samples)
 {
     double *dbfss;
-    double minus;
-    double distance;
-    double dbfs;
+    double db;
+    int result;
     
     dbfss = wvs_pcm16short2dbfs(samples, nb_samples);
     for (int i_sample = 0; i_sample < nb_samples; i_sample++) {
-        dbfs = dbfss[i_sample];
-        if (isinf(dbfs)) {
+        db = dbfss[i_sample];
+        if (isinf(db)) {
             continue;
         }
-        dbfs = fabs(dbfs);
-        state->total_avg = compute_avg(state->total_avg, state->total_avg_n, dbfs);
-        state->total_avg_n++;
-        if (state->last_nth_avg_n == state->min_samples) {
-            minus = state->last_n_values[state->min_samples - 1];
-            state->last_nth_avg = compute_avg_minus(state->last_nth_avg, state->last_nth_avg_n, dbfs, minus);
-        } else {
-            state->last_nth_avg = compute_avg(state->last_nth_avg, state->last_nth_avg_n, dbfs);
-            state->last_nth_avg_n++;
-        }
-        stack_push_double(state->last_n_values, state->min_samples, dbfs);
-        if (state->activity_started == 0) {
-            distance = fabs(state->total_avg - state->last_nth_avg);
-            state->activity_started = (distance > state->distance_th) ? 1 : 0;
-            state->avg_activity_started = state->total_avg;
-        } else if (state->activity_started == 1) {
-            distance = (fabs(state->avg_activity_started - state->last_nth_avg));
-            if (distance < (state->distance_th / 2)) {
+        if (state->current_nb_samples == state->samples_per_frame) {
+            result = wvs_check(state, state->samples, state->current_nb_samples);
+            if (result == 0) {
                 return 0;
             }
+            state->current_nb_samples = 0;
         }
+        state->samples[state->current_nb_samples] = db;
+        state->current_nb_samples++;
     }
-    free(dbfss);
+    
+    return 1;
+}
 
-    return (state->activity_started ? 1 : -1);
+static int wvs_check(wvs_state *state, double *samples, int nb_samples)
+{
+    int counter;
+    double energy;
+    int action;
+    
+    action = -1;
+    energy = frames_detector_esf_energy(samples, nb_samples);
+    
+    if (state->sequence <= state->init_frames) {
+        detector_esf_minimum(state, energy, state->sequence);
+    }
+    counter = detector_esf_check_frame(state, energy);
+    memory_push(state->previous_state, state->previous_state_maxlen, counter);
+    if (state->sequence < state->init_frames) {
+        state->sequence++;
+        return -1;
+    }
+    if (state->talking == 0 && frame_memory_gte(state->previous_state, 1, 10)) {
+        state->talking = 1;
+            action = 1;
+        }
+        else if (state->talking == 1 && frame_memory_lte(state->previous_state, 0, state->previous_state_maxlen)) {
+            state->talking = 0;
+            action = 0;
+        }
+    state->sequence++;
+    
+    return action;
 }
 
 
-wvs_state *wvs_init(double threshold, int min_samples)
+wvs_state *wvs_init(double threshold, int sample_rate)
 {
     wvs_state *state;
     
-    state = malloc(sizeof(wvs_state));
-    state->distance_th = threshold;
-    state->min_samples = min_samples;
-    state->total_avg = 0;
-    state->total_avg_n = 0;
-    state->last_nth_avg = 0;
-    state->last_nth_avg_n = 0;
-    state->last_n_values = malloc(sizeof(* state->last_n_values) * min_samples);
-    state->activity_started = 0;
-    state->avg_activity_started = 0;
-    memset(state->last_n_values, 0, sizeof(state->last_n_values) * min_samples);
+    state = malloc(sizeof(*state));
+    state->sequence = 0;
+    state->min_initialized = 0;
+    state->init_frames = 30;
+    state->energy_threshold = 8.0;
+    state->previous_state_maxlen = 30;
+    state->previous_state = malloc(sizeof(*state->previous_state) * state->previous_state_maxlen);
+    state->talking = 0;
+    state->sample_rate = sample_rate;
+    state->samples_per_frame = state->sample_rate / 100;
+    state->samples = malloc(sizeof(*state->samples) * state->samples_per_frame);
+    state->current_nb_samples = 0;
+    state->min_energy = 0.0;
     
     return state;
 }
 
 void wvs_clean(wvs_state *state)
 {
-    free(state->last_n_values);
     free(state);
 }
 
@@ -125,37 +121,72 @@ static double * wvs_pcm16short2dbfs(short int *samples, int size)
     
     for (int i = 0; i < size; i++) {
         dbfss[i] = 0 - 20 * log10(fabs(samples[i] / max_ref));
-        dbfss[i] = fabs(dbfss[i]);
     }
     
     return dbfss;
 }
 
-static double compute_avg(double avg, int n, double new_value)
+static double frames_detector_esf_energy(double *samples, int nb_samples)
 {
-    double new_avg;
+    double energy = 0.0f;
+    int i;
     
-    new_avg = (avg * n) + new_value;
-    new_avg = new_avg / (n + 1);
+    for (i = 0; i < nb_samples; i++) {
+        energy += samples[i];
+    }
+    energy /= nb_samples;
     
-    return new_avg;
+    return energy;
 }
 
-static double compute_avg_minus(double avg, int n, double new_value, double minus)
+static void detector_esf_minimum(wvs_state *state, double energy, int n)
 {
-    double new_avg;
-    
-    new_avg = avg * n;
-    new_avg = (new_avg - minus + new_value) / n;
-    
-    return new_avg;
+    state->min_energy = (state->min_energy * n + energy) / (n + 1);
+    state->min_initialized = 1;
 }
 
-
-static void stack_push_double(double *memory, int length, double value)
+static int detector_esf_check_frame(wvs_state *state, double energy)
 {
-    while (--length > 0) {
+    int counter;
+    
+    counter = 0;
+    if (fabs(energy - state->min_energy) >= state->energy_threshold) {
+        counter++;
+    }
+    
+    return counter;
+}
+
+static void memory_push(int *memory, int length, int value)
+{
+    while (--length) {
         memory[length] = memory[length - 1];
     }
     memory[0] = value;
+}
+
+static int frame_memory_gte(int *memory, int value, int nb)
+{
+    int i = 0;
+    
+    for (i = 0; i < nb; i++) {
+        if (memory[i] < value) {
+            return 0;
+        }
+    }
+    
+    return 1;
+}
+
+static int frame_memory_lte(int *memory, int value, int nb)
+{
+    int i;
+    
+    for (i = 0; i < nb; i++) {
+        if (memory[i] > value) {
+            return 0;
+        }
+    }
+    
+    return 1;
 }
