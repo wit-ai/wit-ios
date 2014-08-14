@@ -61,9 +61,6 @@
     }
     
     self.resourcePath = [[self.class frameworkBundle] resourcePath];
-    self.recorder = [[WITRecorder alloc] init];
-    self.uploader = [WITUploader sharedInstance];
-
     [self readPlist];
     
     return self;

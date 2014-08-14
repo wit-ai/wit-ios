@@ -8,10 +8,15 @@
 
 #import "WITVad.h"
 #import "Wit.h"
+#import "WITUploader.h"
+#import "WITRecorder.h"
 
 @implementation WITVad {
     wvs_state *vad_state;
+
 }
+
+
 
 -(void) gotAudioSamples:(NSData *)samples {
     UInt32 size = [samples length];
@@ -20,6 +25,8 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [[Wit sharedInstance] stop];
         });
+        self.stoppedUsingVad = YES;
+        
     }
 }
 
@@ -27,6 +34,7 @@
     NSLog(@"WITVad init");
     self = [super init];
     self->vad_state = wvs_init(8.0, 16000);
+    self.stoppedUsingVad = NO;
     
     return self;
 }

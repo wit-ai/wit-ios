@@ -9,6 +9,7 @@
 #import "WITRecorder.h"
 #import "WitPrivate.h"
 #import <AudioToolbox/AudioToolbox.h>
+#import "WITState.h"
 
 #define kNumberRecordBuffers 5
 
@@ -48,10 +49,10 @@ static void audioQueueInputCallback(void* data,
     }
 
     if (size > 0) {
-        WITRecorder* recorder = (__bridge WITRecorder*)data;
         NSData* audio = [NSData dataWithBytes:bytes length:size];
-        [recorder.delegate recorderGotChunk:audio];
         @autoreleasepool {
+            WITRecorder* recorder = (__bridge WITRecorder*)data;
+            [recorder.delegate recorderGotChunk:audio];
             if ([Wit sharedInstance].detectSpeechStop == YES) {
                 [recorder.vad gotAudioSamples:audio];
             }
@@ -78,10 +79,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     int err;
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
     self.state->recording = YES;
-    if ([Wit sharedInstance].detectSpeechStop == YES) {
-        self.vad = [[WITVad alloc] init];
-    }
-    
+
     for (int i = 0; i < kNumberRecordBuffers; i++) {
         err = AudioQueueEnqueueBuffer(self.state->queue, self.state->buffers[i], 0, NULL);
         if (err) {
@@ -121,10 +119,8 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     self.state->recording = NO;
 
     [displayLink setPaused:YES];
+    [displayLink invalidate];
     self.power = -999;
-    if ([Wit sharedInstance].detectSpeechStop == YES) {
-        self.vad = nil;
-    }
     [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioEnd object:nil];
 
     return YES;
@@ -214,7 +210,15 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     state->fmt = fmt;
     state->recording = NO;
     self.state = state;
+    if ([Wit sharedInstance].detectSpeechStop == YES) {
+        self.vad = [[WITVad alloc] init];
+    }
 }
+
+-(BOOL)stoppedUsingVad {
+    return (self.vad && self.vad.stoppedUsingVad);
+}
+
 
 - (id)init {
     self = [super init];
@@ -230,5 +234,9 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     AudioQueueDispose(self.state->queue, YES);
     free(self.state);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    if ([Wit sharedInstance].detectSpeechStop == YES) {
+        self.vad = nil;
+    }
 }
+
 @end

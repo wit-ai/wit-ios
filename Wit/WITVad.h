@@ -11,7 +11,7 @@
 
 @interface WITVad : NSObject
 
+@property BOOL stoppedUsingVad;
 -(void) gotAudioSamples:(NSData *)samples;
-
 
 @end

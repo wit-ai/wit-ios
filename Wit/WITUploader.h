@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "WITRecorder.h"
 
 @protocol WITUploaderDelegate;
 
@@ -20,6 +21,8 @@
 -(BOOL)startRequestWithContext:(NSDictionary *)context;
 -(void)sendChunk:(NSData*)chunk;
 -(void)endRequest;
+-(void)stopWithMethod:(NSString *)method;
+-(void)attachRecorder:(WITRecorder *)recorder;
 @end
 
 @protocol WITUploaderDelegate <NSObject>

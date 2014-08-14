@@ -24,8 +24,9 @@
 
 /* Begin PBXBuildFile section */
 		039C23BC1992FD0200BEA5C8 /* WITVadSimple.c in Sources */ = {isa = PBXBuildFile; fileRef = 03F276C91992D17500B53E61 /* WITVadSimple.c */; };
-		039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */ = {isa = PBXBuildFile; fileRef = 039C23BF1992FE3B00BEA5C8 /* WITVad.h */; };
+		039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */ = {isa = PBXBuildFile; fileRef = 039C23BF1992FE3B00BEA5C8 /* WITVad.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		039C23C21992FE3B00BEA5C8 /* WITVad.m in Sources */ = {isa = PBXBuildFile; fileRef = 039C23C01992FE3B00BEA5C8 /* WITVad.m */; };
+		03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 03F276CD1992D1BC00B53E61 /* WITVadSimple.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B10D7A9175561F900973536 /* WITCircleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B10D7A7175561F900973536 /* WITCircleView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B10D7AA175561F900973536 /* WITCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B10D7A8175561F900973536 /* WITCircleView.m */; };
 		2B25FE451829A36800F698ED /* WitPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B25FE441829A25700F698ED /* WitPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -58,7 +59,7 @@
 		C50A7D43170A5386001C81BC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C50A7D40170A5355001C81BC /* MobileCoreServices.framework */; };
 		C50A7D44170A5386001C81BC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C50A7D3E170A52F6001C81BC /* SystemConfiguration.framework */; };
 		C50A7D47170A5BA0001C81BC /* Wit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B95D960115DD3D7400DBBABD /* Wit.bundle */; };
-		C50E65671709251C009F81E9 /* WITRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		C50E65671709251C009F81E9 /* WITRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C5EC36EC17094E9200E0916B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9E8526D15E77DD200EA8BC9 /* UIKit.framework */; };
 		C5EC36ED17094E9200E0916B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164715DD327500C025BD /* Foundation.framework */; };
 		C5EC36EE17094E9200E0916B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B8372B163A5C5100F9C914 /* CoreGraphics.framework */; };
@@ -326,6 +327,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9BA7F4216355AD500C95D37 /* Wit.h in Headers */,
+				03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */,
 				C50E65671709251C009F81E9 /* WITRecorder.h in Headers */,
 				B9A892B2163E7009005100F2 /* WITUploader.h in Headers */,
 				039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */,

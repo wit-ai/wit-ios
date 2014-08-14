@@ -18,7 +18,7 @@
 @synthesize delegate, state;
 
 #pragma mark - Public API
-- (void)toggleCaptureVoiceIntent:(id)sender {
+- (void)toggleCaptureVoiceIntent:(NSObject <WITRecorderDelegate>*)sender {
     if ([self isRecording]) {
         [self stop];
     } else {
@@ -27,13 +27,20 @@
 }
 
 - (void)start {
+    state.uploader = [[WITUploader alloc] init];
+    state.uploader.delegate = self;
     [state.uploader startRequestWithContext:state.context];
+    state.recorder = [[WITRecorder alloc] init];
+    state.recorder.delegate = self;
     [state.recorder start];
+    [state.uploader attachRecorder:state.recorder];
 }
 
 - (void)stop {
     [state.recorder stop];
     [state.uploader endRequest];
+    state.uploader = nil;
+    state.recorder = nil;
 }
 
 - (BOOL)isRecording {
@@ -231,8 +238,6 @@
 - (void)initialize {
     state = [WITState sharedInstance];
     [self observeNotifications];
-    self.state.recorder.delegate = self;
-    self.state.uploader.delegate = self;
     self.detectSpeechStop = NO;
 }
 - (id)init {
