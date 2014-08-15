@@ -16,6 +16,8 @@
 @protocol WITRecordingSessionDelegate <NSObject>
 -(void)recorderGotChunk:(NSData*)chunk;
 -(void)gotResponse:(NSDictionary*)resp error:(NSError*)err;
+@optional
+-(void)gotResponse:(NSDictionary*)resp error:(NSError*)err customData:(id)customData;
 @end
 
 @interface WITRecordingSession : NSObject <WITRecorderDelegate, WITUploaderDelegate>
@@ -24,6 +26,7 @@
 @property WITRecorder *recorder;
 @property WITUploader *uploader;
 @property NSObject <WITRecordingSessionDelegate> *delegate;
+@property id customData;
 
 
 

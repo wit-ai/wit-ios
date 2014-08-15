@@ -39,11 +39,13 @@
  Pops a new view and records user voice. The sender to which the modal will be presented (Can be null if no UI wanted)
  */
 - (void)toggleCaptureVoiceIntent:(id)sender;
+- (void)toggleCaptureVoiceIntent:(id)sender withCustomData:(id) customData;
 
 /**
  Starts a new recording
  */
-- (void)start:(id)sender;
+- (void)start;
+- (void)start:(id)sender customData:(id)customData;
 
 /**
  Stops the current recording if any

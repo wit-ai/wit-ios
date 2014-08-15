@@ -47,9 +47,12 @@
     return [self.recorder isRecording];
 }
 
-//Implementing the WITUploder protocol
 -(void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
-    [self.delegate gotResponse:resp error:err];
+    if ([self.delegate respondsToSelector:@selector(gotResponse:error:customData:)]) {
+        [self.delegate gotResponse:resp error:err customData:self.customData];
+    } else {
+        [self.delegate gotResponse:resp error:err];
+    }
     
     if (!err && resp[kWitKeyMsgId]) {
         [self trackVad:resp[kWitKeyMsgId]];
@@ -72,6 +75,7 @@
     self.recorder = nil;
     self.uploader = nil;
 }
+
 
 -(void)dealloc {
     NSLog(@"Clean WITRecordingSession");

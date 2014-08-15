@@ -21,15 +21,26 @@
 
 #pragma mark - Public API
 - (void)toggleCaptureVoiceIntent:(id)sender {
+    [self toggleCaptureVoiceIntent:sender withCustomData:nil];
+}
+
+- (void)toggleCaptureVoiceIntent:(id)sender withCustomData:(id) customData {
     if ([self isRecording]) {
         [self stop];
     } else {
-        [self start:sender];
+        [self start:sender customData:customData];
     }
 }
 
-- (void)start:(id)sender {
-    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender];
+- (void)start {
+    [self start:nil customData:nil];
+}
+
+
+- (void)start:(id)sender customData:(id)customData {
+    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context
+                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender];
+    self.recordingSession.customData = customData;
     self.recordingSession.delegate = self;
 }
 
@@ -129,6 +140,9 @@
         return;
     }
     [self processMessage:resp];
+}
+-(void)gotResponse:(NSDictionary *)resp error:(NSError *)err customData:(id)customData {
+    [self gotResponse:resp error:err];
 }
 
 #pragma mark - Response processing
