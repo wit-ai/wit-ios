@@ -272,12 +272,12 @@ static const CGFloat kMicMargin = 40.0f;
     return self;
 }
 
--(void)startListeningRecorder: (WITRecorder*) recorder {
+-(void)sessionDidStart:(WITRecorder *)recorder{
     [recorder addObserver:self forKeyPath:@"power" options:NSKeyValueObservingOptionNew
                                             context:nil];
 }
 
--(void)stopListeningRecorder:(WITRecorder*) recorder
+-(void)sessionDidEnd:(WITRecorder*) recorder
 {
     [recorder removeObserver:self forKeyPath:@"power"];
 }

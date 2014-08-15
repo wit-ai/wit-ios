@@ -17,12 +17,9 @@
 @interface WITUploader : NSObject  <NSStreamDelegate>
 @property (nonatomic, strong) id<WITUploaderDelegate> delegate;
 
-+(WITUploader*)sharedInstance;
 -(BOOL)startRequestWithContext:(NSDictionary *)context;
 -(void)sendChunk:(NSData*)chunk;
 -(void)endRequest;
--(void)stopWithMethod:(NSString *)method;
--(void)attachRecorder:(WITRecorder *)recorder;
 @end
 
 @protocol WITUploaderDelegate <NSObject>

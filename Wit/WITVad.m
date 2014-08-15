@@ -22,11 +22,10 @@
     UInt32 size = [samples length];
     short *bytes = (short*)[samples bytes];
     if (wvs_still_talking(self->vad_state, bytes, size / 2) == 0) {
+        self.stoppedUsingVad = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
             [[Wit sharedInstance] stop];
         });
-        self.stoppedUsingVad = YES;
-        
     }
 }
 
@@ -40,7 +39,7 @@
 }
 
 -(void) dealloc {
-    NSLog(@"WITVad clean");
+    NSLog(@"Clean WITVad");
     wvs_clean(self->vad_state);
 }
 

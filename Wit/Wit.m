@@ -8,9 +8,11 @@
 #import "WITRecorder.h"
 #import "WITUploader.h"
 #import "util.h"
+#import "WITRecordingSession.h"
 
-@interface Wit () <WITRecorderDelegate, WITUploaderDelegate>
+@interface Wit () <WITRecordingSessionDelegate>
 @property (strong) WITState *state;
+@property WITRecordingSession *recordingSession;
 @end
 
 @implementation Wit {
@@ -18,33 +20,26 @@
 @synthesize delegate, state;
 
 #pragma mark - Public API
-- (void)toggleCaptureVoiceIntent:(NSObject <WITRecorderDelegate>*)sender {
+- (void)toggleCaptureVoiceIntent:(id)sender {
     if ([self isRecording]) {
         [self stop];
     } else {
-        [self start];
+        [self start:sender];
     }
 }
 
-- (void)start {
-    state.uploader = [[WITUploader alloc] init];
-    state.uploader.delegate = self;
-    [state.uploader startRequestWithContext:state.context];
-    state.recorder = [[WITRecorder alloc] init];
-    state.recorder.delegate = self;
-    [state.recorder start];
-    [state.uploader attachRecorder:state.recorder];
+- (void)start:(id)sender {
+    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender];
+    self.recordingSession.delegate = self;
 }
 
-- (void)stop {
-    [state.recorder stop];
-    [state.uploader endRequest];
-    state.uploader = nil;
-    state.recorder = nil;
+- (void)stop{
+    [self.recordingSession stop];
+    self.recordingSession = nil;
 }
 
 - (BOOL)isRecording {
-    return [self.state.recorder isRecording];
+    return [self.recordingSession isRecording];
 }
 
 - (void) interpretString: (NSString *) string {
@@ -111,7 +106,7 @@
 
 #pragma mark - WITRecorderDelegate
 -(void)recorderGotChunk:(NSData*)chunk {
-    [state.uploader sendChunk:chunk];
+    [self.recordingSession.uploader sendChunk:chunk];
 }
 
 #pragma mark - NSNotificationCenter

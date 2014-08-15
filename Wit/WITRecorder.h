@@ -24,6 +24,7 @@
 -(BOOL)stop;
 -(BOOL)isRecording;
 -(BOOL)stoppedUsingVad;
+-(void)enabledVad;
 @end
 
 @protocol WITRecorderDelegate <NSObject>

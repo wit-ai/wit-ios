@@ -114,11 +114,7 @@
                                                                               userInfo:infos]];
                                    return;
                                }
-                               NSString *msgId = object[@"msg_id"];
                                [self.delegate gotResponse:object error:nil];
-                               if (msgId) {
-                                   [self trackVadUsage:msgId];
-                               }
                            }];
 
     return YES;
@@ -198,14 +194,6 @@
     }
 }
 
--(void)attachRecorder:(WITRecorder *)recorder {
-    self.recorder = recorder;
-}
-
--(void)trackVadUsage:(NSString *)msgId {
-    NSLog(@"tracking vad usage for msg: %@ : %hhd", msgId, [self.recorder stoppedUsingVad]);
-}
-
 -(id)init {
     self = [super init];
     if (self) {
@@ -217,6 +205,7 @@
     return self;
 }
 -(void)dealloc {
+        NSLog(@"Clean WITUploader");
     if (outStream) {
         [outStream close];
         outStream = nil;

@@ -53,7 +53,7 @@ static void audioQueueInputCallback(void* data,
         @autoreleasepool {
             WITRecorder* recorder = (__bridge WITRecorder*)data;
             [recorder.delegate recorderGotChunk:audio];
-            if ([Wit sharedInstance].detectSpeechStop == YES) {
+            if (recorder.vad != nil) {
                 [recorder.vad gotAudioSamples:audio];
             }
         }
@@ -210,15 +210,20 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     state->fmt = fmt;
     state->recording = NO;
     self.state = state;
-    if ([Wit sharedInstance].detectSpeechStop == YES) {
-        self.vad = [[WITVad alloc] init];
-    }
+    self.vad = nil;
 }
 
 -(BOOL)stoppedUsingVad {
+    NSLog(@"Rerturning did stop using vad: %hhd with WITVad instance: %@", self.vad.stoppedUsingVad, self.vad);
     return (self.vad && self.vad.stoppedUsingVad);
 }
 
+
+-(void)enabledVad {
+    if (self.vad == nil) {
+        self.vad = [[WITVad alloc] init];
+    }
+}
 
 - (id)init {
     self = [super init];
@@ -230,13 +235,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 }
 
 - (void)dealloc {
+    NSLog(@"Clean WITRecorder");
     [displayLink invalidate];
     AudioQueueDispose(self.state->queue, YES);
     free(self.state);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
-    if ([Wit sharedInstance].detectSpeechStop == YES) {
-        self.vad = nil;
-    }
+    self.vad = nil;
 }
 
 @end

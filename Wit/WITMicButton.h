@@ -11,13 +11,12 @@
 #import "WITCircleLayer.h"
 #import "WITCircleView.h"
 #import "WITRecorder.h"
+#import "WITSessionToggle.h"
 
-@interface WITMicButton : UIButton
+@interface WITMicButton : UIButton <WITSessionToggle>
 @property (strong, atomic) CALayer* volumeLayer;
 @property (strong, atomic) CALayer* microphoneLayer;
 @property (strong, atomic) WITCircleView* outerCircleView;
 @property (strong, atomic) WITCircleView* innerCircleView;
 
--(void)startListeningRecorder:(WITRecorder *)recorder;
--(void)stopListeningRecorder:(WITRecorder *)recorder;
 @end

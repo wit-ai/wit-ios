@@ -27,6 +27,11 @@
 		039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */ = {isa = PBXBuildFile; fileRef = 039C23BF1992FE3B00BEA5C8 /* WITVad.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		039C23C21992FE3B00BEA5C8 /* WITVad.m in Sources */ = {isa = PBXBuildFile; fileRef = 039C23C01992FE3B00BEA5C8 /* WITVad.m */; };
 		03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 03F276CD1992D1BC00B53E61 /* WITVadSimple.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		03BAFA27199D6BF600CC2752 /* WITRecordingSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BAFA25199D6BF600CC2752 /* WITRecordingSession.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		03BAFA28199D6BF600CC2752 /* WITRecordingSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BAFA26199D6BF600CC2752 /* WITRecordingSession.m */; };
+		03BAFA2A199D6C1800CC2752 /* WITSessionToggle.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BAFA29199D6C1800CC2752 /* WITSessionToggle.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		03BAFA2D199D85A600CC2752 /* WITVadTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BAFA2B199D85A600CC2752 /* WITVadTracker.h */; };
+		03BAFA2E199D85A600CC2752 /* WITVadTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BAFA2C199D85A600CC2752 /* WITVadTracker.m */; };
 		2B10D7A9175561F900973536 /* WITCircleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B10D7A7175561F900973536 /* WITCircleView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B10D7AA175561F900973536 /* WITCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B10D7A8175561F900973536 /* WITCircleView.m */; };
 		2B25FE451829A36800F698ED /* WitPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B25FE441829A25700F698ED /* WitPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -96,6 +101,11 @@
 /* Begin PBXFileReference section */
 		039C23BF1992FE3B00BEA5C8 /* WITVad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITVad.h; sourceTree = "<group>"; };
 		039C23C01992FE3B00BEA5C8 /* WITVad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITVad.m; sourceTree = "<group>"; };
+		03BAFA25199D6BF600CC2752 /* WITRecordingSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITRecordingSession.h; sourceTree = "<group>"; };
+		03BAFA26199D6BF600CC2752 /* WITRecordingSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITRecordingSession.m; sourceTree = "<group>"; };
+		03BAFA29199D6C1800CC2752 /* WITSessionToggle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITSessionToggle.h; sourceTree = "<group>"; };
+		03BAFA2B199D85A600CC2752 /* WITVadTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITVadTracker.h; sourceTree = "<group>"; };
+		03BAFA2C199D85A600CC2752 /* WITVadTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITVadTracker.m; sourceTree = "<group>"; };
 		03F276C91992D17500B53E61 /* WITVadSimple.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WITVadSimple.c; sourceTree = "<group>"; };
 		03F276CD1992D1BC00B53E61 /* WITVadSimple.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WITVadSimple.h; sourceTree = "<group>"; };
 		2B10D7A7175561F900973536 /* WITCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITCircleView.h; sourceTree = "<group>"; };
@@ -287,6 +297,11 @@
 				03F276C91992D17500B53E61 /* WITVadSimple.c */,
 				039C23BF1992FE3B00BEA5C8 /* WITVad.h */,
 				039C23C01992FE3B00BEA5C8 /* WITVad.m */,
+				03BAFA25199D6BF600CC2752 /* WITRecordingSession.h */,
+				03BAFA26199D6BF600CC2752 /* WITRecordingSession.m */,
+				03BAFA29199D6C1800CC2752 /* WITSessionToggle.h */,
+				03BAFA2B199D85A600CC2752 /* WITVadTracker.h */,
+				03BAFA2C199D85A600CC2752 /* WITVadTracker.m */,
 			);
 			path = Wit;
 			sourceTree = "<group>";
@@ -329,11 +344,14 @@
 				B9BA7F4216355AD500C95D37 /* Wit.h in Headers */,
 				03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */,
 				C50E65671709251C009F81E9 /* WITRecorder.h in Headers */,
+				03BAFA2A199D6C1800CC2752 /* WITSessionToggle.h in Headers */,
 				B9A892B2163E7009005100F2 /* WITUploader.h in Headers */,
 				039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */,
+				03BAFA2D199D85A600CC2752 /* WITVadTracker.h in Headers */,
 				2BB2248F17460BF400538704 /* WITMicButton.h in Headers */,
 				2B25FE451829A36800F698ED /* WitPrivate.h in Headers */,
 				B9A892B5163E7083005100F2 /* WITState.h in Headers */,
+				03BAFA27199D6BF600CC2752 /* WITRecordingSession.h in Headers */,
 				2BE5B2BD197832BA00B67304 /* util.h in Headers */,
 				2B2F81D1174C1BC4001A12BE /* WITCircleLayer.h in Headers */,
 				2B10D7A9175561F900973536 /* WITCircleView.h in Headers */,
@@ -521,6 +539,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				039C23BC1992FD0200BEA5C8 /* WITVadSimple.c in Sources */,
+				03BAFA2E199D85A600CC2752 /* WITVadTracker.m in Sources */,
+				03BAFA28199D6BF600CC2752 /* WITRecordingSession.m in Sources */,
 				B9E8526C15E76FDE00EA8BC9 /* WITRecorder.m in Sources */,
 				B95D958C15DD379A00DBBABD /* Wit.m in Sources */,
 				B95283E015F4459300F1D5E0 /* WITUploader.m in Sources */,

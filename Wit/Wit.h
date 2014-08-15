@@ -43,7 +43,7 @@
 /**
  Starts a new recording
  */
-- (void)start;
+- (void)start:(id)sender;
 
 /**
  Stops the current recording if any
