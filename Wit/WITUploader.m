@@ -17,6 +17,7 @@
 // queue used to send audio chunks in HTTP body
 // will be suspended / resumed according to stream availability
 @property (atomic) NSOperationQueue* q;
+@property (atomic) WITRecorder *recorder;
 @end
 
 @implementation WITUploader {
@@ -26,6 +27,7 @@
     NSDate *start; // used to time requests
 }
 @synthesize requestEnding, q;
+
 
 #pragma mark - Stream networking
 -(BOOL)startRequestWithContext:(NSDictionary *)context {
@@ -112,13 +114,13 @@
                                                                               userInfo:infos]];
                                    return;
                                }
-
                                [self.delegate gotResponse:object error:nil];
                            }];
 
     return YES;
 }
 -(void)sendChunk:(NSData*)chunk {
+    
     debug(@"Adding operation %u bytes", (unsigned int)[chunk length]);
     [q addOperationWithBlock:^{
         if (outStream) {
@@ -150,6 +152,7 @@
 
     [q cancelAllOperations];
     [q setSuspended:NO];
+    
 }
 
 -(void)endRequest {
@@ -191,26 +194,18 @@
     }
 }
 
-#pragma mark - Lifecycle
-+(WITUploader*)sharedInstance {
-    static WITUploader *instance;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        instance = [[WITUploader alloc] init];
-    });
-
-    return instance;
-}
 -(id)init {
     self = [super init];
     if (self) {
         q = [[NSOperationQueue alloc] init];
         [q setMaxConcurrentOperationCount:1];
-        kWitSpeechURL = [NSString stringWithFormat: @"https://api.wit.ai/speech?v=%@", kWitAPIVersion];
+        kWitSpeechURL = [NSString stringWithFormat: @"%@/speech?v=%@", kWitAPIUrl, kWitAPIVersion];
     }
+
     return self;
 }
 -(void)dealloc {
+        NSLog(@"Clean WITUploader");
     if (outStream) {
         [outStream close];
         outStream = nil;

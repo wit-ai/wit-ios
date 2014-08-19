@@ -8,9 +8,11 @@
 #import "WITRecorder.h"
 #import "WITUploader.h"
 #import "util.h"
+#import "WITRecordingSession.h"
 
-@interface Wit () <WITRecorderDelegate, WITUploaderDelegate>
+@interface Wit () <WITRecordingSessionDelegate>
 @property (strong) WITState *state;
+@property WITRecordingSession *recordingSession;
 @end
 
 @implementation Wit {
@@ -19,25 +21,36 @@
 
 #pragma mark - Public API
 - (void)toggleCaptureVoiceIntent:(id)sender {
+    [self toggleCaptureVoiceIntent:sender withCustomData:nil];
+}
+
+- (void)toggleCaptureVoiceIntent:(id)sender withCustomData:(id) customData {
     if ([self isRecording]) {
         [self stop];
     } else {
-        [self start];
+        [self start:sender customData:customData];
     }
 }
 
 - (void)start {
-    [state.uploader startRequestWithContext:state.context];
-    [state.recorder start];
+    [self start:nil customData:nil];
 }
 
-- (void)stop {
-    [state.recorder stop];
-    [state.uploader endRequest];
+
+- (void)start:(id)sender customData:(id)customData {
+    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context
+                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender withWitToken:[WITState sharedInstance].accessToken];
+    self.recordingSession.customData = customData;
+    self.recordingSession.delegate = self;
+}
+
+- (void)stop{
+    [self.recordingSession stop];
+    self.recordingSession = nil;
 }
 
 - (BOOL)isRecording {
-    return [self.state.recorder isRecording];
+    return [self.recordingSession isRecording];
 }
 
 - (void) interpretString: (NSString *) string {
@@ -104,7 +117,7 @@
 
 #pragma mark - WITRecorderDelegate
 -(void)recorderGotChunk:(NSData*)chunk {
-    [state.uploader sendChunk:chunk];
+    [self.recordingSession.uploader sendChunk:chunk];
 }
 
 #pragma mark - NSNotificationCenter
@@ -127,6 +140,9 @@
         return;
     }
     [self processMessage:resp];
+}
+-(void)gotResponse:(NSDictionary *)resp error:(NSError *)err customData:(id)customData {
+    [self gotResponse:resp error:err];
 }
 
 #pragma mark - Response processing
@@ -231,8 +247,7 @@
 - (void)initialize {
     state = [WITState sharedInstance];
     [self observeNotifications];
-    self.state.recorder.delegate = self;
-    self.state.uploader.delegate = self;
+    self.detectSpeechStop = NO;
 }
 - (id)init {
     self = [super init];

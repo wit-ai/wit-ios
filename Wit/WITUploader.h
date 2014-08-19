@@ -7,6 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
+#import "WITRecorder.h"
 
 @protocol WITUploaderDelegate;
 
@@ -16,7 +17,6 @@
 @interface WITUploader : NSObject  <NSStreamDelegate>
 @property (nonatomic, strong) id<WITUploaderDelegate> delegate;
 
-+(WITUploader*)sharedInstance;
 -(BOOL)startRequestWithContext:(NSDictionary *)context;
 -(void)sendChunk:(NSData*)chunk;
 -(void)endRequest;

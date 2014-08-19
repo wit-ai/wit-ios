@@ -24,6 +24,8 @@
     [self.view addSubview:witButton];
 
     [Wit sharedInstance].accessToken = @"xxx";
+    //enabling detectSpeechStop will automatically stop listening the microphone when the user stop talking
+    [Wit sharedInstance].detectSpeechStop = YES;
     [Wit sharedInstance].delegate = self;
 
     - (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body error:(NSError *)e {

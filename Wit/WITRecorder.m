@@ -9,6 +9,7 @@
 #import "WITRecorder.h"
 #import "WitPrivate.h"
 #import <AudioToolbox/AudioToolbox.h>
+#import "WITState.h"
 
 #define kNumberRecordBuffers 5
 
@@ -22,11 +23,15 @@ typedef struct RecorderState RecorderState;
 
 @interface WITRecorder ()
 @property (nonatomic, assign) RecorderState *state;
+@property (atomic) WITVad *vad;
+
 @end
 
 @implementation WITRecorder {
     CADisplayLink* displayLink;
 }
+
+@synthesize vad;
 
 #pragma mark - AudioQueue callbacks
 static void audioQueueInputCallback(void* data,
@@ -37,18 +42,26 @@ static void audioQueueInputCallback(void* data,
                                     const AudioStreamPacketDescription *packetDescs) {
     void * const bytes = buffer->mAudioData;
     UInt32 size        = buffer->mAudioDataByteSize;
+    int err;
 
     if (WIT_DEBUG) {
         debug(@"Audio chunk %u/%u", (unsigned int)size, (unsigned int)buffer->mAudioDataBytesCapacity);
     }
 
     if (size > 0) {
-        WITRecorder* recorder = (__bridge WITRecorder*)data;
         NSData* audio = [NSData dataWithBytes:bytes length:size];
-        [recorder.delegate recorderGotChunk:audio];
+        @autoreleasepool {
+            WITRecorder* recorder = (__bridge WITRecorder*)data;
+            [recorder.delegate recorderGotChunk:audio];
+            if (recorder.vad != nil) {
+                [recorder.vad gotAudioSamples:audio];
+            }
+        }
     }
-
-    AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
+    err = AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
+    if (err) {
+        NSLog(@"Error when enqueuing buffer from callback: %d", err);
+    }
 }
 
 static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePropertyID propertyID) {
@@ -57,6 +70,11 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 }
 
 #pragma mark - Recording
+/**
+ * The functions start/stop must be called on the same thread because of the AudioQueue library
+ * internal behavior.
+ * The thread used as of today is the main thread.
+ */
 - (BOOL) start {
     int err;
     [[AVAudioSession sharedInstance] setActive:YES error:nil];
@@ -65,13 +83,13 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     for (int i = 0; i < kNumberRecordBuffers; i++) {
         err = AudioQueueEnqueueBuffer(self.state->queue, self.state->buffers[i], 0, NULL);
         if (err) {
-            debug(@"error while enqueuing buffer %d", err);
+            NSLog(@"error while enqueuing buffer %d", err);
         }
     }
 
     err = AudioQueueStart(self.state->queue, NULL);
     if (err) {
-        debug(@"ERROR while starting audio queue: %d", err);
+        NSLog(@"ERROR while starting audio queue: %d", err);
         return NO;
     }
 
@@ -81,6 +99,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     return YES;
 }
 
+
+/**
+ * The functions start/stop must be called on the same thread because of the AudioQueue library
+ * internal behavior.
+ * The thread used as of today is the main thread.
+ */
 - (BOOL)stop {
     int err;
     err = AudioQueueReset(self.state->queue);
@@ -95,6 +119,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     self.state->recording = NO;
 
     [displayLink setPaused:YES];
+    [displayLink invalidate];
     self.power = -999;
     [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioEnd object:nil];
 
@@ -185,6 +210,19 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     state->fmt = fmt;
     state->recording = NO;
     self.state = state;
+    self.vad = nil;
+}
+
+-(BOOL)stoppedUsingVad {
+    NSLog(@"Rerturning did stop using vad: %hhd with WITVad instance: %@", self.vad.stoppedUsingVad, self.vad);
+    return (self.vad && self.vad.stoppedUsingVad);
+}
+
+
+-(void)enabledVad {
+    if (self.vad == nil) {
+        self.vad = [[WITVad alloc] init];
+    }
 }
 
 - (id)init {
@@ -197,9 +235,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 }
 
 - (void)dealloc {
+    NSLog(@"Clean WITRecorder");
     [displayLink invalidate];
     AudioQueueDispose(self.state->queue, YES);
     free(self.state);
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+    self.vad = nil;
 }
+
 @end

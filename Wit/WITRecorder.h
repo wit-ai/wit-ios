@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import "WITVad.h"
 
 @protocol WITRecorderDelegate;
 
@@ -22,6 +23,8 @@
 -(BOOL)start;
 -(BOOL)stop;
 -(BOOL)isRecording;
+-(BOOL)stoppedUsingVad;
+-(void)enabledVad;
 @end
 
 @protocol WITRecorderDelegate <NSObject>
