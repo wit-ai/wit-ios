@@ -10,7 +10,7 @@
 
 @interface WITVadTracker : NSObject <NSURLConnectionDelegate> 
 
--(void)track:(NSString *)status withMessageId:(NSString *)messageId;
+-(void)track:(NSString *)status withMessageId:(NSString *)messageId withToken:(NSString *)token;
 
 
 

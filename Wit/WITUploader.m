@@ -199,7 +199,7 @@
     if (self) {
         q = [[NSOperationQueue alloc] init];
         [q setMaxConcurrentOperationCount:1];
-        kWitSpeechURL = [NSString stringWithFormat: @"https://api.wit.ai/speech?v=%@", kWitAPIVersion];
+        kWitSpeechURL = [NSString stringWithFormat: @"%@/speech?v=%@", kWitAPIUrl, kWitAPIVersion];
     }
 
     return self;

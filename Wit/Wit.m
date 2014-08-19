@@ -39,7 +39,7 @@
 
 - (void)start:(id)sender customData:(id)customData {
     self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context
-                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender];
+                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender withWitToken:[WITState sharedInstance].accessToken];
     self.recordingSession.customData = customData;
     self.recordingSession.delegate = self;
 }

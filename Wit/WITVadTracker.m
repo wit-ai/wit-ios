@@ -6,31 +6,24 @@
 //  Copyright (c) 2014 Willy Blandin. All rights reserved.
 //
 
+#import "WitPrivate.h"
 #import "WITVadTracker.h"
 
 @interface WITVadTracker ()
 @property NSMutableData *_responseData;
 @end
 
-@implementation WITVadTracker
+@implementation WITVadTracker {
+    NSURLConnection *conn;
+}
 
--(void)track:(NSString *)status withMessageId:(NSString *)messageId {
-        // Create the request.
-    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:@"http://requestb.in/q1jfq1q1"]];
-    
-    // Specify that it will be a POST request
+-(void)track:(NSString *)status withMessageId:(NSString *)messageId withToken:(NSString *)token {
+    NSString *url = [[NSString alloc] initWithFormat:@"%@/speech/vad?message-id=%@", kWitAPIUrl, messageId];
+    NSLog(@"here is the final url %@ and the token: %@", url, token);
+    NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"PUT";
-    
-    // This is how we set header fields
-    [request setValue:@"application/xml; charset=utf-8" forHTTPHeaderField:@"Content-Type"];
-    
-    // Convert your data and set your request's HTTPBody property
-    NSString *stringData = messageId;
-    NSData *requestBodyData = [stringData dataUsingEncoding:NSUTF8StringEncoding];
-    request.HTTPBody = requestBodyData;
-    
-    // Create url connection and fire request
-    NSURLConnection *conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    [request setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
+    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {

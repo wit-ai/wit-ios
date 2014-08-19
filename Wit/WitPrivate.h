@@ -11,6 +11,7 @@
 
 #import "Wit.h"
 
+static __unused NSString* const kWitAPIUrl = @"https://api.wit.ai";
 static __unused NSString* const kWitAPIVersion = @"20140508";
 
 static __unused NSString* const kWitNotificationAudioStart = @"WITRecordingStarted";

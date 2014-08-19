@@ -27,10 +27,11 @@
 @property WITUploader *uploader;
 @property NSObject <WITRecordingSessionDelegate> *delegate;
 @property id customData;
+@property NSString *witToken;
 
 
 
--(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(BOOL)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter;
+-(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(BOOL)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken;
 -(void)stop;
 -(BOOL)isRecording;
 -(void)trackVad:(NSString *)messageId;
