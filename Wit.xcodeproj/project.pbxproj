@@ -23,9 +23,9 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		039C23BC1992FD0200BEA5C8 /* WITVadSimple.c in Sources */ = {isa = PBXBuildFile; fileRef = 03F276C91992D17500B53E61 /* WITVadSimple.c */; };
 		039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */ = {isa = PBXBuildFile; fileRef = 039C23BF1992FE3B00BEA5C8 /* WITVad.h */; };
 		039C23C21992FE3B00BEA5C8 /* WITVad.m in Sources */ = {isa = PBXBuildFile; fileRef = 039C23C01992FE3B00BEA5C8 /* WITVad.m */; };
+		03A57A8719A3C62200149BAD /* WITVadSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A57A8619A3C62200149BAD /* WITVadSimple.m */; };
 		03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 03F276CD1992D1BC00B53E61 /* WITVadSimple.h */; };
 		03BAFA27199D6BF600CC2752 /* WITRecordingSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BAFA25199D6BF600CC2752 /* WITRecordingSession.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		03BAFA28199D6BF600CC2752 /* WITRecordingSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BAFA26199D6BF600CC2752 /* WITRecordingSession.m */; };
@@ -101,12 +101,12 @@
 /* Begin PBXFileReference section */
 		039C23BF1992FE3B00BEA5C8 /* WITVad.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITVad.h; sourceTree = "<group>"; };
 		039C23C01992FE3B00BEA5C8 /* WITVad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITVad.m; sourceTree = "<group>"; };
+		03A57A8619A3C62200149BAD /* WITVadSimple.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITVadSimple.m; sourceTree = "<group>"; };
 		03BAFA25199D6BF600CC2752 /* WITRecordingSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITRecordingSession.h; sourceTree = "<group>"; };
 		03BAFA26199D6BF600CC2752 /* WITRecordingSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITRecordingSession.m; sourceTree = "<group>"; };
 		03BAFA29199D6C1800CC2752 /* WITSessionToggle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITSessionToggle.h; sourceTree = "<group>"; };
 		03BAFA2B199D85A600CC2752 /* WITVadTracker.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITVadTracker.h; sourceTree = "<group>"; };
 		03BAFA2C199D85A600CC2752 /* WITVadTracker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITVadTracker.m; sourceTree = "<group>"; };
-		03F276C91992D17500B53E61 /* WITVadSimple.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = WITVadSimple.c; sourceTree = "<group>"; };
 		03F276CD1992D1BC00B53E61 /* WITVadSimple.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WITVadSimple.h; sourceTree = "<group>"; };
 		2B10D7A7175561F900973536 /* WITCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITCircleView.h; sourceTree = "<group>"; };
 		2B10D7A8175561F900973536 /* WITCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITCircleView.m; sourceTree = "<group>"; };
@@ -275,6 +275,7 @@
 		B9C0164915DD327500C025BD /* Wit */ = {
 			isa = PBXGroup;
 			children = (
+				03A57A8619A3C62200149BAD /* WITVadSimple.m */,
 				B9C0166F15DD32D400C025BD /* Wit.h */,
 				B95D958815DD34D000DBBABD /* Wit.m */,
 				2B25FE441829A25700F698ED /* WitPrivate.h */,
@@ -294,7 +295,6 @@
 				2BE5B2BC197832BA00B67304 /* util.m */,
 				B9C0164A15DD327500C025BD /* Supporting Files */,
 				03F276CD1992D1BC00B53E61 /* WITVadSimple.h */,
-				03F276C91992D17500B53E61 /* WITVadSimple.c */,
 				039C23BF1992FE3B00BEA5C8 /* WITVad.h */,
 				039C23C01992FE3B00BEA5C8 /* WITVad.m */,
 				03BAFA25199D6BF600CC2752 /* WITRecordingSession.h */,
@@ -538,9 +538,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				039C23BC1992FD0200BEA5C8 /* WITVadSimple.c in Sources */,
 				03BAFA2E199D85A600CC2752 /* WITVadTracker.m in Sources */,
 				03BAFA28199D6BF600CC2752 /* WITRecordingSession.m in Sources */,
+				03A57A8719A3C62200149BAD /* WITVadSimple.m in Sources */,
 				B9E8526C15E76FDE00EA8BC9 /* WITRecorder.m in Sources */,
 				B95D958C15DD379A00DBBABD /* Wit.m in Sources */,
 				B95283E015F4459300F1D5E0 /* WITUploader.m in Sources */,
