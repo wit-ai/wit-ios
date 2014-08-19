@@ -23,26 +23,26 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
-		039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */ = {isa = PBXBuildFile; fileRef = 039C23BF1992FE3B00BEA5C8 /* WITVad.h */; };
+		039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */ = {isa = PBXBuildFile; fileRef = 039C23BF1992FE3B00BEA5C8 /* WITVad.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		039C23C21992FE3B00BEA5C8 /* WITVad.m in Sources */ = {isa = PBXBuildFile; fileRef = 039C23C01992FE3B00BEA5C8 /* WITVad.m */; };
 		03A57A8719A3C62200149BAD /* WITVadSimple.m in Sources */ = {isa = PBXBuildFile; fileRef = 03A57A8619A3C62200149BAD /* WITVadSimple.m */; };
-		03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 03F276CD1992D1BC00B53E61 /* WITVadSimple.h */; };
+		03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */ = {isa = PBXBuildFile; fileRef = 03F276CD1992D1BC00B53E61 /* WITVadSimple.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		03BAFA27199D6BF600CC2752 /* WITRecordingSession.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BAFA25199D6BF600CC2752 /* WITRecordingSession.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		03BAFA28199D6BF600CC2752 /* WITRecordingSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BAFA26199D6BF600CC2752 /* WITRecordingSession.m */; };
-		03BAFA2A199D6C1800CC2752 /* WITSessionToggle.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BAFA29199D6C1800CC2752 /* WITSessionToggle.h */; };
+		03BAFA2A199D6C1800CC2752 /* WITSessionToggle.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BAFA29199D6C1800CC2752 /* WITSessionToggle.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		03BAFA2D199D85A600CC2752 /* WITVadTracker.h in Headers */ = {isa = PBXBuildFile; fileRef = 03BAFA2B199D85A600CC2752 /* WITVadTracker.h */; };
 		03BAFA2E199D85A600CC2752 /* WITVadTracker.m in Sources */ = {isa = PBXBuildFile; fileRef = 03BAFA2C199D85A600CC2752 /* WITVadTracker.m */; };
-		2B10D7A9175561F900973536 /* WITCircleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B10D7A7175561F900973536 /* WITCircleView.h */; };
+		2B10D7A9175561F900973536 /* WITCircleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B10D7A7175561F900973536 /* WITCircleView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B10D7AA175561F900973536 /* WITCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B10D7A8175561F900973536 /* WITCircleView.m */; };
 		2B25FE451829A36800F698ED /* WitPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B25FE441829A25700F698ED /* WitPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
-		2B2F81D1174C1BC4001A12BE /* WITCircleLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B2F81CF174C1BC4001A12BE /* WITCircleLayer.h */; };
+		2B2F81D1174C1BC4001A12BE /* WITCircleLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B2F81CF174C1BC4001A12BE /* WITCircleLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B2F81D2174C1BC4001A12BE /* WITCircleLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2F81D0174C1BC4001A12BE /* WITCircleLayer.m */; };
 		2B80E60B1755A1AA000C3A7B /* microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B80E60A1755A1AA000C3A7B /* microphone.png */; };
 		2B878CFD1748310D00405629 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B878CFC1748310D00405629 /* Default-568h@2x.png */; };
 		2B878D001748354500405629 /* libWit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164415DD327500C025BD /* libWit.a */; };
 		2B878D03174836A500405629 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B83741163A6FA600F9C914 /* QuartzCore.framework */; };
 		2B878D04174836D400405629 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B95283E715F448FA00F1D5E0 /* Security.framework */; };
-		2BB2248F17460BF400538704 /* WITMicButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BB2248D17460BF400538704 /* WITMicButton.h */; };
+		2BB2248F17460BF400538704 /* WITMicButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BB2248D17460BF400538704 /* WITMicButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2BB2249017460BF400538704 /* WITMicButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BB2248E17460BF400538704 /* WITMicButton.m */; };
 		2BE5B2BD197832BA00B67304 /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BE5B2BB197832BA00B67304 /* util.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		2BE5B2BE197832BA00B67304 /* util.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE5B2BC197832BA00B67304 /* util.m */; };
@@ -64,7 +64,7 @@
 		C50A7D43170A5386001C81BC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C50A7D40170A5355001C81BC /* MobileCoreServices.framework */; };
 		C50A7D44170A5386001C81BC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C50A7D3E170A52F6001C81BC /* SystemConfiguration.framework */; };
 		C50A7D47170A5BA0001C81BC /* Wit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B95D960115DD3D7400DBBABD /* Wit.bundle */; };
-		C50E65671709251C009F81E9 /* WITRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */; };
+		C50E65671709251C009F81E9 /* WITRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		C5EC36EC17094E9200E0916B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9E8526D15E77DD200EA8BC9 /* UIKit.framework */; };
 		C5EC36ED17094E9200E0916B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164715DD327500C025BD /* Foundation.framework */; };
 		C5EC36EE17094E9200E0916B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B8372B163A5C5100F9C914 /* CoreGraphics.framework */; };
@@ -720,6 +720,10 @@
 				CODE_SIGN_IDENTITY = domoteam;
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/Wit.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Wit",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wit/Wit-Prefix.pch";
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -751,6 +755,10 @@
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/Wit.dst;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Wit",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Wit/Wit-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
