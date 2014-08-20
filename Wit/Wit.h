@@ -88,6 +88,7 @@
 - (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body error:(NSError*)e;
 
 @optional
+- (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body error:(NSError*)e customData:(id)customData;
 /**
  Called when Wit start recording the audio entry
  */
