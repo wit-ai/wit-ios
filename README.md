@@ -172,7 +172,42 @@ Please refer to the [relevant documentation section][training].
 You can find the code for this tutorial at [https://github.com/wit-ai/wit-ios-helloworld](https://github.com/wit-ai/wit-ios-helloworld).
 
 
+[wit_the_first_newline_is_important]: :)
 [wit]: https://wit.ai/
-[training]: {{ site.baseurl }}/howtos/#intents-with-entities
+[wit_api_doc]: https://wit.ai/docs/api/
+[wit_helper]: https://wit.ai/docs/libraries
+[training]: https://wit.ai/docs/howtos/#intents-with-entities
+[tuto_ios]: https://wit.ai/docs/quickstart/#using-wit-from-ios
+[tuto_android]: https://wit.ai/docs/quickstart/#using-wit-from-android
+[tuto_web]: https://wit.ai/docs/quickstart/#using-wit-from-websites
+[tuto_node]: https://wit.ai/docs/quickstart/#using-wit-from-nodejs
+
+[github_tuto]: https://github.com/wit-ai/wit-tutorial
+[twilio]: https://www.twilio.com/
+[heroku]: https://www.heroku.com/
+[localserver]: http://127.0.0.1:8766/
+[localserver_hello]: http://127.0.0.1:8766/?Body=Hello%20World
+[localserver_joke]: http://127.0.0.1:8766/?Body=give%20me%20a%20joke
+[localserver_joke_nerdy]: http://127.0.0.1:8766/?Body=Do%20you%20have%20any%20nerds%20joke%20%3F
+[localserver_joke_explicit]: http://127.0.0.1:8766/?Body=any%20explicit%20joke%20in%20stock%3F
+[localserver_funny]: http://127.0.0.1:8766/?Body=a%20joke%20please
+[heroku_joke]: http://wit-demo.herokuapp.com/?Body=Do%20you%20have%20any%20nerds%20joke%20%3F
+
+[future]: https://github.com/FuturesJS
+[icndb]: http://www.icndb.com/api/
+[heroku_nodejs]: https://devcenter.heroku.com/articles/nodejs
+[heroku_node_procfile]: https://devcenter.heroku.com/articles/nodejs#declare-process-types-with-procfile
+[twilio_account]: https://www.twilio.com/user/account/phone-numbers/incoming
+[twilio_request]: http://www.twilio.com/docs/api/twiml/twilio_request
+[twilio_response]: http://www.twilio.com/docs/api/twiml/sms/your_response
+
+[mic-github]: https://github.com/wit-ai/wit-widgets/releases/latest
+[caniusewebrtc]: http://caniuse.com/#search=webrtc
+[chrome-mike]: https://support.google.com/chrome/answer/2693767?hl=en
 [xcode]: https://developer.apple.com/xcode/
 [cocoapods]: http://cocoapods.org
+
+[eclipse]: http://www.eclipse.org/downloads/
+[wit-release]: https://github.com/wit-ai/wit-android-sdk/releases
+[android-studio]: http://developer.android.com/sdk/installing/studio.html
+
