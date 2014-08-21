@@ -39,7 +39,7 @@ Go to your project directory, use `pod init` to create a `Podfile`.
 Just add this line to your `Podfile`:
 
 ```ruby
-pod 'Wit', '~> 1.2.0'
+pod 'Wit', '~> 1.3.4'
 ```
 
 Now use `pod install` to pull the dependencies and create an Xcode workspace.
@@ -84,7 +84,7 @@ To do so, add the following line to `Supporting Files/WitTuto-Prefix.pch`:
 
 We'll add a recording button to the main screen of the app.
 First, we need to enter our access token so Wit.AI knows what instance we are querying.
-You can grab it <a href="https://wit.ai/GITHUB_ID/INSTANCE_NAME/settings" class="wit-link">from your Wit console</a>, under `Settings\Access Token`.
+You can grab it <a href="https://wit.ai/" class="wit-link">from your Wit console</a>, under `<Instance Name>\Settings\Access Token`.
 
 Edit `FOOAppDelegate.m` and add the following line to specify your access token:
 
