@@ -133,25 +133,21 @@
     }
 }
 
-#pragma mark - WITUploaderDelegate
-- (void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
+-(void)gotResponse:(NSDictionary *)resp error:(NSError *)err customData:(id)customData {
     if (err) {
-        [self error:err];
+        [self error:err withCustomData:customData];
         return;
     }
-    [self processMessage:resp];
-}
--(void)gotResponse:(NSDictionary *)resp error:(NSError *)err customData:(id)customData {
-    [self gotResponse:resp error:err];
+    [self processMessage:resp withCustomData:customData];
 }
 
 #pragma mark - Response processing
 - (void)errorWithDescription:(NSString*)errorDesc {
     NSError* e = [NSError errorWithDomain:@"WitProcessing" code:1 userInfo:@{NSLocalizedDescriptionKey: errorDesc}];
-    [self error:e];
+    [self error:e withCustomData:nil];
 }
 
-- (void)processMessage:(NSDictionary *)resp {
+- (void)processMessage:(NSDictionary *)resp withCustomData:(id) customData {
     id error = resp[kWitKeyError];
     if (error) {
         NSString* errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
@@ -169,12 +165,21 @@
     }
     
     NSDictionary *entities = outcome[@"entities"];
-    [self.delegate witDidGraspIntent:intent entities:entities body:resp[kWitKeyBody] error:nil];
+    if ([self.delegate respondsToSelector:@selector(witDidGraspIntent:entities:body:error:customData:)]) {
+        [self.delegate witDidGraspIntent:intent entities:entities body:resp[kWitKeyBody] error:nil customData:customData];
+    } else {
+        [self.delegate witDidGraspIntent:intent entities:entities body:resp[kWitKeyBody] error:nil];
+    }
     [self dispatchIntent:intent withEntities:entities andBody:resp[kWitKeyBody]];
 }
 
-- (void)error:(NSError*)e {
-    [self.delegate witDidGraspIntent:nil entities:nil body:nil error:e];
+- (void)error:(NSError*)e withCustomData:(id)customData {
+    if ([self.delegate respondsToSelector:@selector(witDidGraspIntent:entities:body:error:customData:)]) {
+        [self.delegate witDidGraspIntent:nil entities:nil body:nil error:e customData:customData];
+    } else {
+        [self.delegate witDidGraspIntent:nil entities:nil body:nil error:e];
+    }
+
 }
 
 #pragma mark - Selector dispatch
