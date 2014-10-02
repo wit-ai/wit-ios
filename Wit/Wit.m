@@ -265,6 +265,14 @@
                                                  name:kWitNotificationAudioEnd object:nil];
 }
 
+- (NSString *)generateMessageId {
+    if ([self.delegate respondsToSelector:@selector(generateMessageId)]) {
+        return [self.delegate generateMessageId];
+    }
+    
+    return Nil;
+}
+
 - (void)dealloc {
     [[NSNotificationCenter defaultCenter] removeObserver:self];
 }

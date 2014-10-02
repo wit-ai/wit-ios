@@ -50,6 +50,7 @@
     [outStream open];
 
     NSString* urlString;
+    NSString* msgId;
 
     // build HTTP Request
     // if context, add to URL
@@ -59,10 +60,15 @@
                                                        options:0
                                                          error:&serializationError];
         NSString *encoded = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        NSString *msgId;
         encoded = urlencodeString(encoded);
-        urlString = [NSString stringWithFormat:@"%@&context=%@", kWitSpeechURL, encoded];
+
+            urlString = [NSString stringWithFormat:@"%@&context=%@", kWitSpeechURL, encoded];
     } else {
         urlString = kWitSpeechURL;
+    }
+    if ((msgId = [[Wit sharedInstance] generateMessageId])) {
+        urlString = [NSString stringWithFormat:@"%@&msg_id=%@", urlString, msgId];
     }
 
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];

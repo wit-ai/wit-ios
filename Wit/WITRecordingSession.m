@@ -32,6 +32,7 @@
         [self.recorder start];
         [self.starter sessionDidStart:self.recorder];
         self.witToken = witToken;
+
     }
     
     return self;
@@ -48,6 +49,9 @@
     return [self.recorder isRecording];
 }
 
+/**
+ * Implementing WITUploaderDelegate
+ */
 -(void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
     if ([self.delegate respondsToSelector:@selector(gotResponse:error:customData:)]) {
         [self.delegate gotResponse:resp error:err customData:self.customData];
@@ -64,6 +68,11 @@
     }
     [self clean];
 }
+
+
+/**
+ * @end
+ */
 
 -(void)trackVad:(NSString *)messageId {
     if (self.vadEnabled && ![self.recorder stoppedUsingVad]) {
@@ -85,5 +94,6 @@
 -(void)dealloc {
     NSLog(@"Clean WITRecordingSession");
 }
+
 
 @end

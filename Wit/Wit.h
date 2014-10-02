@@ -72,6 +72,9 @@
  Returns the current context
  */
 - (NSDictionary*)getContext;
+
+-(NSString *)generateMessageId;
+
 @end
 
 /**
@@ -102,5 +105,7 @@
  Called if no selector is found for received intent
  */
 - (void)didNotFindIntentSelectorForIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body;
+
+- (NSString *)generateMessageId;
 
 @end
