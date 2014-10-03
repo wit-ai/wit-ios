@@ -39,7 +39,7 @@ Go to your project directory, use `pod init` to create a `Podfile`.
 Just add this line to your `Podfile`:
 
 ```ruby
-pod 'Wit', '~> 1.3.4'
+pod 'Wit', '~> 1.3.5'
 ```
 
 Now use `pod install` to pull the dependencies and create an Xcode workspace.
