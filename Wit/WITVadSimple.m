@@ -68,6 +68,9 @@ static int wvs_check(wvs_state *state, double *samples, int nb_samples)
         detector_esf_minimum(state, energy, state->sequence);
     }
     counter = detector_esf_check_frame(state, energy);
+    if (state->sequence >= state->init_frames && !counter && !state->talking) {
+        detector_esf_minimum(state, energy, state->sequence);
+    }
     memory_push(state->previous_state, state->previous_state_maxlen, counter);
     if (state->sequence < state->init_frames) {
         state->sequence++;
@@ -145,6 +148,7 @@ static double frames_detector_esf_energy(double *samples, int nb_samples)
 
 static void detector_esf_minimum(wvs_state *state, double energy, int n)
 {
+    n = (n > 10) ? 10 : n; //this correspond to 1/10 of a second
     state->min_energy = (state->min_energy * n + energy) / (n + 1);
     state->min_initialized = 1;
 }
@@ -154,7 +158,7 @@ static int detector_esf_check_frame(wvs_state *state, double energy)
     int counter;
     
     counter = 0;
-    if (fabs(energy - state->min_energy) >= state->energy_threshold) {
+    if ((0 - (energy - state->min_energy)) >= state->energy_threshold) {
         counter++;
     }
     
