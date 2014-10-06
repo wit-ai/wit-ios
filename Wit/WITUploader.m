@@ -139,12 +139,12 @@
 }
 
 - (void) cleanUp {
-    dispatch_async(dispatch_get_main_queue(), ^{
         debug(@"Cleaning up");
         if (outStream) {
             debug(@"Cleaning up output stream");
-            [outStream close];
+            outStream.delegate = nil;
             [outStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            [outStream close];
             outStream = nil;
             inStream = nil;
             
@@ -153,8 +153,6 @@
         
         [q cancelAllOperations];
         [q setSuspended:NO];
-
-    });
 }
 
 -(void)endRequest {
