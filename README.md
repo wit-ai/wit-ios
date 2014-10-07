@@ -1,213 +1,35 @@
+Wit-iOS 1.3.6
+===========
 
-This tutorial will show you how to get started in minutes using the Wit SDK for iOS.
-We'll create a project from scratch, but you can easily apply this guide to any existing project.
-As we want to focus on the Wit SDK integration, the app will only display the user's intent and the entities Wit.AI picked up.
+The wit.ai iOS SDK is a the easiest way to integrate [wit.ai](https://wit.ai) features into your iOS application.
 
-## Prerequisites
+The SDK can capture intents and entities:
 
-To follow this tutorial, you will need:
-
-* A [Wit.AI account][wit]
-* [Xcode][xcode] (this has been tested on Xcode 5.0)
-
-## Create the Xcode project
+- from the microphone of the device
+- from a text
 
 
-We'll start from a basic iOS project.
-In Xcode, go to `File > New > Project` or press `Cmd + Shift + N`.
+Link to the SDK
+---------------
 
-Select the `Single View Application`.
+####Using Cocoapods
 
-![Creating a new project](https://d2n5jyo54r6d2a.cloudfront.net/docs/images/ios-tuto/new-project-1.png)
-
-Type a name for your project.
-
-![Setting up the new project](https://d2n5jyo54r6d2a.cloudfront.net/docs/images/ios-tuto/new-project-2.png)
-
-## Pulling Wit SDK into your project
-
-
-You can integrate the Wit SDK to your app by either using [CocoaPods][cocoapods] or using a build of the Wit.framework (see below).
-We recommend that you use [CocoaPods][cocoapods]. If you're unfamiliar with it, and don't have time to learn how to use it, please see below to use the .framework file.
-
-##### Using CocoaPods
-
-A Wit pod is available on the central repository.
-
-Go to your project directory, use `pod init` to create a `Podfile`.
-
-Just add this line to your `Podfile`:
-
+Add the following dependency to your Podfile:
 ```ruby
-pod 'Wit', '~> 1.3.5'
+pod 'Wit', '~> 1.3.6'
 ```
 
-Now use `pod install` to pull the dependencies and create an Xcode workspace.
-
-If you had your project (`.xcodeproj`) open in Xcode, close it and open the `.xcworkspace` file instead. From now on, you should only use the `.xcworkspace` file.
-
-##### Using Wit.framework
-
-Grab the latest binary from [our GitHub repo](https://github.com/wit-ai/wit-ios-sdk/releases) or build it from source.
-
-Now, we need to add the binary and the resources (images, etc.) to our project.
-
-In Xcode, go to `File > Add Files to "Wit Tuto"...` or press `Cmd + Opt + A`.
-Select the `Wit.framework` and `Wit.bundle` files you just downloaded or built.
-
-Your project tree should look something like this:
-
-![Adding Wit.framework](https://d2n5jyo54r6d2a.cloudfront.net/docs/images/ios-tuto/framework.png)
-
-The last step is to dynamically link to native Cocoa frameworks used by Wit SDK, as illustrated by the screenshot below.
-To do so, go to your project settings, `Build Phases` tab, expand `Link Binary With Libraries` and add the following libraries using the **+** button.
-
-- AVFoundation
-- MobileCoreServices
-- SystemConfiguration
-
-![Linking to dynamic libraries](https://d2n5jyo54r6d2a.cloudfront.net/docs/images/ios-tuto/linking.png)
-
-## Use Wit in your project
-
-Wit is now available in your Xcode project.
-Tell your app to use it.
-
-To do so, add the following line to `Supporting Files/WitTuto-Prefix.pch`:
-
-```objc
-#import <Wit/Wit.h>
+And then run the following command in your project home directory:
+```bash
+pod install
 ```
 
-## Adding the Wit button
+
+####Using Wit.framework
+You can download an archive containing the the ***.framework*** and the ***.bundle*** files under the [release section](https://github.com/wit-ai/wit-ios-sdk/releases).
 
 
-We'll add a recording button to the main screen of the app.
-First, we need to enter our access token so Wit.AI knows what instance we are querying.
-You can grab it <a href="https://wit.ai/" class="wit-link">from your Wit console</a>, under `<Instance Name>\Settings\Access Token`.
+How to use
+----------
 
-Edit `FOOAppDelegate.m` and add the following line to specify your access token:
-
-```objc
-- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
-{
-  [Wit sharedInstance].accessToken = @"xxx"; // replace xxx by your Wit.AI access token
-  return YES;
-}
-```
-
-Now we're all set to query the Wit API. As a convenience, the SDK provides a `WitMicButton` view to simply record the user's voice and request the API. Note that you can also call Wit programmatically using the `- (void) toggleCaptureVoiceIntent:(id)sender` instance method of the `Wit` class.
-
-Adding the button to our main view is done by adding those lines to `FOOViewController.m`:
-
-```objc
-@implementation FOOViewController {
-  UILabel *labelView;
-}
-```
-
-```objc
-- (void)viewDidLoad
-{
-  [super viewDidLoad];
-
-  // set the WitDelegate object
-  [Wit sharedInstance].delegate = self;
-
-  // create the button
-  CGRect screen = [UIScreen mainScreen].bounds;
-  CGFloat w = 100;
-  CGRect rect = CGRectMake(screen.size.width/2 - w/2, 60, w, 100);
-
-  WITMicButton* witButton = [[WITMicButton alloc] initWithFrame:rect];
-  [self.view addSubview:witButton];
-
-  // create the label
-  labelView = [[UILabel alloc] initWithFrame:CGRectMake(0, 200, screen.size.width, 50)];
-  labelView.textAlignment = NSTextAlignmentCenter;
-  [self.view addSubview:labelView];
-}
-```
-
-## Acting upon Wit.AI response
-
-Wit SDK specifies the `WitDelegate` protocol for your app to implement.
-
-Edit `FOOViewController.h` and add `WitDelegate` to the list of protocols implemented by the `FOOViewController` class. Your @interface declaration should look something like that:
-
-```objc
-@interface FOOViewController : UIViewController <WitDelegate>
-@end
-```
-
-Now, let's edit `FOOViewController.m` to actually implement the protocol. We want to display the user's intent returned by the Wit API.
-
-```objc
-- (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body error:(NSError *)e {
-    if (e) {
-      NSLog(@"[Wit] error: %@", [e localizedDescription]);
-      return;
-    }
-
-    labelView.text = [NSString stringWithFormat:@"intent = %@", intent];
-
-    [self.view addSubview:labelView];
-}
-```
-
-## Run your app
-
-That's it! Just run the app in the simulator, press the microphone button and say "Wake me up at 7am".
-Provided your instance has an "alarm" intent, you should see this something like this
-
-![Running the app](https://d2n5jyo54r6d2a.cloudfront.net/docs/images/ios-tuto/result.png)
-
-Now go check <a href="https://wit.ai/GITHUB_ID/INSTANCE_NAME/inbox" class="wit-link">your inbox</a>, the command you just said should be there. Click the wave icon next to the sentence to play the audio file.
-
-![Wave icon](https://d2n5jyo54r6d2a.cloudfront.net/docs/images/tutorial/inbox_wave.png)
-
-If your instance is brand new, it will need a bit of training before yielding satisfying results.
-Please refer to the [relevant documentation section][training].
-
-You can find the code for this tutorial at [https://github.com/wit-ai/wit-ios-helloworld](https://github.com/wit-ai/wit-ios-helloworld).
-
-
-[wit_the_first_newline_is_important]: :)
-[wit]: https://wit.ai/
-[wit_api_doc]: https://wit.ai/docs/api/
-[wit_helper]: https://wit.ai/docs/libraries
-[training]: https://wit.ai/docs/howtos/#intents-with-entities
-[tuto_ios]: https://wit.ai/docs/quickstart/#using-wit-from-ios
-[tuto_android]: https://wit.ai/docs/quickstart/#using-wit-from-android
-[tuto_web]: https://wit.ai/docs/quickstart/#using-wit-from-websites
-[tuto_node]: https://wit.ai/docs/quickstart/#using-wit-from-nodejs
-
-[github_tuto]: https://github.com/wit-ai/wit-tutorial
-[twilio]: https://www.twilio.com/
-[heroku]: https://www.heroku.com/
-[localserver]: http://127.0.0.1:8766/
-[localserver_hello]: http://127.0.0.1:8766/?Body=Hello%20World
-[localserver_joke]: http://127.0.0.1:8766/?Body=give%20me%20a%20joke
-[localserver_joke_nerdy]: http://127.0.0.1:8766/?Body=Do%20you%20have%20any%20nerds%20joke%20%3F
-[localserver_joke_explicit]: http://127.0.0.1:8766/?Body=any%20explicit%20joke%20in%20stock%3F
-[localserver_funny]: http://127.0.0.1:8766/?Body=a%20joke%20please
-[heroku_joke]: http://wit-demo.herokuapp.com/?Body=Do%20you%20have%20any%20nerds%20joke%20%3F
-
-[future]: https://github.com/FuturesJS
-[icndb]: http://www.icndb.com/api/
-[heroku_nodejs]: https://devcenter.heroku.com/articles/nodejs
-[heroku_node_procfile]: https://devcenter.heroku.com/articles/nodejs#declare-process-types-with-procfile
-[twilio_account]: https://www.twilio.com/user/account/phone-numbers/incoming
-[twilio_request]: http://www.twilio.com/docs/api/twiml/twilio_request
-[twilio_response]: http://www.twilio.com/docs/api/twiml/sms/your_response
-
-[mic-github]: https://github.com/wit-ai/wit-widgets/releases/latest
-[caniusewebrtc]: http://caniuse.com/#search=webrtc
-[chrome-mike]: https://support.google.com/chrome/answer/2693767?hl=en
-[xcode]: https://developer.apple.com/xcode/
-[cocoapods]: http://cocoapods.org
-
-[eclipse]: http://www.eclipse.org/downloads/
-[wit-release]: https://github.com/wit-ai/wit-android-sdk/releases
-[android-studio]: http://developer.android.com/sdk/installing/studio.html
-
+You will find on our website a quick start guide of our iOS SDK: [https://wit.ai/docs/ios/](https://wit.ai/docs/ios/)
