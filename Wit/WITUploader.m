@@ -139,20 +139,20 @@
 }
 
 - (void) cleanUp {
-    debug(@"Cleaning up");
-    if (outStream) {
-        debug(@"Cleaning up output stream");
-        [outStream close];
-        [outStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
-        outStream = nil;
-        inStream = nil;
-
-        start = [NSDate date];
-    }
-
-    [q cancelAllOperations];
-    [q setSuspended:NO];
-    
+        debug(@"Cleaning up");
+        if (outStream) {
+            debug(@"Cleaning up output stream");
+            outStream.delegate = nil;
+            [outStream removeFromRunLoop:[NSRunLoop currentRunLoop] forMode:NSDefaultRunLoopMode];
+            [outStream close];
+            outStream = nil;
+            inStream = nil;
+            
+            start = [NSDate date];
+        }
+        
+        [q cancelAllOperations];
+        [q setSuspended:NO];
 }
 
 -(void)endRequest {

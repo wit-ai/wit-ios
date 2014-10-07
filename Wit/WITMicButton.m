@@ -273,13 +273,17 @@ static const CGFloat kMicMargin = 40.0f;
 }
 
 -(void)sessionDidStart:(WITRecorder *)recorder{
-    [recorder addObserver:self forKeyPath:@"power" options:NSKeyValueObservingOptionNew
-                                            context:nil];
+    if (![recorder observationInfo]) {
+        [recorder addObserver:self forKeyPath:@"power" options:NSKeyValueObservingOptionNew
+                      context:nil];
+    }
 }
 
 -(void)sessionDidEnd:(WITRecorder*) recorder
 {
-    [recorder removeObserver:self forKeyPath:@"power"];
+    if ([recorder observationInfo]) {
+        [recorder removeObserver:self forKeyPath:@"power"];
+    }
 }
 
 - (void)initialize {
