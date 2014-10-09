@@ -9,9 +9,22 @@
 #import <Foundation/Foundation.h>
 #import "WITVadSimple.h"
 
+@protocol WITVadDelegate;
+
 @interface WITVad : NSObject
 
+@property id<WITVadDelegate> delegate;
+
 @property BOOL stoppedUsingVad;
+
+
 -(void) gotAudioSamples:(NSData *)samples;
+
+@end
+
+
+@protocol WITVadDelegate <NSObject>
+
+-(void) stoppedTalking;
 
 @end

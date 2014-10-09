@@ -73,7 +73,7 @@
 }
 
 -(void)recorderGotChunk:(NSData*)chunk {
-    [self.delegate recorderGotChunk:chunk];
+    [self.uploader sendChunk:chunk];
 }
 
 -(void)clean {

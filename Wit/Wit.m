@@ -115,11 +115,6 @@
     return state.context;
 }
 
-#pragma mark - WITRecorderDelegate
--(void)recorderGotChunk:(NSData*)chunk {
-    [self.recordingSession.uploader sendChunk:chunk];
-}
-
 #pragma mark - NSNotificationCenter
 - (void)audioend:(NSNotification*)n {
     if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {

@@ -222,7 +222,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 -(void)enabledVad {
     if (self.vad == nil) {
         self.vad = [[WITVad alloc] init];
+        self.vad.delegate = self;
     }
+}
+
+-(void)stoppedTalking {
+    [self.delegate stop];
 }
 
 - (id)init {

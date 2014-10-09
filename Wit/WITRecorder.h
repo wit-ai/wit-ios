@@ -15,7 +15,7 @@
 //
 // Handles recording of audio data using Audio Queue Services
 //
-@interface WITRecorder : NSObject
+@interface WITRecorder : NSObject <WITVadDelegate>
 @property (atomic) id<WITRecorderDelegate> delegate;
 @property (atomic) float power; // recording volume power
 
@@ -25,8 +25,10 @@
 -(BOOL)isRecording;
 -(BOOL)stoppedUsingVad;
 -(void)enabledVad;
+-(void)stoppedTalking;
 @end
 
 @protocol WITRecorderDelegate <NSObject>
 -(void)recorderGotChunk:(NSData*)chunk;
+-(void)stop;
 @end

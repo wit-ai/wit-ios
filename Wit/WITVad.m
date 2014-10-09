@@ -24,7 +24,7 @@
     if (wvs_still_talking(self->vad_state, bytes, size / 2) == 0) {
         self.stoppedUsingVad = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[Wit sharedInstance] stop];
+            [self.delegate stoppedTalking];
         });
     }
 }
