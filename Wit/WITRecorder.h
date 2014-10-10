@@ -29,6 +29,7 @@
 @end
 
 @protocol WITRecorderDelegate <NSObject>
+-(void)recorderDetectedSpeech;
 -(void)recorderGotChunk:(NSData*)chunk;
 -(void)stop;
 @end

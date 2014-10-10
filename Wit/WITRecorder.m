@@ -230,6 +230,10 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     [self.delegate stop];
 }
 
+-(void)startedTalking {
+    [self.delegate recorderDetectedSpeech];
+};
+
 - (id)init {
     self = [super init];
     if (self) {

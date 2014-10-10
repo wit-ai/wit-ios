@@ -11,6 +11,8 @@
 @interface WITRecordingSession ()
 
 @property BOOL vadEnabled;
+@property NSMutableArray *dataBuffer;
+@property int buffersToSave;
 @end
 
 @implementation WITRecordingSession
@@ -19,11 +21,13 @@
 -(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(BOOL)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken {
     self = [super init];
     if (self) {
+        self.dataBuffer = [[NSMutableArray alloc] init];
         self.starter = starter;
         self.vadEnabled = vadEnabled;
         self.uploader = [[WITUploader alloc] init];
         self.uploader.delegate = self;
-        [self.uploader startRequestWithContext:upContext];
+        self.isUploading = false;
+        self.context = upContext;
         self.recorder = [[WITRecorder alloc] init];
         self.recorder.delegate = self;
         if (vadEnabled) {
@@ -32,15 +36,23 @@
         [self.recorder start];
         [self.starter sessionDidStart:self.recorder];
         self.witToken = witToken;
+        self.buffersToSave = 3; //hardcode for now
     }
     
     return self;
+}
+
+-(void)startUploader
+{
+    [self.uploader startRequestWithContext:self.context];
+    self.isUploading = true;
 }
 
 -(void)stop
 {
     [self.recorder stop];
     [self.uploader endRequest];
+    self.isUploading = false;
     [self.starter sessionDidEnd:self.recorder];
 }
 
@@ -73,7 +85,32 @@
 }
 
 -(void)recorderGotChunk:(NSData*)chunk {
-    [self.uploader sendChunk:chunk];
+    dispatch_async(dispatch_get_main_queue(), ^{
+    if(self.isUploading){
+        [self.uploader sendChunk:chunk];
+    } else {
+        //not uploading, so save the chunk to the buffer and remove old chunk
+        if ([self.dataBuffer count] >= self.buffersToSave){
+            //if we have enough entries, remove the oldest one
+            [self.dataBuffer removeObjectAtIndex:0];
+        }
+        //enqueue the new data
+        [self.dataBuffer addObject:chunk];
+    }
+    });
+}
+
+-(void)recorderDetectedSpeech{
+        dispatch_async(dispatch_get_main_queue(), ^{
+    //start the uploader
+    [self startUploader];
+    
+    //then prepend buffered data
+    
+    for(NSData* bufferedData in self.dataBuffer){
+        [self.uploader sendChunk:bufferedData];
+    }
+        });
 }
 
 -(void)clean {

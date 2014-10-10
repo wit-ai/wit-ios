@@ -28,7 +28,8 @@
 @property NSObject <WITRecordingSessionDelegate> *delegate;
 @property id customData;
 @property NSString *witToken;
-
+@property NSDictionary *context;
+@property BOOL isUploading;
 
 
 -(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(BOOL)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken;

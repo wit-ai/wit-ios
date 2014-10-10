@@ -304,6 +304,9 @@ static const CGFloat kMicMargin = 40.0f;
     
     // apply style
     [self defaultStyles];
+    
+    // start listening immediately
+    [[Wit sharedInstance] toggleCaptureVoiceIntent:self];
 }
 
 - (void)dealloc {
