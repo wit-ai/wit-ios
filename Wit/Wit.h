@@ -5,11 +5,17 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import "WITVadConfig.h"
 #import "WITMicButton.h"
 
-@protocol WitDelegate;
 
-@interface Wit : NSObject
+
+@class WITRecordingSession;
+@protocol WitDelegate;
+@protocol WITRecordingSessionDelegate;
+
+
+@interface Wit : NSObject  <WITRecordingSessionDelegate>
 /**
  Delegate to send feedback for the application
  */
@@ -28,7 +34,7 @@
 /**
  Enable / Disable voice activity detection
  */
-@property BOOL detectSpeechStop;
+@property WITVadConfig detectSpeechStop;
 
 /**
  Singleton instance accessor
@@ -88,8 +94,15 @@
 - (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body error:(NSError*)e;
 
 @optional
+
 /**
- Called when Wit start recording the audio entry
+ * When using the hands free voice activity detection option, this callback will be called when the microphone started to listen
+ * and is waiting to detect voice activity in order to send the data to the wit.ai API
+ */
+- (void)witActivityDetectorStarted;
+
+/**
+ Called when Wit start recording the audio input
  */
 - (void)witDidStartRecording;
 

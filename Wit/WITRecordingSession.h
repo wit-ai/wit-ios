@@ -13,26 +13,22 @@
 #import "WITVadTracker.h"
 #import "WitPrivate.h"
 
-@protocol WITRecordingSessionDelegate <NSObject>
--(void)recorderGotChunk:(NSData*)chunk;
--(void)gotResponse:(NSDictionary*)resp error:(NSError*)err;
-@optional
--(void)gotResponse:(NSDictionary*)resp error:(NSError*)err customData:(id)customData;
-@end
+@protocol WITRecordingSessionDelegate;
+
 
 @interface WITRecordingSession : NSObject <WITRecorderDelegate, WITUploaderDelegate>
 
 @property NSObject <WITSessionToggle> *starter;
 @property WITRecorder *recorder;
 @property WITUploader *uploader;
-@property NSObject <WITRecordingSessionDelegate> *delegate;
+@property id <WITRecordingSessionDelegate> delegate;
 @property id customData;
 @property NSString *witToken;
 @property NSDictionary *context;
 @property BOOL isUploading;
 
 
--(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(BOOL)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken;
+-(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate;
 -(void)stop;
 -(BOOL)isRecording;
 -(void)trackVad:(NSString *)messageId;
@@ -40,3 +36,12 @@
 @end
 
 
+@protocol WITRecordingSessionDelegate <NSObject>
+
+-(void)recordingSessionActivityDetectorStarted;
+-(void)recordingSessionDidStartRecording;
+-(void)recordingSessionDidStopRecording;
+-(void)recordingSessionRecorderGotChunk:(NSData*)chunk;
+-(void)recordingSessionGotResponse:(NSDictionary*)resp error:(NSError*)err;
+
+@end

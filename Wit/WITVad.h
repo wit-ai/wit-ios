@@ -25,7 +25,7 @@
 
 @protocol WITVadDelegate <NSObject>
 
--(void) stoppedTalking;
--(void) startedTalking;
+-(void) vadStartedTalking;
+-(void) vadStoppedTalking;
 
 @end

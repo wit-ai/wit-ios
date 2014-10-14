@@ -10,7 +10,7 @@
 #import "util.h"
 #import "WITRecordingSession.h"
 
-@interface Wit () <WITRecordingSessionDelegate>
+@interface Wit ()  
 @property (strong) WITState *state;
 @property WITRecordingSession *recordingSession;
 @end
@@ -39,7 +39,8 @@
 
 - (void)start:(id)sender customData:(id)customData {
     self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context
-                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender withWitToken:[WITState sharedInstance].accessToken];
+                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender withWitToken:[WITState sharedInstance].accessToken
+                                                               withDelegate:self];
     self.recordingSession.customData = customData;
     self.recordingSession.delegate = self;
 }
@@ -56,7 +57,7 @@
 - (void) interpretString: (NSString *) string {
     NSDate *start = [NSDate date];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@", urlencodeString(string), kWitAPIVersion]]];
-    [req setCachePolicy:NSURLCacheStorageNotAllowed];
+    [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [req setTimeoutInterval:15.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
@@ -113,19 +114,6 @@
 
 -(NSDictionary*)getContext {
     return state.context;
-}
-
-#pragma mark - NSNotificationCenter
-- (void)audioend:(NSNotification*)n {
-    if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {
-        [self.delegate witDidStopRecording];
-    }
-}
-
-- (void)audiostart:(NSNotification*)n {
-    if ([self.delegate respondsToSelector:@selector(witDidStartRecording)]) {
-        [self.delegate witDidStartRecording];
-    }
 }
 
 #pragma mark - WITUploaderDelegate
@@ -241,7 +229,6 @@
 #pragma mark - Lifecycle
 - (void)initialize {
     state = [WITState sharedInstance];
-    [self observeNotifications];
     self.detectSpeechStop = NO;
 }
 - (id)init {
@@ -250,14 +237,6 @@
         [self initialize];
     }
     return self;
-}
-
-- (void)observeNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
-                                                 name:kWitNotificationAudioStart object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioend:)
-                                                 name:kWitNotificationAudioEnd object:nil];
 }
 
 - (void)dealloc {
@@ -272,6 +251,38 @@
     });
 
     return instance;
+}
+
+#pragma mark - WITRecordingSessionDelegate
+
+-(void)recordingSessionActivityDetectorStarted {
+    if ([self.delegate respondsToSelector:@selector(witActivityDetectorStarted)]) {
+        [self.delegate witActivityDetectorStarted];
+    }
+}
+
+-(void)recordingSessionDidStartRecording {
+    if ([self.delegate respondsToSelector:@selector(witDidStartRecording)]) {
+        [self.delegate witDidStartRecording];
+    }
+}
+
+-(void)recordingSessionDidStopRecording {
+    if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {
+        [self.delegate witDidStopRecording];
+    }
+}
+
+-(void)recordingSessionRecorderGotChunk:(NSData *)chunk {
+
+}
+
+-(void)recordingSessionRecorderPowerChanged:(float)power {
+    
+}
+
+-(void)recordingSessionGotResponse:(NSDictionary *)resp error:(NSError *)err {
+    [self gotResponse:resp error:err];
 }
 
 @end

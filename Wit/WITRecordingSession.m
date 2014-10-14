@@ -7,6 +7,7 @@
 //
 
 #import "WITRecordingSession.h"
+#import "WITVadConfig.h"
 
 @interface WITRecordingSession ()
 
@@ -18,9 +19,10 @@
 @implementation WITRecordingSession
 
 
--(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(BOOL)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken {
+-(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
+        self.delegate = delegate;
         self.dataBuffer = [[NSMutableArray alloc] init];
         self.starter = starter;
         self.vadEnabled = vadEnabled;
@@ -30,13 +32,19 @@
         self.context = upContext;
         self.recorder = [[WITRecorder alloc] init];
         self.recorder.delegate = self;
-        if (vadEnabled) {
-            [self.recorder enabledVad];
-        }
         [self.recorder start];
-        [self.starter sessionDidStart:self.recorder];
         self.witToken = witToken;
-        self.buffersToSave = 3; //hardcode for now
+        self.buffersToSave = 1; //hardcode for now
+        if (vadEnabled == WITVadConfigDisabled) {
+            [self startUploader];
+        } else  {
+            [self.recorder enabledVad];
+            if (vadEnabled == WITVadConfigDetectSpeechStop) {
+                [self startUploader];
+            } else if (vadEnabled == WITVadConfigFull) {
+                
+            }
+        }
     }
     
     return self;
@@ -46,6 +54,7 @@
 {
     [self.uploader startRequestWithContext:self.context];
     self.isUploading = true;
+    [self.delegate recordingSessionDidStartRecording];
 }
 
 -(void)stop
@@ -53,7 +62,7 @@
     [self.recorder stop];
     [self.uploader endRequest];
     self.isUploading = false;
-    [self.starter sessionDidEnd:self.recorder];
+    [self.delegate recordingSessionDidStopRecording];
 }
 
 - (BOOL)isRecording {
@@ -61,11 +70,8 @@
 }
 
 -(void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
-    if ([self.delegate respondsToSelector:@selector(gotResponse:error:customData:)]) {
-        [self.delegate gotResponse:resp error:err customData:self.customData];
-    } else {
-        [self.delegate gotResponse:resp error:err];
-    }
+
+    [self.delegate recordingSessionGotResponse:resp error:err];
     
     if (!err && resp[kWitKeyMsgId]) {
         [self trackVad:resp[kWitKeyMsgId]];
@@ -84,9 +90,12 @@
     }
 }
 
+
+#pragma mark - WITRecorderDelegate implementation
+
 -(void)recorderGotChunk:(NSData*)chunk {
     dispatch_async(dispatch_get_main_queue(), ^{
-    if(self.isUploading){
+    if(self.isUploading) {
         [self.uploader sendChunk:chunk];
     } else {
         //not uploading, so save the chunk to the buffer and remove old chunk
@@ -97,6 +106,7 @@
         //enqueue the new data
         [self.dataBuffer addObject:chunk];
     }
+        [self.delegate recordingSessionRecorderGotChunk:chunk];
     });
 }
 
@@ -112,6 +122,18 @@
     }
         });
 }
+
+-(void)recorderStarted {
+    [self.delegate recordingSessionActivityDetectorStarted];
+}
+
+
+-(void)recorderVadStoppedTalking {
+    [self stop];
+}
+
+
+#pragma mark - cleaning
 
 -(void)clean {
     self.recorder = nil;

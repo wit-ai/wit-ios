@@ -10,6 +10,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "WITVad.h"
 
+
 @protocol WITRecorderDelegate;
 
 //
@@ -25,11 +26,16 @@
 -(BOOL)isRecording;
 -(BOOL)stoppedUsingVad;
 -(void)enabledVad;
--(void)stoppedTalking;
 @end
 
 @protocol WITRecorderDelegate <NSObject>
+
 -(void)recorderDetectedSpeech;
 -(void)recorderGotChunk:(NSData*)chunk;
+-(void)recorderStarted;
+-(void)recorderVadStoppedTalking;
+
+
+
 -(void)stop;
 @end
