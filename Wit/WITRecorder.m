@@ -121,6 +121,9 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     [displayLink setPaused:YES];
     [displayLink invalidate];
     self.power = -999;
+    if (self.vad) {
+        self.vad.delegate = nil;
+    }
 
     return YES;
 }

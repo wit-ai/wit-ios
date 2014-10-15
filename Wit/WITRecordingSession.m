@@ -11,13 +11,12 @@
 
 @interface WITRecordingSession ()
 
-@property BOOL vadEnabled;
+@property WITVadConfig vadEnabled;
 @property NSMutableArray *dataBuffer;
 @property int buffersToSave;
 @end
 
 @implementation WITRecordingSession
-
 
 -(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
@@ -59,10 +58,11 @@
 
 -(void)stop
 {
-    [self.recorder stop];
-    [self.uploader endRequest];
-    self.isUploading = false;
-    [self.delegate recordingSessionDidStopRecording];
+        [self.recorder stop];
+        [self.uploader endRequest];
+        self.isUploading = false;
+        [self.delegate recordingSessionDidStopRecording];
+
 }
 
 - (BOOL)isRecording {
@@ -110,17 +110,19 @@
     });
 }
 
--(void)recorderDetectedSpeech{
+-(void)recorderDetectedSpeech {
+    if (self.vadEnabled == WITVadConfigFull) {
         dispatch_async(dispatch_get_main_queue(), ^{
-    //start the uploader
-    [self startUploader];
+            //start the uploader
+            [self startUploader];
     
-    //then prepend buffered data
+            //then prepend buffered data
     
-    for(NSData* bufferedData in self.dataBuffer){
-        [self.uploader sendChunk:bufferedData];
-    }
+            for(NSData* bufferedData in self.dataBuffer){
+                [self.uploader sendChunk:bufferedData];
+            }
         });
+    }
 }
 
 -(void)recorderStarted {
@@ -129,7 +131,7 @@
 
 
 -(void)recorderVadStoppedTalking {
-    [self stop];
+    [self.delegate stop];
 }
 
 
@@ -142,6 +144,10 @@
 
 
 -(void)dealloc {
+    
+    if (self.vadEnabled == WITVadConfigFull) {
+        [[Wit sharedInstance] start:self.starter customData:self.customData];
+    }
     NSLog(@"Clean WITRecordingSession");
 }
 

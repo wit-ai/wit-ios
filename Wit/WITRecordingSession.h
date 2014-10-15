@@ -44,4 +44,6 @@
 -(void)recordingSessionRecorderGotChunk:(NSData*)chunk;
 -(void)recordingSessionGotResponse:(NSDictionary*)resp error:(NSError*)err;
 
+-(void)stop;
+
 @end
