@@ -19,6 +19,6 @@
 @property (strong, atomic) WITCircleView* outerCircleView;
 @property (strong, atomic) WITCircleView* innerCircleView;
 
-- (void)newAudioLevel:(float)power;
+- (void)newAudioLevel:(NSNotification*)n;
 
 @end

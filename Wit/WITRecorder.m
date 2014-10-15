@@ -124,6 +124,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     if (self.vad) {
         self.vad.delegate = nil;
     }
+    [self dispatchNewPower:self.power];
 
     return YES;
 }
@@ -151,6 +152,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     }
 
     self.power = meters[0].mAveragePower;
+    [self dispatchNewPower:self.power];
+}
+
+-(void)dispatchNewPower:(float)power {
+    NSNumber *newPower = [[NSNumber alloc] initWithFloat:power];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioPowerChanged object:newPower];
 }
 
 #pragma mark - Lifecycle
