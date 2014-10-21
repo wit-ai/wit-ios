@@ -120,9 +120,4 @@
  */
 - (void)witDidStopRecording;
 
-/**
- Called if no selector is found for received intent
- */
-- (void)didNotFindIntentSelectorForIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body;
-
 @end
