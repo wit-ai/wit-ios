@@ -20,26 +20,26 @@
 @synthesize delegate, state;
 
 #pragma mark - Public API
-- (void)toggleCaptureVoiceIntent:(id)sender {
-    [self toggleCaptureVoiceIntent:sender withCustomData:nil];
+- (void)toggleCaptureVoiceIntent {
+    [self toggleCaptureVoiceIntent: nil];
 }
 
-- (void)toggleCaptureVoiceIntent:(id)sender withCustomData:(id) customData {
+- (void)toggleCaptureVoiceIntent:(id)customData {
     if ([self isRecording]) {
         [self stop];
     } else {
-        [self start:sender customData:customData];
+        [self start: customData];
     }
 }
 
 - (void)start {
-    [self start:nil customData:nil];
+    [self start: nil];
 }
 
 
-- (void)start:(id)sender customData:(id)customData {
+- (void)start: (id)customData {
     self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context
-                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender withWitToken:[WITState sharedInstance].accessToken
+                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
                                                                withDelegate:self];
     self.recordingSession.customData = customData;
     self.recordingSession.delegate = self;
@@ -172,7 +172,7 @@
 #pragma mark - Lifecycle
 - (void)initialize {
     state = [WITState sharedInstance];
-    self.detectSpeechStop = NO;
+    self.detectSpeechStop = WITVadConfigDetectSpeechStop;
 }
 - (id)init {
     self = [super init];

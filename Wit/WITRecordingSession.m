@@ -18,12 +18,11 @@
 
 @implementation WITRecordingSession
 
--(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
+-(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
         self.delegate = delegate;
         self.dataBuffer = [[NSMutableArray alloc] init];
-        self.starter = starter;
         self.vadEnabled = vadEnabled;
         self.uploader = [[WITUploader alloc] init];
         self.uploader.delegate = self;
@@ -146,7 +145,7 @@
 -(void)dealloc {
     
     if (self.vadEnabled == WITVadConfigFull) {
-        [[Wit sharedInstance] start:self.starter customData:self.customData];
+        [[Wit sharedInstance] start: self.customData];
     }
     NSLog(@"Clean WITRecordingSession");
 }

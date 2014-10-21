@@ -7,7 +7,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "WITSessionToggle.h"
 #import "WITRecorder.h"
 #import "WITUploader.h"
 #import "WITVadTracker.h"
@@ -18,7 +17,6 @@
 
 @interface WITRecordingSession : NSObject <WITRecorderDelegate, WITUploaderDelegate>
 
-@property NSObject <WITSessionToggle> *starter;
 @property WITRecorder *recorder;
 @property WITUploader *uploader;
 @property id <WITRecordingSessionDelegate> delegate;
@@ -28,7 +26,7 @@
 @property BOOL isUploading;
 
 
--(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withToggleStarter:(id <WITSessionToggle>) starter withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate;
+-(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate;
 -(void)stop;
 -(BOOL)isRecording;
 -(void)trackVad:(NSString *)messageId;
