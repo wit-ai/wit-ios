@@ -1,12 +1,12 @@
 Wit-iOS 2.0.0
 ===========
 
-The wit.ai iOS SDK is a the easiest way to integrate [wit.ai](https://wit.ai) features into your iOS application.
+The wit.ai iOS SDK is the easiest way to integrate [wit.ai](https://wit.ai) features into your iOS application.
 
 The SDK can capture intents and entities:
 
 - from the microphone of the device
-- from a text
+- from text
 
 
 Link to the SDK
