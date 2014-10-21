@@ -225,9 +225,6 @@ static const CGFloat kMicMargin = 40.0f;
         [self recomputePositions];
         return;
     }
-
-    float power = [change[@"new"] floatValue];
-    [self newAudioLevel:power];
 }
 
 #pragma mark - UIButton target
@@ -247,7 +244,9 @@ static const CGFloat kMicMargin = 40.0f;
 }
 
 #pragma mark - Audio Levels
-- (void)newAudioLevel:(float)power {
+- (void)newAudioLevel:(NSNotification*)n {
+    NSNumber *NSPower = [n object];
+    float power = [NSPower floatValue];
     CGFloat coeff = fmax(0, fmin(1, (power+51) / 30));
     NSNumber* newRadius = @((1+coeff*1.5) * self.innerCircleView.radius.floatValue);
     self.outerCircleView.radius = newRadius;
@@ -272,30 +271,18 @@ static const CGFloat kMicMargin = 40.0f;
     return self;
 }
 
--(void)sessionDidStart:(WITRecorder *)recorder{
-    if (![recorder observationInfo]) {
-        [recorder addObserver:self forKeyPath:@"power" options:NSKeyValueObservingOptionNew
-                      context:nil];
-    }
-}
-
--(void)sessionDidEnd:(WITRecorder*) recorder
-{
-    if ([recorder observationInfo]) {
-        [recorder removeObserver:self forKeyPath:@"power"];
-    }
-}
 
 - (void)initialize {
     [self addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
     [self addObserver:self forKeyPath:@"frame" options:0 context:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
-                                                 name:kWitNotificationAudioStart object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioend:)
-                                                 name:kWitNotificationAudioEnd object:nil];
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
+//                                                 name:kWitNotificationAudioStart object:nil];
+//    
+//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioend:)
+//                                                 name:kWitNotificationAudioEnd object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAudioLevel:) name:kWitNotificationAudioPowerChanged object:nil];
     
     // retinarize
     if ([self respondsToSelector:@selector(setContentScaleFactor:)]) {

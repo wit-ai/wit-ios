@@ -94,8 +94,8 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     }
 
     [displayLink setPaused:NO];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioStart object:nil];
-
+    [self.delegate recorderStarted];
+    
     return YES;
 }
 
@@ -121,7 +121,10 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     [displayLink setPaused:YES];
     [displayLink invalidate];
     self.power = -999;
-    [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioEnd object:nil];
+    if (self.vad) {
+        self.vad.delegate = nil;
+    }
+    [self dispatchNewPower:self.power];
 
     return YES;
 }
@@ -149,6 +152,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     }
 
     self.power = meters[0].mAveragePower;
+    [self dispatchNewPower:self.power];
+}
+
+-(void)dispatchNewPower:(float)power {
+    NSNumber *newPower = [[NSNumber alloc] initWithFloat:power];
+    [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioPowerChanged object:newPower];
 }
 
 #pragma mark - Lifecycle
@@ -214,7 +223,6 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 }
 
 -(BOOL)stoppedUsingVad {
-    NSLog(@"Rerturning did stop using vad: %hhd with WITVad instance: %@", self.vad.stoppedUsingVad, self.vad);
     return (self.vad && self.vad.stoppedUsingVad);
 }
 
@@ -222,7 +230,21 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 -(void)enabledVad {
     if (self.vad == nil) {
         self.vad = [[WITVad alloc] init];
+        self.vad.delegate = self;
     }
+}
+
+
+-(void)vadStartedTalking {
+    [self.delegate recorderDetectedSpeech];
+}
+
+
+/**
+ * Event called when the voice activity detection algorithm detect the end of speech
+ */
+-(void)vadStoppedTalking {
+    [self.delegate recorderVadStoppedTalking];
 }
 
 - (id)init {

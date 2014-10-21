@@ -27,7 +27,7 @@ static int frame_memory_gte(int *memory, int value, int nb);
 static int wvs_check(wvs_state *state, double *samples, int nb_samples);
 
 
-int wvs_still_talking(wvs_state *state, short int *samples, int nb_samples)
+int wvs_detect_talking(wvs_state *state, short int *samples, int nb_samples)
 {
     double *dbfss;
     double db;
@@ -44,6 +44,9 @@ int wvs_still_talking(wvs_state *state, short int *samples, int nb_samples)
             if (result == 0) {
                 free(dbfss);
                 return 0;
+            } else if(result == 1) {
+                free(dbfss);
+                return 1;
             }
             state->current_nb_samples = 0;
         }
@@ -52,9 +55,14 @@ int wvs_still_talking(wvs_state *state, short int *samples, int nb_samples)
     }
     free(dbfss);
     
-    return 1;
+    return -1;
 }
 
+/**
+ * -1 if still establishing backgound levels or no speech and no previous detection
+ * 0 if stopped talking
+ * 1 if started talking
+ **/
 static int wvs_check(wvs_state *state, double *samples, int nb_samples)
 {
     int counter;

@@ -67,7 +67,7 @@
 
     NSMutableURLRequest *req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString]];
     [req setHTTPMethod:@"POST"];
-    [req setCachePolicy:NSURLCacheStorageNotAllowed];
+    [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [req setTimeoutInterval:15.0];
     [req setHTTPBodyStream:inStream];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
@@ -83,8 +83,8 @@
                                if (WIT_DEBUG) {
                                    NSHTTPURLResponse* httpResp = (NSHTTPURLResponse*)response;
                                    NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
-                                   NSLog(@"Wit response %d (%f s) %@",
-                                         [httpResp statusCode],
+                                   NSLog(@"Wit response %ld (%f s) %@",
+                                         (long)[httpResp statusCode],
                                          t,
                                          [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                                }

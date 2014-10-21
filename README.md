@@ -1,4 +1,4 @@
-Wit-iOS 1.3.6
+Wit-iOS 2.0.0
 ===========
 
 The wit.ai iOS SDK is the easiest way to integrate [wit.ai](https://wit.ai) features into your iOS application.
@@ -16,7 +16,7 @@ Link to the SDK
 
 Add the following dependency to your Podfile:
 ```ruby
-pod 'Wit', '~> 1.3.6'
+pod 'Wit', '~> 2.0.0'
 ```
 
 And then run the following command in your project home directory:
@@ -32,4 +32,4 @@ You can download an archive containing the the ***.framework*** and the ***.bund
 How to use
 ----------
 
-You will find on our website a quick start guide of our iOS SDK: [https://wit.ai/docs/ios/](https://wit.ai/docs/ios/)
+You will find on our website a quick start guide of our iOS SDK and a fully detailed API reference: [https://wit.ai/docs/ios/2.0.0](https://wit.ai/docs/ios/2.0.0)

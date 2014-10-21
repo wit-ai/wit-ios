@@ -10,7 +10,7 @@
 #import "util.h"
 #import "WITRecordingSession.h"
 
-@interface Wit () <WITRecordingSessionDelegate>
+@interface Wit ()  
 @property (strong) WITState *state;
 @property WITRecordingSession *recordingSession;
 @end
@@ -20,26 +20,27 @@
 @synthesize delegate, state;
 
 #pragma mark - Public API
-- (void)toggleCaptureVoiceIntent:(id)sender {
-    [self toggleCaptureVoiceIntent:sender withCustomData:nil];
+- (void)toggleCaptureVoiceIntent {
+    [self toggleCaptureVoiceIntent: nil];
 }
 
-- (void)toggleCaptureVoiceIntent:(id)sender withCustomData:(id) customData {
+- (void)toggleCaptureVoiceIntent:(id)customData {
     if ([self isRecording]) {
         [self stop];
     } else {
-        [self start:sender customData:customData];
+        [self start: customData];
     }
 }
 
 - (void)start {
-    [self start:nil customData:nil];
+    [self start: nil];
 }
 
 
-- (void)start:(id)sender customData:(id)customData {
+- (void)start: (id)customData {
     self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context
-                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withToggleStarter:sender withWitToken:[WITState sharedInstance].accessToken];
+                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
+                                                               withDelegate:self];
     self.recordingSession.customData = customData;
     self.recordingSession.delegate = self;
 }
@@ -53,10 +54,10 @@
     return [self.recordingSession isRecording];
 }
 
-- (void) interpretString: (NSString *) string {
+- (void) interpretString: (NSString *) string customData:(id)customData {
     NSDate *start = [NSDate date];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@", urlencodeString(string), kWitAPIVersion]]];
-    [req setCachePolicy:NSURLCacheStorageNotAllowed];
+    [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [req setTimeoutInterval:15.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
@@ -70,7 +71,7 @@
                                }
                                
                                if (connectionError) {
-                                   [self gotResponse:nil error:connectionError];
+                                   [self gotResponse:nil customData:customData error:connectionError];
                                    return;
                                }
                                
@@ -79,21 +80,21 @@
                                                                                       options:0
                                                                                         error:&serializationError];
                                if (serializationError) {
-                                   [self gotResponse:nil error:serializationError];
+                                   [self gotResponse:nil customData:customData error:serializationError];
                                    return;
                                }
                                
                                if (object[@"error"]) {
                                    NSDictionary *infos = @{NSLocalizedDescriptionKey: object[@"error"],
                                                            kWitKeyError: object[@"code"]};
-                                   [self gotResponse:nil
+                                   [self gotResponse:nil customData:customData
                                                error:[NSError errorWithDomain:@"WitProcessing"
                                                                          code:1
                                                                      userInfo:infos]];
                                    return;
                                }
                                
-                               [self gotResponse:object error:nil];
+                               [self gotResponse:object customData:customData error:nil];
                            }];
 }
 
@@ -115,123 +116,48 @@
     return state.context;
 }
 
-#pragma mark - WITRecorderDelegate
--(void)recorderGotChunk:(NSData*)chunk {
-    [self.recordingSession.uploader sendChunk:chunk];
-}
-
-#pragma mark - NSNotificationCenter
-- (void)audioend:(NSNotification*)n {
-    if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {
-        [self.delegate witDidStopRecording];
-    }
-}
-
-- (void)audiostart:(NSNotification*)n {
-    if ([self.delegate respondsToSelector:@selector(witDidStartRecording)]) {
-        [self.delegate witDidStartRecording];
-    }
-}
-
 #pragma mark - WITUploaderDelegate
-- (void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
+- (void)gotResponse:(NSDictionary*)resp customData:(id)customData error:(NSError*)err {
     if (err) {
-        [self error:err];
+        [self error:err customData:customData];
         return;
     }
-    [self processMessage:resp];
-}
--(void)gotResponse:(NSDictionary *)resp error:(NSError *)err customData:(id)customData {
-    [self gotResponse:resp error:err];
+    [self processMessage:resp customData:customData];
 }
 
 #pragma mark - Response processing
-- (void)errorWithDescription:(NSString*)errorDesc {
+- (void)errorWithDescription:(NSString*)errorDesc customData:(id)customData {
     NSError* e = [NSError errorWithDomain:@"WitProcessing" code:1 userInfo:@{NSLocalizedDescriptionKey: errorDesc}];
-    [self error:e];
+    [self error:e customData:customData];
 }
 
-- (void)processMessage:(NSDictionary *)resp {
+- (void)processMessage:(NSDictionary *)resp customData:(id)customData {
     id error = resp[kWitKeyError];
     if (error) {
         NSString* errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
-        return [self errorWithDescription:errorDesc];
+        return [self errorWithDescription:errorDesc customData:customData];
     }
 
     NSDictionary* outcome = resp[kWitKeyOutcome];
     if (!outcome) {
-        return [self errorWithDescription:@"No outcome"];
+        return [self errorWithDescription:@"No outcome" customData:customData];
     }
 
     NSString *intent = outcome[@"intent"];
     if ((id)intent == [NSNull null]) {
-        return [self errorWithDescription:@"Intent was null"];
+        return [self errorWithDescription:@"Intent was null" customData:customData];
     }
-    
+    NSString *messageId = resp[kWitKeyMsgId];
+    NSString *confidenceString = outcome[kWitKeyConfidence];
+    NSNumber *confidence = [[NSNumber alloc] initWithFloat:[confidenceString floatValue]];
     NSDictionary *entities = outcome[@"entities"];
-    [self.delegate witDidGraspIntent:intent entities:entities body:resp[kWitKeyBody] error:nil];
-    [self dispatchIntent:intent withEntities:entities andBody:resp[kWitKeyBody]];
+    
+    [self.delegate witDidGraspIntent:intent entities:entities body:resp[kWitKeyBody] messageId:messageId confidence:confidence customData:customData error:error];
+    
 }
 
-- (void)error:(NSError*)e {
-    [self.delegate witDidGraspIntent:nil entities:nil body:nil error:e];
-}
-
-#pragma mark - Selector dispatch
-- (SEL)selectorFromIntent:(NSString *)intent {
-    // prepare regex for non-allowed characters
-    NSRegularExpression *wrongChars = [NSRegularExpression regularExpressionWithPattern:@"[-\\[_!@#%\\^$&*()=+}{|\\]';:/?.>,<`~\\\\]"
-                                                                                options:0
-                                                                                  error:nil];
-
-    // capitalize string and replace non-alphanum by spaces
-    NSString *sel = [NSMutableString stringWithString:
-            [wrongChars stringByReplacingMatchesInString:intent
-                                                 options:0
-                                                   range:NSMakeRange(0, [intent length])
-                                            withTemplate:@" "]];
-
-    sel = [sel capitalizedString];
-    // remove spaces
-    sel = [sel stringByReplacingOccurrencesOfString:@" " withString:@""];
-    // uncapitalize first letter
-    NSString *firstChar = [sel substringWithRange:NSMakeRange(0, 1)];
-    sel = [sel stringByReplacingCharactersInRange:NSMakeRange(0, 1) withString:[firstChar lowercaseString]];
-    // add : at the end
-    sel = [sel stringByAppendingString:@":withBody:"];
-
-    debug(@"%@ => %@", intent, sel);
-    return NSSelectorFromString(sel);
-}
-
-- (void)dispatchIntent:(NSString *)intent withEntities:(NSDictionary *)entities andBody:(NSString *)body {
-    if (!intent || (id)intent == [NSNull null]) {
-        return;
-    }
-
-    SEL selector = [self selectorFromIntent:intent];
-    if ([self.commandDelegate respondsToSelector:selector]) {
-#pragma clang diagnostic push
-#pragma clang diagnostic ignored "-Warc-performSelector-leaks"
-        [self.commandDelegate performSelector:selector withObject:entities withObject:body];
-#pragma clang diagnostic pop
-    } else {
-        debug(@"Couldn't find selector: %@", NSStringFromSelector(selector));
-        if ([self.commandDelegate respondsToSelector:@selector(didNotFindIntentSelectorForIntent:entities:body:)]) {
-            NSMethodSignature * mySignature = [self.commandDelegate
-                                               methodSignatureForSelector:@selector(didNotFindIntentSelectorForIntent:entities:body:)];
-            NSInvocation * myInvocation = [NSInvocation
-                                           invocationWithMethodSignature:mySignature];
-            [myInvocation setTarget:self.commandDelegate];
-            [myInvocation setSelector:@selector(didNotFindIntentSelectorForIntent:entities:body:)];
-            [myInvocation setArgument:&intent atIndex:2];
-            [myInvocation setArgument:&entities atIndex:3];
-            [myInvocation setArgument:&body atIndex:4];
-            [myInvocation invoke];
-            
-            
-        }
-    }
+- (void)error:(NSError*)e customData:(id)customData; {
+    [self.delegate witDidGraspIntent:nil entities:nil body:nil messageId:nil confidence:nil customData:customData error:e];
 }
 
 #pragma mark - Getters and setters
@@ -246,8 +172,7 @@
 #pragma mark - Lifecycle
 - (void)initialize {
     state = [WITState sharedInstance];
-    [self observeNotifications];
-    self.detectSpeechStop = NO;
+    self.detectSpeechStop = WITVadConfigDetectSpeechStop;
 }
 - (id)init {
     self = [super init];
@@ -255,14 +180,6 @@
         [self initialize];
     }
     return self;
-}
-
-- (void)observeNotifications {
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
-                                                 name:kWitNotificationAudioStart object:nil];
-    
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioend:)
-                                                 name:kWitNotificationAudioEnd object:nil];
 }
 
 - (void)dealloc {
@@ -277,6 +194,38 @@
     });
 
     return instance;
+}
+
+#pragma mark - WITRecordingSessionDelegate
+
+-(void)recordingSessionActivityDetectorStarted {
+    if ([self.delegate respondsToSelector:@selector(witActivityDetectorStarted)]) {
+        [self.delegate witActivityDetectorStarted];
+    }
+}
+
+-(void)recordingSessionDidStartRecording {
+    if ([self.delegate respondsToSelector:@selector(witDidStartRecording)]) {
+        [self.delegate witDidStartRecording];
+    }
+}
+
+-(void)recordingSessionDidStopRecording {
+    if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {
+        [self.delegate witDidStopRecording];
+    }
+}
+
+-(void)recordingSessionRecorderGotChunk:(NSData *)chunk {
+
+}
+
+-(void)recordingSessionRecorderPowerChanged:(float)power {
+    
+}
+
+-(void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err {
+    [self gotResponse:resp customData:customData error:err];
 }
 
 @end

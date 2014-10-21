@@ -5,20 +5,21 @@
 
 #import <Foundation/Foundation.h>
 #import <AVFoundation/AVFoundation.h>
+#import "WITVadConfig.h"
 #import "WITMicButton.h"
 
-@protocol WitDelegate;
 
-@interface Wit : NSObject
+
+@class WITRecordingSession;
+@protocol WitDelegate;
+@protocol WITRecordingSessionDelegate;
+
+
+@interface Wit : NSObject  <WITRecordingSessionDelegate>
 /**
  Delegate to send feedback for the application
  */
 @property(nonatomic, strong) id <WitDelegate> delegate;
-
-/**
- Delegate to send command based on intent received
- */
-@property(nonatomic, strong) id commandDelegate;
 
 /**
  Access token used to contact Wit.ai
@@ -26,29 +27,42 @@
 @property (strong) NSString* accessToken;
 
 /**
- Enable / Disable voice activity detection
+ * Configure the voice activity detection algorithm:
+ * - WITVadConfigDisabled
+ * - WITVadConfigDetectSpeechStop (default)
+ * - WITVadConfigFull
  */
-@property BOOL detectSpeechStop;
+@property WITVadConfig detectSpeechStop;
 
 /**
- Singleton instance accessor
+ Singleton instance accessor.
  */
 + (Wit*)sharedInstance;
 
 /**
- Pops a new view and records user voice. The sender to which the modal will be presented (Can be null if no UI wanted)
- */
-- (void)toggleCaptureVoiceIntent:(id)sender;
-- (void)toggleCaptureVoiceIntent:(id)sender withCustomData:(id) customData;
-
-/**
- Starts a new recording
+ * Starts a new recording session. [self.delegate witDidGraspIntent:...] will be called once completed.
  */
 - (void)start;
-- (void)start:(id)sender customData:(id)customData;
 
 /**
- Stops the current recording if any
+ * Same as the start method but allow a custom object to be passed, which will be passed back as an argument of the
+ * [self.delegate witDidGraspIntent:... customData:(id)customData]. This is how you should link a request to a response, if needed.
+ */
+- (void)start: (id)customData;
+
+/**
+ * Start / stop the audio processing. Once the API response is received, [self.delegate witDidGraspIntent:...] method will be called.
+ */
+- (void)toggleCaptureVoiceIntent;
+
+/**
+ * Same as toggleCaptureVoiceIntent, allowing you to pass a customData object to the [self start:(id)customData] function.
+ */
+- (void)toggleCaptureVoiceIntent:(id) customData;
+
+
+/**
+ Stops the current recording if any, which will lead to [self.delegate witDidGraspIntent:...] call.
  */
 - (void)stop;
 
@@ -58,18 +72,20 @@
 - (BOOL)isRecording;
 
 /**
- Sends an NSString to wit.ai for interpretation
+ * Sends an NSString to wit.ai for interpretation. Same as sending a voice input, but with text.
  */
-- (void)interpretString:(NSString *)string;
+- (void) interpretString: (NSString *) string customData:(id)customData;
 
 #pragma mark - Context management
 
 /**
- Sets context from NSDictionary. Merge semantics!
+ * Sets context from NSDictionary. Merge semantics! 
+ * See the context documentation in our doc for for more information:  http://wit.ai/docs/http/20140923#context-link
  */
 - (void)setContext:(NSDictionary*)dict;
+
 /**
- Returns the current context
+ * Returns the current context
  */
 - (NSDictionary*)getContext;
 @end
@@ -80,27 +96,38 @@
 @protocol WitDelegate <NSObject>
 
 /**
- Called when Wit understood what has been sent
+ Called when the Wit request is completed.
  \param intent The intent recognized
  \param entities An array of entities linked to this intent
+ \param body The spoken text returned by the api
+ \param messageId the message id returned by the api
+ \param confidence the confidence level of Wit about the returned semantic, ranging between 0 and 1.
+ \param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
  \param error Nil if no error occurred during processing
  */
-- (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body error:(NSError*)e;
+- (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body messageId:(NSString *)messageId confidence:(NSNumber *)confidence customData:(id) customData error:(NSError*)e;
 
 @optional
+
 /**
- Called when Wit start recording the audio entry
+ * When using the hands free voice activity detection option (WITVadConfigFull), this callback will be called when the microphone started to listen
+ * and is waiting to detect voice activity in order to start streaming the data to the Wit API.
+ * This function will not be called if the [Wit sharedInstance].detectSpeechStop is not equal to WITVadConfigFull
+ */
+- (void)witActivityDetectorStarted;
+
+/**
+ * Called when the streaming of the audio data to the Wit API starts.
+ * The streaming to the Wit API starts right after calling one of the start methods when
+ * detectSpeechStop is equal to WITVadConfigDisabled or WITVadConfigDetectSpeechStop.
+ * If detectSpeechStop is equal to WITVadConfigFull, the streaming to the Wit API starts only when the SDK
+ * detected a voice activity.
  */
 - (void)witDidStartRecording;
 
 /**
- Called when Wit stop recording the audio entry
+ Called when Wit stop recording the audio input.
  */
 - (void)witDidStopRecording;
-
-/**
- Called if no selector is found for received intent
- */
-- (void)didNotFindIntentSelectorForIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body;
 
 @end

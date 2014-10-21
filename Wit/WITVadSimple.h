@@ -57,7 +57,7 @@ typedef struct  {
     int current_nb_samples;
 } wvs_state;
 
-int wvs_still_talking(wvs_state *state, short int *samples, int nb_samples);
+int wvs_detect_talking(wvs_state *state, short int *samples, int nb_samples);
 
 wvs_state *wvs_init(double threshold, int sample_rate);
 

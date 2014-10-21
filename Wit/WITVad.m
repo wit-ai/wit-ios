@@ -19,14 +19,24 @@
 
 
 -(void) gotAudioSamples:(NSData *)samples {
-    UInt32 size = [samples length];
+    UInt32 size = (UInt32)[samples length];
     short *bytes = (short*)[samples bytes];
-    if (wvs_still_talking(self->vad_state, bytes, size / 2) == 0) {
+    
+    int detected_speech = wvs_detect_talking(self->vad_state, bytes, size / 2);
+    
+    if ( detected_speech == 1){
+        //someone just started talking
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self.delegate vadStartedTalking];
+        });
+    } else if ( detected_speech == 0) {
+        //someone just stopped talking
         self.stoppedUsingVad = YES;
         dispatch_async(dispatch_get_main_queue(), ^{
-            [[Wit sharedInstance] stop];
+            [self.delegate vadStoppedTalking];
         });
     }
+
 }
 
 -(id) init {
