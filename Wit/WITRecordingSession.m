@@ -71,7 +71,7 @@
 
 -(void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
 
-    [self.delegate recordingSessionGotResponse:resp error:err];
+    [self.delegate recordingSessionGotResponse:resp customData:self.customData error:err];
     
     if (!err && resp[kWitKeyMsgId]) {
         [self trackVad:resp[kWitKeyMsgId]];

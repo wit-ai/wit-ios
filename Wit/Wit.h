@@ -86,28 +86,37 @@
 @protocol WitDelegate <NSObject>
 
 /**
- Called when Wit understood what has been sent
+ Called when the Wit request is completed.
  \param intent The intent recognized
  \param entities An array of entities linked to this intent
+ \param body The spoken text returned by the api
+ \param messageId the message id returned by the api
+ \param confidence the confidence level of Wit about the returned semantic, ranging between 0 and 1.
+ \param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
  \param error Nil if no error occurred during processing
  */
-- (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body error:(NSError*)e;
+- (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body messageId:(NSString *)messageId confidence:(NSNumber *)confidence customData:(id) customData error:(NSError*)e;
 
 @optional
 
 /**
- * When using the hands free voice activity detection option, this callback will be called when the microphone started to listen
- * and is waiting to detect voice activity in order to send the data to the wit.ai API
+ * When using the hands free voice activity detection option (WITVadConfigFull), this callback will be called when the microphone started to listen
+ * and is waiting to detect voice activity in order to start streaming the data to the Wit API.
+ * This function will not be called if the [Wit sharedInstance].detectSpeechStop is not equal to WITVadConfigFull
  */
 - (void)witActivityDetectorStarted;
 
 /**
- Called when Wit start recording the audio input
+ * Called when the streaming of the audio data to the Wit API starts.
+ * The streaming to the Wit API starts right after calling one of the start methods when
+ * detectSpeechStop is equal to WITVadConfigDisabled or WITVadConfigDetectSpeechStop.
+ * If detectSpeechStop is equal to WITVadConfigFull, the streaming to the Wit API starts only when the SDK
+ * detected a voice activity.
  */
 - (void)witDidStartRecording;
 
 /**
- Called when Wit stop recording the audio entry
+ Called when Wit stop recording the audio input.
  */
 - (void)witDidStopRecording;
 

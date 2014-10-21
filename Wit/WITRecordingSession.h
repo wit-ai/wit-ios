@@ -42,7 +42,7 @@
 -(void)recordingSessionDidStartRecording;
 -(void)recordingSessionDidStopRecording;
 -(void)recordingSessionRecorderGotChunk:(NSData*)chunk;
--(void)recordingSessionGotResponse:(NSDictionary*)resp error:(NSError*)err;
+-(void)recordingSessionGotResponse:(NSDictionary*)resp customData:(id)customData error:(NSError*)err;
 
 -(void)stop;
 

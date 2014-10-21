@@ -22,7 +22,9 @@ static __unused NSString* const kWitKeyOutcome = @"outcome";
 static __unused NSString* const kWitKeyProgress = @"progress"; // file upload, etc.
 static __unused NSString* const kWitKeyURL = @"url"; // record completed
 static __unused NSString* const kWitKeyBody = @"msg_body"; // response's msg body
-static __unused NSString* const kWitKeyMsgId = @"msg_id"; // response's msg body
+static __unused NSString* const kWitKeyMsgId = @"msg_id"; // response's msg id
+static __unused NSString* const kWitKeyConfidence = @"confidence";
+
 
 #if WIT_DEBUG
 #define debug(x, ...) NSLog(x, ##__VA_ARGS__);
