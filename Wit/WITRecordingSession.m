@@ -8,6 +8,7 @@
 
 #import "WITRecordingSession.h"
 #import "WITVadConfig.h"
+#import "WITContextSetter.h"
 
 @interface WITRecordingSession ()
 
@@ -18,7 +19,7 @@
 
 @implementation WITRecordingSession
 
--(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
+-(id)initWithWitContext:(NSMutableDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
         self.delegate = delegate;
@@ -50,6 +51,7 @@
 
 -(void)startUploader
 {
+    WITContextSetter *wcs = [[WITContextSetter alloc] initWithContext:self.context];
     [self.uploader startRequestWithContext:self.context];
     self.isUploading = true;
     [self.delegate recordingSessionDidStartRecording];

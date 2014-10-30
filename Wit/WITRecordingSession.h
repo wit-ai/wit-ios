@@ -22,7 +22,7 @@
 @property id <WITRecordingSessionDelegate> delegate;
 @property id customData;
 @property NSString *witToken;
-@property NSDictionary *context;
+@property NSMutableDictionary *context;
 @property BOOL isUploading;
 
 
