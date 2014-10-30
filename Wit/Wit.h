@@ -10,12 +10,17 @@
 
 
 
+
 @class WITRecordingSession;
+@class WITContextSetter;
 @protocol WitDelegate;
 @protocol WITRecordingSessionDelegate;
 
 
 @interface Wit : NSObject  <WITRecordingSessionDelegate>
+
+@property(strong) WITContextSetter *wcs;
+
 /**
  Delegate to send feedback for the application
  */

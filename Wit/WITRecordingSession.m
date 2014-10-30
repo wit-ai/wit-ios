@@ -53,7 +53,7 @@ WITContextSetter *wcs;
 
 -(void)startUploader
 {
-    wcs = [[WITContextSetter alloc] initWithContext:self.context];
+    [[Wit sharedInstance].wcs contextFillup:self.context];
     [self.uploader startRequestWithContext:self.context];
     self.isUploading = true;
     [self.delegate recordingSessionDidStartRecording];

@@ -10,6 +10,8 @@
 
 @interface WITContextSetter : NSObject
 
--(id)initWithContext:(NSMutableDictionary *)context;
+-(void)contextFillup:(NSMutableDictionary *)context;
+
++(NSString *)jsonEncode: (NSMutableDictionary *)context;
 
 @end

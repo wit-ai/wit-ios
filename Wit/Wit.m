@@ -9,14 +9,16 @@
 #import "WITUploader.h"
 #import "util.h"
 #import "WITRecordingSession.h"
+#import "WITContextSetter.h"
+
 
 @interface Wit ()  
 @property (strong) WITState *state;
 @property WITRecordingSession *recordingSession;
 @end
 
-@implementation Wit {
-}
+@implementation Wit
+
 @synthesize delegate, state;
 
 #pragma mark - Public API
@@ -55,8 +57,11 @@
 }
 
 - (void) interpretString: (NSString *) string customData:(id)customData {
+    [self.wcs contextFillup:self.state.context];
     NSDate *start = [NSDate date];
-    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@", urlencodeString(string), kWitAPIVersion]]];
+    NSString *contextEncoded = [WITContextSetter jsonEncode:self.state.context];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@&context=%@", urlencodeString(string), kWitAPIVersion, contextEncoded];
+    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [req setTimeoutInterval:15.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
@@ -139,10 +144,9 @@
     }
 
     NSDictionary* outcomes = resp[kWitKeyOutcome];
-    if (!outcomes) {
+    if (!outcomes || [outcomes count] == 0) {
         return [self errorWithDescription:@"No outcome" customData:customData];
     }
-    
     NSString *messageId = resp[kWitKeyMsgId];
     
     [self.delegate witDidGraspIntent:outcomes messageId:messageId customData:customData error:error];
@@ -166,6 +170,7 @@
 - (void)initialize {
     state = [WITState sharedInstance];
     self.detectSpeechStop = WITVadConfigDetectSpeechStop;
+    self.wcs = [[WITContextSetter alloc] init];
 }
 - (id)init {
     self = [super init];

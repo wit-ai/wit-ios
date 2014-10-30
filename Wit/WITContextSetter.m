@@ -7,6 +7,8 @@
 //
 
 #import "WITContextSetter.h"
+#import "WitPrivate.h"
+#import "util.h"
 #import <CoreLocation/CoreLocation.h>
 
 @implementation WITContextSetter {
@@ -64,15 +66,27 @@
     return YES;
 }
 
--(id)initWithContext:(NSMutableDictionary *)context {
-    self = [self init];
-    if (self) {
-        [self ensureLocation:context];
-        [self ensureReferenceTime:context];
-    }
+-(void)contextFillup:(NSMutableDictionary *)context {
+    [self ensureLocation:context];
+    [self ensureReferenceTime:context];
+}
+
+-(id)init {
+    self = [super init];
+    [self locationAccess];
     
     return self;
 }
 
++(NSString *)jsonEncode: (NSMutableDictionary *)context {
+    NSError* serializationError;
+    NSData *data = [NSJSONSerialization dataWithJSONObject:context
+                                                   options:0
+                                                     error:&serializationError];
+    NSString *encoded = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    encoded = urlencodeString(encoded);
+    
+    return encoded;
+}
 
 @end
