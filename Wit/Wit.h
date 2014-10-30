@@ -109,7 +109,7 @@
  * param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
  * param error Nil if no error occurred during processing
  */
-- (void)witDidGraspIntent:(NSDictionary *)outcomes messageId:(NSString *)messageId customData:(id) customData error:(NSError*)e;
+- (void)witDidGraspIntent:(NSArray *)outcomes messageId:(NSString *)messageId customData:(id) customData error:(NSError*)e;
 
 @optional
 
