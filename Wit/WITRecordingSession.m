@@ -148,9 +148,6 @@ WITContextSetter *wcs;
 
 -(void)dealloc {
     
-    if (self.vadEnabled == WITVadConfigFull) {
-        [[Wit sharedInstance] start: self.customData];
-    }
     NSLog(@"Clean WITRecordingSession");
 }
 
