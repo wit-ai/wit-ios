@@ -96,16 +96,14 @@
 @protocol WitDelegate <NSObject>
 
 /**
- Called when the Wit request is completed.
- \param intent The intent recognized
- \param entities An array of entities linked to this intent
- \param body The spoken text returned by the api
- \param messageId the message id returned by the api
- \param confidence the confidence level of Wit about the returned semantic, ranging between 0 and 1.
- \param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
- \param error Nil if no error occurred during processing
+ * Called when the Wit request is completed.
+ * param outs an NSDictionary of outcomes returned by the Wit API. Outcomes are ordered by confidence, highest first. Each outcome contains (at least) the following keys:
+ *  intent, entities[], confidence, _text. For more information please refer to our online documentation: https://wit.ai/docs/http/20141022#get-intent-via-text-link
+ * param messageId the message id returned by the api
+ * param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
+ * param error Nil if no error occurred during processing
  */
-- (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body messageId:(NSString *)messageId confidence:(NSNumber *)confidence customData:(id) customData error:(NSError*)e;
+- (void)witDidGraspIntent:(NSDictionary *)outcomes messageId:(NSString *)messageId customData:(id) customData error:(NSError*)e;
 
 @optional
 

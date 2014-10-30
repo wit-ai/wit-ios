@@ -17,7 +17,9 @@
 @property int buffersToSave;
 @end
 
-@implementation WITRecordingSession
+@implementation WITRecordingSession {
+WITContextSetter *wcs;
+}
 
 -(id)initWithWitContext:(NSMutableDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
@@ -51,7 +53,7 @@
 
 -(void)startUploader
 {
-    WITContextSetter *wcs = [[WITContextSetter alloc] initWithContext:self.context];
+    wcs = [[WITContextSetter alloc] initWithContext:self.context];
     [self.uploader startRequestWithContext:self.context];
     self.isUploading = true;
     [self.delegate recordingSessionDidStartRecording];

@@ -138,26 +138,19 @@
         return [self errorWithDescription:errorDesc customData:customData];
     }
 
-    NSDictionary* outcome = resp[kWitKeyOutcome];
-    if (!outcome) {
+    NSDictionary* outcomes = resp[kWitKeyOutcome];
+    if (!outcomes) {
         return [self errorWithDescription:@"No outcome" customData:customData];
     }
-
-    NSString *intent = outcome[@"intent"];
-    if ((id)intent == [NSNull null]) {
-        return [self errorWithDescription:@"Intent was null" customData:customData];
-    }
-    NSString *messageId = resp[kWitKeyMsgId];
-    NSString *confidenceString = outcome[kWitKeyConfidence];
-    NSNumber *confidence = [[NSNumber alloc] initWithFloat:[confidenceString floatValue]];
-    NSDictionary *entities = outcome[@"entities"];
     
-    [self.delegate witDidGraspIntent:intent entities:entities body:resp[kWitKeyBody] messageId:messageId confidence:confidence customData:customData error:error];
+    NSString *messageId = resp[kWitKeyMsgId];
+    
+    [self.delegate witDidGraspIntent:outcomes messageId:messageId customData:customData error:error];
     
 }
 
 - (void)error:(NSError*)e customData:(id)customData; {
-    [self.delegate witDidGraspIntent:nil entities:nil body:nil messageId:nil confidence:nil customData:customData error:e];
+    [self.delegate witDidGraspIntent:nil messageId:nil customData:customData error:e];
 }
 
 #pragma mark - Getters and setters
