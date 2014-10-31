@@ -14,7 +14,7 @@
 @property (strong) WITRecorder* recorder;
 @property (strong) WITUploader* uploader;
 @property (strong) NSString *accessToken;
-@property (strong) NSDictionary *context;
+@property (strong) NSMutableDictionary *context;
 
 +(WITState*)sharedInstance;
 +(NSString*)UUID;

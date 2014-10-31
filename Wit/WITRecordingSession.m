@@ -8,6 +8,7 @@
 
 #import "WITRecordingSession.h"
 #import "WITVadConfig.h"
+#import "WITContextSetter.h"
 
 @interface WITRecordingSession ()
 
@@ -16,9 +17,11 @@
 @property int buffersToSave;
 @end
 
-@implementation WITRecordingSession
+@implementation WITRecordingSession {
+WITContextSetter *wcs;
+}
 
--(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
+-(id)initWithWitContext:(NSMutableDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
         self.delegate = delegate;
@@ -50,6 +53,7 @@
 
 -(void)startUploader
 {
+    [[Wit sharedInstance].wcs contextFillup:self.context];
     [self.uploader startRequestWithContext:self.context];
     self.isUploading = true;
     [self.delegate recordingSessionDidStartRecording];
@@ -144,9 +148,6 @@
 
 -(void)dealloc {
     
-    if (self.vadEnabled == WITVadConfigFull) {
-        [[Wit sharedInstance] start: self.customData];
-    }
     NSLog(@"Clean WITRecordingSession");
 }
 

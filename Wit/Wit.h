@@ -10,12 +10,17 @@
 
 
 
+
 @class WITRecordingSession;
+@class WITContextSetter;
 @protocol WitDelegate;
 @protocol WITRecordingSessionDelegate;
 
 
 @interface Wit : NSObject  <WITRecordingSessionDelegate>
+
+@property(strong) WITContextSetter *wcs;
+
 /**
  Delegate to send feedback for the application
  */
@@ -33,6 +38,15 @@
  * - WITVadConfigFull
  */
 @property WITVadConfig detectSpeechStop;
+
+/**
+ * Allow you to configure the options to pass to the AVAudioSession.
+ * This will be passed to the function [AVAudioSession setCategory:category withOptions:options error:outError]
+ *
+ * See https://developer.apple.com/library/IOs/documentation/AVFoundation/Reference/AVAudioSession_ClassReference/index.html#//apple_ref/c/econst/AVAudioSessionCategoryOptionMixWithOthers
+ *
+ */
+@property AVAudioSessionCategoryOptions avAudioSessionCategoryOption;
 
 /**
  Singleton instance accessor.
@@ -76,6 +90,7 @@
  */
 - (void) interpretString: (NSString *) string customData:(id)customData;
 
+
 #pragma mark - Context management
 
 /**
@@ -96,16 +111,15 @@
 @protocol WitDelegate <NSObject>
 
 /**
- Called when the Wit request is completed.
- \param intent The intent recognized
- \param entities An array of entities linked to this intent
- \param body The spoken text returned by the api
- \param messageId the message id returned by the api
- \param confidence the confidence level of Wit about the returned semantic, ranging between 0 and 1.
- \param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
- \param error Nil if no error occurred during processing
+ * Called when the Wit request is completed.
+ * param outcomes a NSDictionary of outcomes returned by the Wit API. Outcomes are ordered by confidence, highest first. Each outcome contains (at least) the following keys:
+ *       intent, entities[], confidence, _text. For more information please refer to our online documentation: https://wit.ai/docs/http/20141022#get-intent-via-text-link
+ *
+ * param messageId the message id returned by the api
+ * param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
+ * param error Nil if no error occurred during processing
  */
-- (void)witDidGraspIntent:(NSString *)intent entities:(NSDictionary *)entities body:(NSString *)body messageId:(NSString *)messageId confidence:(NSNumber *)confidence customData:(id) customData error:(NSError*)e;
+- (void)witDidGraspIntent:(NSArray *)outcomes messageId:(NSString *)messageId customData:(id) customData error:(NSError*)e;
 
 @optional
 

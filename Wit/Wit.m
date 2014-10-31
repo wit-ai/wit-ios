@@ -9,14 +9,16 @@
 #import "WITUploader.h"
 #import "util.h"
 #import "WITRecordingSession.h"
+#import "WITContextSetter.h"
+
 
 @interface Wit ()  
 @property (strong) WITState *state;
 @property WITRecordingSession *recordingSession;
 @end
 
-@implementation Wit {
-}
+@implementation Wit
+
 @synthesize delegate, state;
 
 #pragma mark - Public API
@@ -55,8 +57,11 @@
 }
 
 - (void) interpretString: (NSString *) string customData:(id)customData {
+    [self.wcs contextFillup:self.state.context];
     NSDate *start = [NSDate date];
-    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@", urlencodeString(string), kWitAPIVersion]]];
+    NSString *contextEncoded = [WITContextSetter jsonEncode:self.state.context];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@&context=%@", urlencodeString(string), kWitAPIVersion, contextEncoded];
+    NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [req setTimeoutInterval:15.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
@@ -138,26 +143,18 @@
         return [self errorWithDescription:errorDesc customData:customData];
     }
 
-    NSDictionary* outcome = resp[kWitKeyOutcome];
-    if (!outcome) {
+    NSArray* outcomes = resp[kWitKeyOutcome];
+    if (!outcomes || [outcomes count] == 0) {
         return [self errorWithDescription:@"No outcome" customData:customData];
     }
-
-    NSString *intent = outcome[@"intent"];
-    if ((id)intent == [NSNull null]) {
-        return [self errorWithDescription:@"Intent was null" customData:customData];
-    }
     NSString *messageId = resp[kWitKeyMsgId];
-    NSString *confidenceString = outcome[kWitKeyConfidence];
-    NSNumber *confidence = [[NSNumber alloc] initWithFloat:[confidenceString floatValue]];
-    NSDictionary *entities = outcome[@"entities"];
     
-    [self.delegate witDidGraspIntent:intent entities:entities body:resp[kWitKeyBody] messageId:messageId confidence:confidence customData:customData error:error];
+    [self.delegate witDidGraspIntent:outcomes messageId:messageId customData:customData error:error];
     
 }
 
 - (void)error:(NSError*)e customData:(id)customData; {
-    [self.delegate witDidGraspIntent:nil entities:nil body:nil messageId:nil confidence:nil customData:customData error:e];
+    [self.delegate witDidGraspIntent:nil messageId:nil customData:customData error:e];
 }
 
 #pragma mark - Getters and setters
@@ -173,6 +170,7 @@
 - (void)initialize {
     state = [WITState sharedInstance];
     self.detectSpeechStop = WITVadConfigDetectSpeechStop;
+    self.wcs = [[WITContextSetter alloc] init];
 }
 - (id)init {
     self = [super init];

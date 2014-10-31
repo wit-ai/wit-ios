@@ -169,7 +169,12 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 
     // create audio session
     AVAudioSession* session = [AVAudioSession sharedInstance];
-    [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    if ([Wit sharedInstance].avAudioSessionCategoryOption != 0) {
+        [session setCategory:AVAudioSessionCategoryPlayAndRecord withOptions: [Wit sharedInstance].avAudioSessionCategoryOption error:nil];
+    } else {
+        [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
+    }
+    
     [session setActive:YES error: nil];
     if([[AVAudioSession sharedInstance] respondsToSelector:@selector(requestRecordPermission:)])
     {

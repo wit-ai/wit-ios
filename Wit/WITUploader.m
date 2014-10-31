@@ -10,6 +10,7 @@
 #import "WITUploader.h"
 #import "WITState.h"
 #import "util.h"
+#import "WITContextSetter.h"
 
 @interface WITUploader ()
 @property (atomic) BOOL requestEnding;
@@ -30,7 +31,7 @@
 
 
 #pragma mark - Stream networking
--(BOOL)startRequestWithContext:(NSDictionary *)context {
+-(BOOL)startRequestWithContext:(NSMutableDictionary *)context {
     requestEnding = NO;
     NSString* token = [[WITState sharedInstance] accessToken];
 
@@ -54,12 +55,7 @@
     // build HTTP Request
     // if context, add to URL
     if (context != nil) {
-        NSError* serializationError;
-        NSData *data = [NSJSONSerialization dataWithJSONObject:context
-                                                       options:0
-                                                         error:&serializationError];
-        NSString *encoded = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
-        encoded = urlencodeString(encoded);
+        NSString *encoded = [WITContextSetter jsonEncode:context];
         urlString = [NSString stringWithFormat:@"%@&context=%@", kWitSpeechURL, encoded];
     } else {
         urlString = kWitSpeechURL;
