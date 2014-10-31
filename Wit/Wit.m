@@ -143,7 +143,7 @@
         return [self errorWithDescription:errorDesc customData:customData];
     }
 
-    NSDictionary* outcomes = resp[kWitKeyOutcome];
+    NSArray* outcomes = resp[kWitKeyOutcome];
     if (!outcomes || [outcomes count] == 0) {
         return [self errorWithDescription:@"No outcome" customData:customData];
     }
