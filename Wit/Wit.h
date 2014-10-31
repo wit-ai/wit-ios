@@ -40,6 +40,15 @@
 @property WITVadConfig detectSpeechStop;
 
 /**
+ * Allow you to configure the options to pass to the AVAudioSession.
+ * This will be passed to the function [AVAudioSession setCategory:category withOptions:options error:outError]
+ *
+ * See https://developer.apple.com/library/IOs/documentation/AVFoundation/Reference/AVAudioSession_ClassReference/index.html#//apple_ref/c/econst/AVAudioSessionCategoryOptionMixWithOthers
+ *
+ */
+@property AVAudioSessionCategoryOptions avAudioSessionCategoryOption;
+
+/**
  Singleton instance accessor.
  */
 + (Wit*)sharedInstance;
@@ -80,6 +89,7 @@
  * Sends an NSString to wit.ai for interpretation. Same as sending a voice input, but with text.
  */
 - (void) interpretString: (NSString *) string customData:(id)customData;
+
 
 #pragma mark - Context management
 
