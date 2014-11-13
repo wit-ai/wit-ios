@@ -65,6 +65,7 @@ typedef struct {
     double sfm_update_coeff;
     double dfc_history[DETECTOR_CVAD_FRAMES_INIT];
     double dfc_update_coeff;
+    int frame_number;
     int energy_history_index;
     int min_zero_crossings;
     int max_zero_crossings;
@@ -79,7 +80,7 @@ typedef struct {
  Main entry point to the detection algorithm.
  This returns a -1 if there is no change in state, a 1 if some started talking, and a 0 if speech ended
  */
-int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, float *samples, int nb_samples);
+int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *samples, int nb_samples);
 
 
 /*
@@ -92,7 +93,7 @@ void wv_detector_cvad_init(s_wv_detector_cvad_state *cvad_state);
  Set the reference values of the energy, most dominant frequency componant and the spectral flatness measure.
  The threshold value is then set based on the "background" reference levels
  */
-void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state, int cur_frame, double *band_energy, double dfc, double sfm);
+void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state, double *band_energy, double dfc, double sfm);
 
 /*
  Set the threshhold on the cvad_state.
@@ -115,7 +116,7 @@ int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, double *b
 /*
  Compute the fourier transoformation of a frame
  */
-kiss_fft_cpx *frames_detector_cvad_fft(float *samples, int nb);
+kiss_fft_cpx *frames_detector_cvad_fft(short int *samples, int nb);
 
 /*
  Return the frequency with the biggest amplitude (from a frame).
@@ -145,7 +146,16 @@ double frames_detector_cvad_c2r(kiss_fft_cpx module);
  Counts the number of times the signal crosses zero
  Even soft vocalizations have a fairly regular number of zero crossings (~5-15 for 10ms)
  */
-int frames_detector_cvad_zero_crossings(float *samples, int nb);
+int frames_detector_cvad_zero_crossings(short int *samples, int nb);
 
+/*
+ Adds value to the head of memory
+ */
+static void frame_memory_push(char *memory, int length, int value);
+
+/*
+ Sums up the last N values of memory
+ */
+static int frame_memory_sum_last_n(char *memory, int nb);
 
 #endif
