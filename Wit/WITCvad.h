@@ -30,7 +30,7 @@
  */
 
 #define DETECTOR_CVAD_FRAME_SIZE 10  /* milliseconds */
-#define DETECTOR_CVAD_FRAMES_INIT 30 /* number of frames to use to initialize the minimum values */
+#define DETECTOR_CVAD_FRAMES_INIT 60 /* number of frames to use to initialize the minimum values */
 #define DETECTOR_CVAD_E_TH_COEFF_LOW_BAND 2.5f     /* Energy threshold coefficient */
 #define DETECTOR_CVAD_E_TH_COEFF_UPPER_BANDS 2.0f     /* Energy threshold coefficient */
 #define DETECTOR_CVAD_SFM_TH 3.0f   /* Spectral Flatness Measure threshold */
@@ -45,9 +45,9 @@
 #define DETECTOR_CVAD_N_FRAMES_CHECK_START 15
 #define DETECTOR_CVAD_COUNT_SUM_START 85
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT 20
-#define DETECTOR_CVAD_COUNT_SUM_END_SHORT 5
+#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.6
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG 100
-#define DETECTOR_CVAD_COUNT_SUM_END_LONG 200
+#define DETECTOR_CVAD_COUNT_END_LONG_FACTOR 3
 
 typedef struct {
     double energy_thresh_coeff_lower;
@@ -75,7 +75,9 @@ typedef struct {
     int silence_count;
     int talking;
     int sample_freq;
-    char previous_state[DETECTOR_CVAD_RESULT_MEMORY];
+    int samples_per_frame;
+    int max_start_sum;
+    short int previous_state[DETECTOR_CVAD_RESULT_MEMORY];
 } s_wv_detector_cvad_state;
 
 /*
@@ -118,22 +120,25 @@ void wv_detector_cvad_modify_update_coeffs(s_wv_detector_cvad_state *cvad_state)
  Each frame with more than 2 (out of 3) matching features are qualified as a speech frame.
  example : energy - cvad_state->min_energy > cvad_state->th_energy
  */
-int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, double *band_energy, double dfc, double sfm, int zero_crossings);
+short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, double *band_energy, double dfc, double sfm, int zero_crossings);
 
 /*
  Compute the fourier transoformation of a frame
  */
-kiss_fft_cpx *frames_detector_cvad_fft(short int *samples, int nb);
+//kiss_fft_cpx *frames_detector_cvad_fft(short int *samples, int nb);
+void frames_detector_cvad_fft(short int *samples, kiss_fft_cpx* results, int nb);
 
 /*
  Return the frequency with the biggest amplitude (from a frame).
  */
 double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *modules, int nb_modules, double nb_samples);
 
+
 /*
  Computes the energy of the first DETECTOR_CVAD_N_ENERGY_BANDS 1 KHz bands
  */
-double* frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *fft_modules, int nb_modules, int nb_samples);
+//double* frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *fft_modules, int nb_modules, int nb_samples);
+void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *fft_modules, int nb_modules, double *band_energy, int nb_samples);
 
 /*
  Compute the spectral flatness of a frame.
@@ -158,11 +163,11 @@ int frames_detector_cvad_zero_crossings(short int *samples, int nb);
 /*
  Adds value to the head of memory
  */
-static void frame_memory_push(char *memory, int length, int value);
+static void frame_memory_push(short int *memory, int length, short int value);
 
 /*
  Sums up the last N values of memory
  */
-static int frame_memory_sum_last_n(char *memory, int nb);
+static int frame_memory_sum_last_n(short int *memory, int nb);
 
 #endif

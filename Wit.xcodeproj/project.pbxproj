@@ -37,9 +37,10 @@
 		1D57693A1A14281A009294C2 /* WITCvad.m in Sources */ = {isa = PBXBuildFile; fileRef = 1D5769391A14281A009294C2 /* WITCvad.m */; };
 		1D5769421A143477009294C2 /* _kiss_fft_guts.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D57693D1A143477009294C2 /* _kiss_fft_guts.h */; };
 		1D5769431A143477009294C2 /* kiss_fft.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D57693E1A143477009294C2 /* kiss_fft.c */; };
-		1D5769441A143477009294C2 /* kiss_fft.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D57693F1A143477009294C2 /* kiss_fft.h */; };
+		1D5769441A143477009294C2 /* kiss_fft.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D57693F1A143477009294C2 /* kiss_fft.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1D5769451A143477009294C2 /* kiss_fftr.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D5769401A143477009294C2 /* kiss_fftr.c */; };
-		1D5769461A143477009294C2 /* kiss_fftr.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D5769411A143477009294C2 /* kiss_fftr.h */; };
+		1D5769461A143477009294C2 /* kiss_fftr.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D5769411A143477009294C2 /* kiss_fftr.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1D57695A1A15195F009294C2 /* WITCvad.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D57693B1A1429C3009294C2 /* WITCvad.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B10D7A9175561F900973536 /* WITCircleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B10D7A7175561F900973536 /* WITCircleView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B10D7AA175561F900973536 /* WITCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B10D7A8175561F900973536 /* WITCircleView.m */; };
 		2B25FE451829A36800F698ED /* WitPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B25FE441829A25700F698ED /* WitPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
@@ -375,6 +376,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D57695A1A15195F009294C2 /* WITCvad.h in Headers */,
 				1D5769421A143477009294C2 /* _kiss_fft_guts.h in Headers */,
 				B9BA7F4216355AD500C95D37 /* Wit.h in Headers */,
 				1D5769461A143477009294C2 /* kiss_fftr.h in Headers */,
