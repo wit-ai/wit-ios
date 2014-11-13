@@ -10,4 +10,142 @@
 #define Wit_WITCvad_h
 
 
+#include <stdlib.h>
+#include <stdio.h>
+#include <math.h>
+#include <string.h>
+#include "kiss_fftr.h"
+
+/*
+ * This speech algorithm looks at multiple auditory compenents related to speech:
+ *  - Energy divided into 1 KHz bands
+ *  - Dominant Frequency Component
+ *  - Spectral Flatness Measure
+ *  - Zero-crossings
+ *
+ * If many features of speech are present for a period of time (~150 ms), speech is detected.
+ * The end of speech is determined by most features of speech disappearing for an extended period of time (~1 sec)
+ */
+
+#define DETECTOR_CVAD_FRAME_SIZE 10  /* milliseconds */
+#define DETECTOR_CVAD_FRAMES_INIT 30 /* number of frames to use to initialize the minimum values */
+#define DETECTOR_CVAD_E_TH_COEFF_LOW_BAND 2.5f     /* Energy threshold coefficient */
+#define DETECTOR_CVAD_E_TH_COEFF_UPPER_BANDS 2.0f     /* Energy threshold coefficient */
+#define DETECTOR_CVAD_SFM_TH 3.0f   /* Spectral Flatness Measure threshold */
+#define DETECTOR_CVAD_DFC_TH 250.0f   /* most Dominant Frequency Component threshold */
+#define DETECTOR_CVAD_MIN_ZERO_CROSSINGS 5   /* fewest zero crossings for speech */
+#define DETECTOR_CVAD_MAX_ZERO_CROSSINGS 15  /* maximum zero crossings for speech */
+#define DETECTOR_CVAD_RESULT_MEMORY 100 /* number of frame results to keep in memory */
+#define DETECTOR_CVAD_ENERGY_MEMORY 20 /* number of frame results to keep in memory */
+#define DETECTOR_CVAD_N_ENERGY_BANDS 5 /* number of 1 KHz energy bands to compute */
+
+//final speech detection variables
+#define DETECTOR_CVAD_N_FRAMES_CHECK_START 15
+#define DETECTOR_CVAD_COUNT_SUM_START 85
+#define DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT 20
+#define DETECTOR_CVAD_COUNT_SUM_END_SHORT 5
+#define DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG 100
+#define DETECTOR_CVAD_COUNT_SUM_END_LONG 200
+
+typedef struct {
+    double energy_thresh_coeff_lower;
+    double energy_thresh_coeff_upper;
+    double sfm_thresh;
+    double dfc_thresh;
+    double th_energy[DETECTOR_CVAD_N_ENERGY_BANDS];
+    double th_sfm;
+    double th_dfc;
+    double ref_energy[DETECTOR_CVAD_N_ENERGY_BANDS];
+    double ref_sfm;
+    double ref_dfc;
+    double ref_dfc_var;
+    double energy_update_coeff[DETECTOR_CVAD_N_ENERGY_BANDS];
+    double energy_prev_variance[DETECTOR_CVAD_N_ENERGY_BANDS];
+    double energy_history[DETECTOR_CVAD_N_ENERGY_BANDS][DETECTOR_CVAD_ENERGY_MEMORY];
+    double sfm_update_coeff;
+    double dfc_history[DETECTOR_CVAD_FRAMES_INIT];
+    double dfc_update_coeff;
+    int energy_history_index;
+    int min_zero_crossings;
+    int max_zero_crossings;
+    int thresh_initialized;
+    int silence_count;
+    int talking;
+    int sample_freq;
+    char previous_state[DETECTOR_CVAD_RESULT_MEMORY];
+} s_wv_detector_cvad_state;
+
+/*
+ Main entry point to the detection algorithm.
+ This returns a -1 if there is no change in state, a 1 if some started talking, and a 0 if speech ended
+ */
+int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, float *samples, int nb_samples);
+
+
+/*
+ Initiate the cvad_state structure, which reprensent state of
+ one instance of the algorithm
+ */
+void wv_detector_cvad_init(s_wv_detector_cvad_state *cvad_state);
+
+/*
+ Set the reference values of the energy, most dominant frequency componant and the spectral flatness measure.
+ The threshold value is then set based on the "background" reference levels
+ */
+void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state, int cur_frame, double *band_energy, double dfc, double sfm);
+
+/*
+ Set the threshhold on the cvad_state.
+ */
+void vw_detector_cvad_set_threshold(s_wv_detector_cvad_state *cvad_state);
+
+/*
+ Computes the variance of the energy over the past few windows and adapts the update ceoffs accordingly
+ */
+void wv_detector_cvad_modify_update_coeffs(s_wv_detector_cvad_state *cvad_state);
+
+/*
+ Compare the distance between the value and the minimum value of each component and return how many
+ component(s) reponded positiviely.
+ Each frame with more than 2 (out of 3) matching features are qualified as a speech frame.
+ example : energy - cvad_state->min_energy > cvad_state->th_energy
+ */
+int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, double *band_energy, double dfc, double sfm, int zero_crossings);
+
+/*
+ Compute the fourier transoformation of a frame
+ */
+kiss_fft_cpx *frames_detector_cvad_fft(float *samples, int nb);
+
+/*
+ Return the frequency with the biggest amplitude (from a frame).
+ */
+double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *modules, int nb_modules, double nb_samples);
+
+/*
+ Computes the energy of the first DETECTOR_CVAD_N_ENERGY_BANDS 1 KHz bands
+ */
+double* frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *fft_modules, int nb_modules, int nb_samples);
+
+/*
+ Compute the spectral flatness of a frame.
+ It tells us if all the frequencies have a similar amplitude, which would means noise
+ or if there is some dominant frequencies, which could mean voice.
+ */
+double frames_detector_cvad_spectral_flatness(kiss_fft_cpx *modules, int nb);
+
+/*
+ Take the output of the fourier transform and return the absolute value.
+ module[0] contains the real part of the fourier transform result and module[1] contains the imaginary representation of the number.
+ (module[0]^2 + module[1]^2)^1/2 is equal to the amplitude of the frequency.
+ */
+double frames_detector_cvad_c2r(kiss_fft_cpx module);
+
+/*
+ Counts the number of times the signal crosses zero
+ Even soft vocalizations have a fairly regular number of zero crossings (~5-15 for 10ms)
+ */
+int frames_detector_cvad_zero_crossings(float *samples, int nb);
+
+
 #endif
