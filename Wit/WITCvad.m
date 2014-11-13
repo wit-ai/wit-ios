@@ -6,8 +6,7 @@
 //  Copyright (c) 2014 Willy Blandin. All rights reserved.
 //
 
-#define FIXED_POINT 16 //sets fft for fixed point data
-#include "WITCVad.h"
+#include "WITCvad.h"
 
 int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *samples, int nb_samples)
 {
@@ -18,21 +17,18 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
     int fft_size = nb_samples / 2 + 1;
     int counter;
     int action = -1;
-    
-    /*energy = frames_detector_cvad_energy(samples, nb_samples);*/
+
     fft_modules = frames_detector_cvad_fft(samples, nb_samples);
     dfc = frames_detector_cvad_most_dominant_freq(cvad_state, fft_modules, fft_size, nb_samples);
     sfm = frames_detector_cvad_spectral_flatness(fft_modules, fft_size);
     int zero_crossings = frames_detector_cvad_zero_crossings(samples, nb_samples);
-    /*printf("%d\n",zero_crossings);*/
     band_energy = frames_detector_cvad_multiband_energy(cvad_state, fft_modules, fft_size, nb_samples);
-    free(fft_modules);
     
     vw_detector_cvad_set_threshold(cvad_state);
     counter = vw_detector_cvad_check_frame(cvad_state, band_energy, dfc, sfm, zero_crossings);
     frame_memory_push(cvad_state->previous_state, DETECTOR_CVAD_RESULT_MEMORY, counter);
     
-    if ((counter < 2 && cvad_state->talking == 0) || !cvad_state->thresh_initialized) {
+    if ((counter < 3 && cvad_state->talking == 0) || !cvad_state->thresh_initialized) {
         cvad_state->silence_count++;
         //only update reference levels if we don't detect speech
         wv_detector_cvad_update_ref_levels(cvad_state, band_energy, dfc, sfm);
@@ -53,11 +49,15 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
         
     cvad_state->frame_number++;
     
+    free(band_energy);
+    free(fft_modules);
+    
     return action;
 }
 
-void wv_detector_cvad_init(s_wv_detector_cvad_state *cvad_state)
+s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate)
 {
+    s_wv_detector_cvad_state *cvad_state = malloc(sizeof(s_wv_detector_cvad_state));
     cvad_state->energy_thresh_coeff_lower = DETECTOR_CVAD_E_TH_COEFF_LOW_BAND;
     cvad_state->energy_thresh_coeff_upper = DETECTOR_CVAD_E_TH_COEFF_UPPER_BANDS;
     cvad_state->sfm_thresh= DETECTOR_CVAD_SFM_TH;
@@ -78,8 +78,15 @@ void wv_detector_cvad_init(s_wv_detector_cvad_state *cvad_state)
     cvad_state->ref_dfc = 0;
     cvad_state->ref_sfm = 99999;
     memset(cvad_state->dfc_history, 0, DETECTOR_CVAD_FRAMES_INIT * sizeof(double));
-    cvad_state->sample_freq = 16000; //this should really check with the input
+    cvad_state->sample_freq = sample_rate;
     memset(cvad_state->previous_state, 0, DETECTOR_CVAD_RESULT_MEMORY * sizeof(char));
+    
+    return cvad_state;
+}
+
+void wv_detector_cvad_clean(s_wv_detector_cvad_state *cvad_state)
+{
+    free(cvad_state);
 }
 
 void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state,

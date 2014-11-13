@@ -14,6 +14,8 @@
 #include <stdio.h>
 #include <math.h>
 #include <string.h>
+
+#define FIXED_POINT 16 //sets fft for fixed point data
 #include "kiss_fftr.h"
 
 /*
@@ -84,10 +86,15 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
 
 
 /*
- Initiate the cvad_state structure, which reprensent state of
+ Initiate the cvad_state structure, which represents the state of
  one instance of the algorithm
  */
-void wv_detector_cvad_init(s_wv_detector_cvad_state *cvad_state);
+s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate);
+
+/*
+ Safely frees memory for a cvad_state
+ */
+void wv_detector_cvad_clean(s_wv_detector_cvad_state *cvad_state);
 
 /*
  Set the reference values of the energy, most dominant frequency componant and the spectral flatness measure.
