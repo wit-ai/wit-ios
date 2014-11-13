@@ -35,7 +35,7 @@ WITContextSetter *wcs;
         self.recorder.delegate = self;
         [self.recorder start];
         self.witToken = witToken;
-        self.buffersToSave = 1; //hardcode for now
+        self.buffersToSave = 2; //hardcode for now
         if (vadEnabled == WITVadConfigDisabled) {
             [self startUploader];
         } else  {
@@ -120,7 +120,6 @@ WITContextSetter *wcs;
             [self startUploader];
     
             //then prepend buffered data
-    
             for(NSData* bufferedData in self.dataBuffer){
                 [self.uploader sendChunk:bufferedData];
             }

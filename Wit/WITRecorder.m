@@ -43,7 +43,7 @@ static void audioQueueInputCallback(void* data,
     void * const bytes = buffer->mAudioData;
     UInt32 size        = buffer->mAudioDataByteSize;
     int err;
-
+    
     if (WIT_DEBUG) {
         debug(@"Audio chunk %u/%u", (unsigned int)size, (unsigned int)buffer->mAudioDataBytesCapacity);
     }
