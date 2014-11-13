@@ -10,10 +10,7 @@
 
 int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *samples, int nb_samples)
 {
-    //NSLog(@"Starting...");
     double dfc;
-    //double *band_energy = malloc(DETECTOR_CVAD_N_ENERGY_BANDS * sizeof(double));
-    //kiss_fft_cpx *fft_modules = malloc(cvad_state->samples_per_frame * sizeof(kiss_fft_cpx));
     double band_energy[DETECTOR_CVAD_N_ENERGY_BANDS];
     kiss_fft_cpx fft_modules[160];
     double sfm;
@@ -23,17 +20,12 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
     int zero_crossings;
     
     while(nb_samples>=cvad_state->samples_per_frame){
-        //NSLog(@"Band Energy before: %p",band_energy);
-        //NSLog(@"FFT before: %p",fft_modules);
         //only process cvad_state->samples_per_frame samples at a time
         frames_detector_cvad_fft(samples, fft_modules, cvad_state->samples_per_frame);
         dfc = frames_detector_cvad_most_dominant_freq(cvad_state, fft_modules, fft_size, cvad_state->samples_per_frame);
         sfm = frames_detector_cvad_spectral_flatness(fft_modules, fft_size);
         zero_crossings = frames_detector_cvad_zero_crossings(samples, cvad_state->samples_per_frame);
         frames_detector_cvad_multiband_energy(cvad_state, fft_modules, fft_size, band_energy, cvad_state->samples_per_frame);
-        
-        //NSLog(@"Band Energy after: %p",band_energy);
-        //NSLog(@"FFT after: %p",fft_modules);
         
         vw_detector_cvad_set_threshold(cvad_state);
         counter = vw_detector_cvad_check_frame(cvad_state, band_energy, dfc, sfm, zero_crossings);
@@ -52,7 +44,7 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
             if(start_sum > cvad_state->max_start_sum){
                 cvad_state->max_start_sum = start_sum;
             }
-            NSLog(@"%d %d %d %d",start_sum, cvad_state->max_start_sum, stop_sum_short, stop_sum_long);
+            //NSLog(@"%d %d %d %d",start_sum, cvad_state->max_start_sum, stop_sum_short, stop_sum_long);
             if (!cvad_state->talking && start_sum >= DETECTOR_CVAD_COUNT_SUM_START ) {
                 cvad_state->talking = 1;
                 action = 1;
