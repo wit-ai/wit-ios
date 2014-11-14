@@ -44,15 +44,14 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
             if(start_sum > cvad_state->max_start_sum){
                 cvad_state->max_start_sum = start_sum;
             }
-            //NSLog(@"%d %d %d %d",start_sum, cvad_state->max_start_sum, stop_sum_short, stop_sum_long);
-            if (!cvad_state->talking && start_sum >= DETECTOR_CVAD_COUNT_SUM_START ) {
+            if (!cvad_state->talking && start_sum >= cvad_state->start_sum_threshold ) {
                 cvad_state->talking = 1;
                 action = 1;
                 NSLog(@"Speech detected!");
             }
             else if (cvad_state->talking && counter < 3
-                     && stop_sum_long <= cvad_state->max_start_sum*DETECTOR_CVAD_COUNT_END_LONG_FACTOR
-                     && stop_sum_short <= cvad_state->max_start_sum*DETECTOR_CVAD_COUNT_END_SHORT_FACTOR ) {
+                     && stop_sum_long <= cvad_state->max_start_sum*cvad_state->end_sum_long_coeff
+                     && stop_sum_short <= cvad_state->max_start_sum*cvad_state->end_sum_short_coeff ) {
                 cvad_state->talking = 0;
                 action = 0;
                 cvad_state->max_start_sum = 0;
@@ -60,24 +59,17 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
             }
         }
         
-        //NSLog(@"Frame %i count: %i",cvad_state->frame_number,counter);
-        
         cvad_state->frame_number++;
         //move memory pointer forward by cvad_state->samples_per_frame
         samples+=cvad_state->samples_per_frame;
         nb_samples-=cvad_state->samples_per_frame;
     
     }
-    
-    //ALWAYS CLEAN MEMORY!
-    //free(band_energy);
-    //free(fft_modules);
-    
-    //NSLog(@"Returning...");
+
     return action;
 }
 
-s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate)
+s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode)
 {
     s_wv_detector_cvad_state *cvad_state = malloc(sizeof(s_wv_detector_cvad_state));
     cvad_state->energy_thresh_coeff_lower = DETECTOR_CVAD_E_TH_COEFF_LOW_BAND;
@@ -105,12 +97,32 @@ s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate)
     cvad_state->samples_per_frame = cvad_state->sample_freq/100; //100 frames per second
     memset(cvad_state->previous_state, 0, DETECTOR_CVAD_RESULT_MEMORY * sizeof(short int));
     
+    wv_detector_cvad_set_detection_mode(cvad_state, sensitive_mode);
+    
     return cvad_state;
 }
 
 void wv_detector_cvad_clean(s_wv_detector_cvad_state *cvad_state)
 {
     free(cvad_state);
+}
+
+void wv_detector_cvad_set_detection_mode(s_wv_detector_cvad_state *cvad_state, int sensitive_mode)
+{
+    cvad_state->n_frames_check_start=DETECTOR_CVAD_N_FRAMES_CHECK_START;
+    cvad_state->n_frames_check_end_short=DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT;
+    cvad_state->n_frames_check_end_long=DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG;
+    
+    if(sensitive_mode){
+        cvad_state->start_sum_threshold = DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE;
+        cvad_state->end_sum_short_coeff = DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE;
+        cvad_state->end_sum_long_coeff = DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE;
+    } else {
+        cvad_state->start_sum_threshold = DETECTOR_CVAD_COUNT_SUM_START;
+        cvad_state->end_sum_short_coeff = DETECTOR_CVAD_COUNT_END_SHORT_FACTOR;
+        cvad_state->end_sum_long_coeff = DETECTOR_CVAD_COUNT_END_LONG_FACTOR;
+    }
+    
 }
 
 void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state,

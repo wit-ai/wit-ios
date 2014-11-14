@@ -44,10 +44,13 @@
 //final speech detection variables
 #define DETECTOR_CVAD_N_FRAMES_CHECK_START 15
 #define DETECTOR_CVAD_COUNT_SUM_START 85
+#define DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE 75
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT 20
 #define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.6
+#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE 0.6
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG 100
 #define DETECTOR_CVAD_COUNT_END_LONG_FACTOR 3
+#define DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE 2
 
 typedef struct {
     double energy_thresh_coeff_lower;
@@ -67,6 +70,8 @@ typedef struct {
     double sfm_update_coeff;
     double dfc_history[DETECTOR_CVAD_FRAMES_INIT];
     double dfc_update_coeff;
+    float end_sum_long_coeff;
+    float end_sum_short_coeff;
     int frame_number;
     int energy_history_index;
     int min_zero_crossings;
@@ -77,6 +82,10 @@ typedef struct {
     int sample_freq;
     int samples_per_frame;
     int max_start_sum;
+    int n_frames_check_start;
+    int n_frames_check_end_short;
+    int n_frames_check_end_long;
+    int start_sum_threshold;
     short int previous_state[DETECTOR_CVAD_RESULT_MEMORY];
 } s_wv_detector_cvad_state;
 
@@ -90,13 +99,22 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
 /*
  Initiate the cvad_state structure, which represents the state of
  one instance of the algorithm
+ 
+ sensitive mode: 0 if for a close-up mic, 1 if for a fixed, distant mic
  */
-s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate);
+s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode);
 
 /*
  Safely frees memory for a cvad_state
  */
 void wv_detector_cvad_clean(s_wv_detector_cvad_state *cvad_state);
+
+/*
+ Sets the detection mode.
+ 0 for highly discriminating (like a mic on a phone)
+ 1 for high voice sensitivity (like a fixed mic in a home)
+ */
+void wv_detector_cvad_set_detection_mode(s_wv_detector_cvad_state *cvad_state, int sensitive_mode);
 
 /*
  Set the reference values of the energy, most dominant frequency componant and the spectral flatness measure.
