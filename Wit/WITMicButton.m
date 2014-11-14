@@ -247,7 +247,9 @@ static const CGFloat kMicMargin = 40.0f;
 - (void)newAudioLevel:(NSNotification*)n {
     NSNumber *NSPower = [n object];
     float power = [NSPower floatValue];
-    CGFloat coeff = fmax(0, fmin(1, (power+51) / 30));
+    //CGFloat coeff = fmax(0, fmin(1, (power+51) / 30));
+    CGFloat coeff = pow(fmax(0, fmin(1, (power+42) / 42)),1.5);
+    //NSLog(@"Power: %g",power);
     NSNumber* newRadius = @((1+coeff*1.5) * self.innerCircleView.radius.floatValue);
     self.outerCircleView.radius = newRadius;
 }

@@ -35,7 +35,7 @@ WITContextSetter *wcs;
         self.recorder.delegate = self;
         [self.recorder start];
         self.witToken = witToken;
-        self.buffersToSave = 2; //hardcode for now
+        self.buffersToSave = 3; //hardcode for now
         if (vadEnabled == WITVadConfigDisabled) {
             [self startUploader];
         } else  {

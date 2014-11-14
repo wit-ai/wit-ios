@@ -46,16 +46,18 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
             }
             if (!cvad_state->talking && start_sum >= cvad_state->start_sum_threshold ) {
                 cvad_state->talking = 1;
+                cvad_state->speech_start_frame =  cvad_state->frame_number;
                 action = 1;
-                NSLog(@"Speech detected!");
             }
-            else if (cvad_state->talking && counter < 3
-                     && stop_sum_long <= cvad_state->max_start_sum*cvad_state->end_sum_long_coeff
-                     && stop_sum_short <= cvad_state->max_start_sum*cvad_state->end_sum_short_coeff ) {
+            else if (cvad_state->talking
+                     && ((counter < 3
+                          && stop_sum_long <= cvad_state->max_start_sum*cvad_state->end_sum_long_coeff
+                          && stop_sum_short <= cvad_state->max_start_sum*cvad_state->end_sum_short_coeff)
+                         || (cvad_state->max_speech_time > 0
+                             && (cvad_state->frame_number-cvad_state->speech_start_frame) * DETECTOR_CVAD_FRAME_SIZE >= cvad_state->max_speech_time))) {
                 cvad_state->talking = 0;
                 action = 0;
                 cvad_state->max_start_sum = 0;
-                NSLog(@"Speech ended!");
             }
         }
         
@@ -69,7 +71,7 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
     return action;
 }
 
-s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode)
+s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode, int speech_timeout)
 {
     s_wv_detector_cvad_state *cvad_state = malloc(sizeof(s_wv_detector_cvad_state));
     cvad_state->energy_thresh_coeff_lower = DETECTOR_CVAD_E_TH_COEFF_LOW_BAND;
@@ -85,6 +87,8 @@ s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_m
     cvad_state->dfc_update_coeff = 0.10;
     cvad_state->sfm_update_coeff = 0.10;
     cvad_state->frame_number = 0;
+    cvad_state->speech_start_frame = -1;
+    cvad_state->max_speech_time = speech_timeout;
     cvad_state->thresh_initialized = 0;
     cvad_state->silence_count = 0;
     cvad_state->talking = 0;

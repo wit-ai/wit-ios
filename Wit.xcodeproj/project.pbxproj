@@ -41,12 +41,12 @@
 		1D5769451A143477009294C2 /* kiss_fftr.c in Sources */ = {isa = PBXBuildFile; fileRef = 1D5769401A143477009294C2 /* kiss_fftr.c */; };
 		1D5769461A143477009294C2 /* kiss_fftr.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D5769411A143477009294C2 /* kiss_fftr.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1D57695A1A15195F009294C2 /* WITCvad.h in Headers */ = {isa = PBXBuildFile; fileRef = 1D57693B1A1429C3009294C2 /* WITCvad.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		1DC04EC21A16715E000579AE /* microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B80E60A1755A1AA000C3A7B /* microphone.png */; };
 		2B10D7A9175561F900973536 /* WITCircleView.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B10D7A7175561F900973536 /* WITCircleView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B10D7AA175561F900973536 /* WITCircleView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B10D7A8175561F900973536 /* WITCircleView.m */; };
 		2B25FE451829A36800F698ED /* WitPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B25FE441829A25700F698ED /* WitPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		2B2F81D1174C1BC4001A12BE /* WITCircleLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B2F81CF174C1BC4001A12BE /* WITCircleLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B2F81D2174C1BC4001A12BE /* WITCircleLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2F81D0174C1BC4001A12BE /* WITCircleLayer.m */; };
-		2B80E60B1755A1AA000C3A7B /* microphone.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B80E60A1755A1AA000C3A7B /* microphone.png */; };
 		2B878CFD1748310D00405629 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B878CFC1748310D00405629 /* Default-568h@2x.png */; };
 		2B878D001748354500405629 /* libWit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164415DD327500C025BD /* libWit.a */; };
 		2B878D03174836A500405629 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B83741163A6FA600F9C914 /* QuartzCore.framework */; };
@@ -491,7 +491,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B9BA7F4516355CAF00C95D37 /* InfoPlist.strings in Resources */,
-				2B80E60B1755A1AA000C3A7B /* microphone.png in Resources */,
+				1DC04EC21A16715E000579AE /* microphone.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

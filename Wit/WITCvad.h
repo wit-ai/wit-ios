@@ -44,13 +44,13 @@
 //final speech detection variables
 #define DETECTOR_CVAD_N_FRAMES_CHECK_START 15
 #define DETECTOR_CVAD_COUNT_SUM_START 85
-#define DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE 75
+#define DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE 60
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT 20
-#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.6
-#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE 0.6
+#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.8
+#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE 0.8
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG 100
 #define DETECTOR_CVAD_COUNT_END_LONG_FACTOR 3
-#define DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE 2
+#define DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE 3
 
 typedef struct {
     double energy_thresh_coeff_lower;
@@ -73,6 +73,8 @@ typedef struct {
     float end_sum_long_coeff;
     float end_sum_short_coeff;
     int frame_number;
+    int speech_start_frame;
+    int max_speech_time;
     int energy_history_index;
     int min_zero_crossings;
     int max_zero_crossings;
@@ -102,7 +104,7 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
  
  sensitive mode: 0 if for a close-up mic, 1 if for a fixed, distant mic
  */
-s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode);
+s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode, int speech_timeout);
 
 /*
  Safely frees memory for a cvad_state
