@@ -8,67 +8,60 @@
 
 #include "WITCvad.h"
 
-int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *samples, int nb_samples)
+int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *samples, float *fft_mags)
 {
     double dfc;
     double band_energy[DETECTOR_CVAD_N_ENERGY_BANDS];
-    kiss_fft_cpx fft_modules[160];
     double sfm;
-    int fft_size = cvad_state->samples_per_frame / 2 + 1;
+    int fft_size = pow(floor(log2(cvad_state->samples_per_frame)),2);
     short int counter;
     int action = -1;
     int zero_crossings;
     
-    while(nb_samples>=cvad_state->samples_per_frame){
-        //only process cvad_state->samples_per_frame samples at a time
-        frames_detector_cvad_fft(samples, fft_modules, cvad_state->samples_per_frame);
-        dfc = frames_detector_cvad_most_dominant_freq(cvad_state, fft_modules, fft_size, cvad_state->samples_per_frame);
-        sfm = frames_detector_cvad_spectral_flatness(fft_modules, fft_size);
-        zero_crossings = frames_detector_cvad_zero_crossings(samples, cvad_state->samples_per_frame);
-        frames_detector_cvad_multiband_energy(cvad_state, fft_modules, fft_size, band_energy, cvad_state->samples_per_frame);
-        
-        vw_detector_cvad_set_threshold(cvad_state);
-        counter = vw_detector_cvad_check_frame(cvad_state, band_energy, dfc, sfm, zero_crossings);
-        frame_memory_push(cvad_state->previous_state, DETECTOR_CVAD_RESULT_MEMORY, counter);
-        
-        if ((counter < 3 && cvad_state->talking == 0) || !cvad_state->thresh_initialized) {
-            cvad_state->silence_count++;
-            //only update reference levels if we don't detect speech
-            wv_detector_cvad_update_ref_levels(cvad_state, band_energy, dfc, sfm);
-        }
-        if (cvad_state->thresh_initialized) {
-            int start_sum = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_START);
-            int stop_sum_long = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG);
-            int stop_sum_short = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT);
-            
-            printf("%d %d %d %d\n",counter,start_sum,stop_sum_long,stop_sum_short);
-            
-            if(start_sum > cvad_state->max_start_sum){
-                cvad_state->max_start_sum = start_sum;
-            }
-            if (!cvad_state->talking && start_sum >= cvad_state->start_sum_threshold ) {
-                cvad_state->talking = 1;
-                cvad_state->speech_start_frame =  cvad_state->frame_number;
-                action = 1;
-            }
-            else if (cvad_state->talking
-                     && ((counter < 3
-                          && stop_sum_long <= cvad_state->max_start_sum*cvad_state->end_sum_long_coeff
-                          && stop_sum_short <= cvad_state->max_start_sum*cvad_state->end_sum_short_coeff)
-                         || (cvad_state->max_speech_time > 0
-                             && (cvad_state->frame_number-cvad_state->speech_start_frame) * DETECTOR_CVAD_FRAME_SIZE >= cvad_state->max_speech_time))) {
-                cvad_state->talking = 0;
-                action = 0;
-                cvad_state->max_start_sum = 0;
-            }
-        }
-        
-        cvad_state->frame_number++;
-        //move memory pointer forward by cvad_state->samples_per_frame
-        samples+=cvad_state->samples_per_frame;
-        nb_samples-=cvad_state->samples_per_frame;
+    //only process cvad_state->samples_per_frame samples at a time
+    //frames_detector_cvad_fft(samples, fft_modules, cvad_state->samples_per_frame);
+    dfc = frames_detector_cvad_most_dominant_freq(cvad_state, fft_mags, fft_size, cvad_state->samples_per_frame);
+    sfm = frames_detector_cvad_spectral_flatness(fft_mags, fft_size);
+    zero_crossings = frames_detector_cvad_zero_crossings(samples, cvad_state->samples_per_frame);
+    frames_detector_cvad_multiband_energy(cvad_state, fft_mags, fft_size, band_energy, cvad_state->samples_per_frame);
     
+    vw_detector_cvad_set_threshold(cvad_state);
+    counter = vw_detector_cvad_check_frame(cvad_state, band_energy, dfc, sfm, zero_crossings);
+    frame_memory_push(cvad_state->previous_state, DETECTOR_CVAD_RESULT_MEMORY, counter);
+    
+    if ((counter < 3 && cvad_state->talking == 0) || !cvad_state->thresh_initialized) {
+        cvad_state->silence_count++;
+        //only update reference levels if we don't detect speech
+        wv_detector_cvad_update_ref_levels(cvad_state, band_energy, dfc, sfm);
     }
+    if (cvad_state->thresh_initialized) {
+        int start_sum = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_START);
+        int stop_sum_long = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG);
+        int stop_sum_short = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT);
+        
+        printf("%d %d %d %d\n",counter,start_sum,stop_sum_long,stop_sum_short);
+        
+        if(start_sum > cvad_state->max_start_sum){
+            cvad_state->max_start_sum = start_sum;
+        }
+        if (!cvad_state->talking && start_sum >= cvad_state->start_sum_threshold ) {
+            cvad_state->talking = 1;
+            cvad_state->speech_start_frame =  cvad_state->frame_number;
+            action = 1;
+        }
+        else if (cvad_state->talking
+                 && ((counter < 3
+                      && stop_sum_long <= cvad_state->max_start_sum*cvad_state->end_sum_long_coeff
+                      && stop_sum_short <= cvad_state->max_start_sum*cvad_state->end_sum_short_coeff)
+                     || (cvad_state->max_speech_time > 0
+                         && (cvad_state->frame_number-cvad_state->speech_start_frame) * DETECTOR_CVAD_FRAME_SIZE >= cvad_state->max_speech_time))) {
+            cvad_state->talking = 0;
+            action = 0;
+            cvad_state->max_start_sum = 0;
+        }
+    }
+    
+    cvad_state->frame_number++;    
 
     return action;
 }
@@ -100,7 +93,7 @@ s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_m
     memset(cvad_state->dfc_history, 0, DETECTOR_CVAD_FRAMES_INIT * sizeof(double));
     cvad_state->sample_freq = sample_rate;
     cvad_state->max_start_sum = 0;
-    cvad_state->samples_per_frame = cvad_state->sample_freq/100; //100 frames per second
+    cvad_state->samples_per_frame = pow(ceil(log2(cvad_state->sample_freq/120)),2); //around 100 frames per second, but must be a power of two
     memset(cvad_state->previous_state, 0, DETECTOR_CVAD_RESULT_MEMORY * sizeof(short int));
     
     wv_detector_cvad_set_detection_mode(cvad_state, sensitive_mode);
@@ -272,18 +265,16 @@ void frames_detector_cvad_fft(short int *samples, kiss_fft_cpx* results, int nb)
 }
 
 
-double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *modules, int nb_modules, double nb_samples)
+double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_state, float *fft_mags, int nb_modules, double nb_samples)
 {
     double k = 0.0f;
     double max = 0.0f;
-    double amplitude;
     double amplitude_minimum = 1.0f;
     int i;
     
     for (i = 0; i < nb_modules; i++) {
-        amplitude = frames_detector_cvad_c2r(modules[i]);
-        if (amplitude > max && amplitude > amplitude_minimum) {
-            max = amplitude;
+        if (fft_mags[i] > max && fft_mags[i] > amplitude_minimum) {
+            max = fft_mags[i];
             k = i;
         } 
     }
@@ -291,7 +282,7 @@ double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_st
     return k * (double)cvad_state->sample_freq / (double)nb_samples;
 }
 
-void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *fft_modules, int nb_modules, double *band_energy, int nb_samples){
+void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, float *fft_mags, int nb_modules, double *band_energy, int nb_samples){
 
     int b = 0;
     int k = 0;
@@ -299,26 +290,24 @@ void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state,
     for(b = 0; b<DETECTOR_CVAD_N_ENERGY_BANDS; b++){
         band_energy[b] = 0;
         while(k*cvad_state->sample_freq/nb_samples < 1000*(b+1)){
-            band_energy[b]+=frames_detector_cvad_c2r(fft_modules[k]);
+            band_energy[b]+=fft_mags[k];
             k++;
         }
     }
 
 }
 
-double frames_detector_cvad_spectral_flatness(kiss_fft_cpx *modules, int nb)
+double frames_detector_cvad_spectral_flatness(float *fft_mags, int nb)
 {
     double geo_mean = 0.0f;
     double arithm_mean = 0.0f;
-    double value;
     double sfm = 0.0f;
     int i;
     
     for (i = 0; i < nb; i++) {
-        value = frames_detector_cvad_c2r(modules[i]);
-        if (value != 0.0f) {
-            geo_mean += log(value);
-            arithm_mean += value;
+        if (fft_mags[i] != 0.0f) {
+            geo_mean += log(fft_mags[i]);
+            arithm_mean += fft_mags[i];
         }
     }
     geo_mean = exp(geo_mean / (double) nb);

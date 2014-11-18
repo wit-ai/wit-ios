@@ -95,7 +95,7 @@ typedef struct {
  Main entry point to the detection algorithm.
  This returns a -1 if there is no change in state, a 1 if some started talking, and a 0 if speech ended
  */
-int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *samples, int nb_samples);
+int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *samples, float *fft_mags);
 
 
 /*
@@ -146,26 +146,26 @@ short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, dou
  Compute the fourier transoformation of a frame
  */
 //kiss_fft_cpx *frames_detector_cvad_fft(short int *samples, int nb);
-void frames_detector_cvad_fft(short int *samples, kiss_fft_cpx* results, int nb);
+//void frames_detector_cvad_fft(short int *samples, kiss_fft_cpx* results, int nb);
 
 /*
  Return the frequency with the biggest amplitude (from a frame).
  */
-double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *modules, int nb_modules, double nb_samples);
+double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_state, float *fft_mags, int nb_modules, double nb_samples);
 
 
 /*
  Computes the energy of the first DETECTOR_CVAD_N_ENERGY_BANDS 1 KHz bands
  */
 //double* frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *fft_modules, int nb_modules, int nb_samples);
-void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *fft_modules, int nb_modules, double *band_energy, int nb_samples);
+void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, float *fft_mags, int nb_modules, double *band_energy, int nb_samples);
 
 /*
  Compute the spectral flatness of a frame.
  It tells us if all the frequencies have a similar amplitude, which would means noise
  or if there is some dominant frequencies, which could mean voice.
  */
-double frames_detector_cvad_spectral_flatness(kiss_fft_cpx *modules, int nb);
+double frames_detector_cvad_spectral_flatness(float *fft_mags, int nb);
 
 /*
  Take the output of the fourier transform and return the absolute value.
