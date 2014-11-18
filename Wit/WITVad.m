@@ -42,7 +42,7 @@
 -(id) init {
     NSLog(@"WITVad init");
     self = [super init];
-    self->vad_state = wv_detector_cvad_init(16000,0,10000);
+    self->vad_state = wv_detector_cvad_init(16000,1,7000);
     self.stoppedUsingVad = NO;
     
     return self;
