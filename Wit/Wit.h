@@ -47,6 +47,13 @@
 @property int vadTimeout;
 
 /**
+ * Select VAD tuning:
+ * - WITVadCloseMode (For a cellphone, personal mic, or any other application with a strong voice signal. Default.)
+ * - WITVadAmbientMode (For use with a fixed-position mic or any application with voice burried in ambient noise.)
+ */
+@property WITVadTuning vadTuning;
+
+/**
  * Allow you to configure the options to pass to the AVAudioSession.
  * This will be passed to the function [AVAudioSession setCategory:category withOptions:options error:outError]
  *

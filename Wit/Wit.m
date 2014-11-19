@@ -171,6 +171,7 @@
     state = [WITState sharedInstance];
     self.detectSpeechStop = WITVadConfigDetectSpeechStop;
     self.vadTimeout = 7000;
+    self.vadTuning = WITVadCloseTuning;
     self.wcs = [[WITContextSetter alloc] init];
 }
 - (id)init {
