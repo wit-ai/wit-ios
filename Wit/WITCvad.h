@@ -37,15 +37,15 @@
 #define DETECTOR_CVAD_DFC_TH 250.0f   /* most Dominant Frequency Component threshold */
 #define DETECTOR_CVAD_MIN_ZERO_CROSSINGS 5   /* fewest zero crossings for speech */
 #define DETECTOR_CVAD_MAX_ZERO_CROSSINGS 15  /* maximum zero crossings for speech */
-#define DETECTOR_CVAD_RESULT_MEMORY 100 /* number of frame results to keep in memory */
+#define DETECTOR_CVAD_RESULT_MEMORY 130 /* number of frame results to keep in memory */
 #define DETECTOR_CVAD_ENERGY_MEMORY 20 /* number of frame results to keep in memory */
 #define DETECTOR_CVAD_N_ENERGY_BANDS 5 /* number of 1 KHz energy bands to compute */
 #define DETECTOR_CVAD_MINIMUM_LENGTH 1000 /* minimum length of vad in ms */
 
 //final speech detection variables
 #define DETECTOR_CVAD_N_FRAMES_CHECK_START 20
-#define DETECTOR_CVAD_COUNT_SUM_START 100
-#define DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE 78
+#define DETECTOR_CVAD_COUNT_SUM_START 90
+#define DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE 75
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT 30
 #define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.5
 #define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE 0.3
