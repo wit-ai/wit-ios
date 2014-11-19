@@ -16,8 +16,6 @@
     FFTSetup fft_setup;
 }
 
-
-
 -(void) gotAudioSamples:(NSData *)samples {
     UInt32 size = (UInt32)[samples length];
     short *bytes = (short*)[samples bytes];
@@ -52,7 +50,10 @@
 -(id) init {
     NSLog(@"WITVad init");
     self = [super init];
-    self->vad_state = wv_detector_cvad_init(16000,1,7000);
+    int vadTuning = (int)[Wit sharedInstance].vadTuning;
+    int vadTimeout = [Wit sharedInstance].vadTimeout;
+    
+    self->vad_state = wv_detector_cvad_init(16000,vadTuning,vadTimeout);
     self.stoppedUsingVad = NO;
     
     //get the next power of 2 that'll fit our data
