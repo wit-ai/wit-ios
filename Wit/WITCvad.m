@@ -38,9 +38,9 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
         int start_sum = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_START);
         int stop_sum_long = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG);
         int stop_sum_short = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT);
-        int speech_time = (cvad_state->frame_number-cvad_state->speech_start_frame) * DETECTOR_CVAD_FRAME_SIZE;
+        int speech_time = (cvad_state->frame_number-cvad_state->speech_start_frame) * cvad_state->samples_per_frame * 1000 / cvad_state->sample_freq;
         
-        printf("%d %d %d %d\n",counter,start_sum,stop_sum_long,stop_sum_short);
+        printf("%d %d %d %d %d %d\n",counter,start_sum,stop_sum_long,stop_sum_short,cvad_state->max_speech_time,speech_time);
         
         if(start_sum > cvad_state->max_start_sum){
             cvad_state->max_start_sum = start_sum;
