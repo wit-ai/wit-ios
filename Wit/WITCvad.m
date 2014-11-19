@@ -367,3 +367,7 @@ static int frame_memory_sum_last_n(short int *memory, int nb)
     return sum;
 }
 
+void wv_detector_cvad_set_timeout(s_wv_detector_cvad_state *cvad_state, int timeout){
+    cvad_state->max_speech_time = timeout;
+}
+

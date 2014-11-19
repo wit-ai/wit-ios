@@ -41,6 +41,7 @@
 
 /**
  * Set the maximum length of time recorded by the VAD in ms
+ * Set to -1 for no timeout
  * Defaults to 7000
  */
 @property int vadTimeout;
