@@ -38,6 +38,7 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
         int start_sum = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_START);
         int stop_sum_long = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG);
         int stop_sum_short = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT);
+        int speech_time = (cvad_state->frame_number-cvad_state->speech_start_frame) * DETECTOR_CVAD_FRAME_SIZE;
         
         printf("%d %d %d %d\n",counter,start_sum,stop_sum_long,stop_sum_short);
         
@@ -49,12 +50,12 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
             cvad_state->speech_start_frame =  cvad_state->frame_number;
             action = 1;
         }
-        else if (cvad_state->talking
+        else if (cvad_state->talking && speech_time > DETECTOR_CVAD_MINIMUM_LENGTH
                  && ((counter < 3
                       && stop_sum_long <= cvad_state->max_start_sum*cvad_state->end_sum_long_coeff
                       && stop_sum_short <= cvad_state->max_start_sum*cvad_state->end_sum_short_coeff)
                      || (cvad_state->max_speech_time > 0
-                         && (cvad_state->frame_number-cvad_state->speech_start_frame) * DETECTOR_CVAD_FRAME_SIZE >= cvad_state->max_speech_time))) {
+                         &&  speech_time >= cvad_state->max_speech_time))) {
             cvad_state->talking = 0;
             action = 0;
             cvad_state->max_start_sum = 0;
@@ -89,7 +90,7 @@ s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_m
     cvad_state->talking = 0;
     memset(cvad_state->ref_energy, 0, DETECTOR_CVAD_N_ENERGY_BANDS * sizeof(double));
     cvad_state->ref_dfc = 0;
-    cvad_state->ref_sfm = 99999;
+    cvad_state->ref_sfm = 0;
     memset(cvad_state->dfc_history, 0, DETECTOR_CVAD_FRAMES_INIT * sizeof(double));
     cvad_state->sample_freq = sample_rate;
     cvad_state->max_start_sum = 0;
@@ -137,9 +138,7 @@ void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state,
         }
         
         
-        if(sfm < cvad_state->ref_sfm){
-            cvad_state->ref_sfm = sfm;
-        }
+        cvad_state->ref_sfm += sfm;
         
         cvad_state->dfc_history[cvad_state->frame_number] = dfc > 0 ? log(dfc) : 0;
     }
@@ -158,6 +157,8 @@ void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state,
             for(b=0; b<DETECTOR_CVAD_N_ENERGY_BANDS; b++){
                 cvad_state->ref_energy[b] /= cvad_state->frame_number;
             }
+            
+            cvad_state->ref_sfm /= cvad_state->frame_number;
             
             double sum = 0;
             double sq_sum = 0;
@@ -232,10 +233,10 @@ short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, dou
     if (band_energy[0] > cvad_state->th_energy[0]) {
         counter += 2;
     }
-    printf("band[%d]: %g/%g\n",0,band_energy[0],cvad_state->th_energy[0]);
+    //printf("band[%d]: %g/%g\n",0,band_energy[0],cvad_state->th_energy[0]);
     int b;
     for(b=1; b<DETECTOR_CVAD_N_ENERGY_BANDS; b++){
-        printf("band[%d]: %g/%g\n",b,band_energy[b],cvad_state->th_energy[b]);
+        //printf("band[%d]: %g/%g\n",b,band_energy[b],cvad_state->th_energy[b]);
         if(band_energy[b] > cvad_state->th_energy[b]){
             band_counter++;
         }
@@ -244,16 +245,20 @@ short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, dou
         counter+=2;
     }
     
-    if (fabs(log(dfc) - cvad_state->ref_dfc) > cvad_state->ref_dfc_var) {
+    if (fabs((dfc > 0 ? log(dfc): 0) - cvad_state->ref_dfc) > cvad_state->ref_dfc_var) {
+        //printf("DFC ");
         counter++;
     }
     if (sfm > cvad_state->th_sfm) {
+        //printf("SFM ");
         counter++;
     }
     if(zero_crossings >= cvad_state->min_zero_crossings && zero_crossings <= cvad_state->max_zero_crossings){
+        //printf("ZC ");
         counter++;
     }
     
+    //printf("\n");
     return counter;
 }
 
