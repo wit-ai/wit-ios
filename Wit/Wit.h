@@ -40,6 +40,12 @@
 @property WITVadConfig detectSpeechStop;
 
 /**
+ * Set the maximum length of time recorded by the VAD in ms
+ * Defaults to 7000
+ */
+@property int vadTimeout;
+
+/**
  * Allow you to configure the options to pass to the AVAudioSession.
  * This will be passed to the function [AVAudioSession setCategory:category withOptions:options error:outError]
  *
