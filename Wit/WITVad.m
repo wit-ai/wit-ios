@@ -22,7 +22,8 @@
     UInt32 size = (UInt32)[samples length];
     short *bytes = (short*)[samples bytes];
     
-    for(int sample_offset=0; sample_offset+self->vad_state->samples_per_frame < size; sample_offset+=self->vad_state->samples_per_frame){
+    for(int sample_offset=0; sample_offset+self->vad_state->samples_per_frame < size/2; sample_offset+=self->vad_state->samples_per_frame){
+
         float *fft_mags = [self get_fft:(bytes+sample_offset)];
         
         int detected_speech = wvs_cvad_detect_talking(self->vad_state, bytes+sample_offset, fft_mags);
@@ -31,15 +32,18 @@
         
         if ( detected_speech == 1){
             //someone just started talking
+            NSLog(@"Starting......................");
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate vadStartedTalking];
             });
         } else if ( detected_speech == 0) {
             //someone just stopped talking
+            NSLog(@"Stopping......................");
             self.stoppedUsingVad = YES;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate vadStoppedTalking];
             });
+            break;
         }
     }
 
