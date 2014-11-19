@@ -107,11 +107,6 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
 s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode, int speech_timeout);
 
 /*
- Sets the cvad timeout. -1 for no timeout.
- */
-void wv_detector_cvad_set_timeout(s_wv_detector_cvad_state *cvad_state, int timeout);
-
-/*
  Safely frees memory for a cvad_state
  */
 void wv_detector_cvad_clean(s_wv_detector_cvad_state *cvad_state);

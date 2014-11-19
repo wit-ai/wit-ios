@@ -40,8 +40,6 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
         int stop_sum_short = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT);
         int speech_time = (cvad_state->frame_number-cvad_state->speech_start_frame) * cvad_state->samples_per_frame * 1000 / cvad_state->sample_freq;
         
-        printf("%d %d %d %d %d %d\n",counter,start_sum,stop_sum_long,stop_sum_short,cvad_state->max_speech_time,speech_time);
-        
         if(start_sum > cvad_state->max_start_sum){
             cvad_state->max_start_sum = start_sum;
         }
@@ -233,10 +231,10 @@ short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, dou
     if (band_energy[0] > cvad_state->th_energy[0]) {
         counter += 2;
     }
-    //printf("band[%d]: %g/%g\n",0,band_energy[0],cvad_state->th_energy[0]);
+    
     int b;
     for(b=1; b<DETECTOR_CVAD_N_ENERGY_BANDS; b++){
-        //printf("band[%d]: %g/%g\n",b,band_energy[b],cvad_state->th_energy[b]);
+        
         if(band_energy[b] > cvad_state->th_energy[b]){
             band_counter++;
         }
@@ -246,19 +244,15 @@ short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, dou
     }
     
     if (fabs((dfc > 0 ? log(dfc): 0) - cvad_state->ref_dfc) > cvad_state->ref_dfc_var) {
-        //printf("DFC ");
         counter++;
     }
     if (sfm > cvad_state->th_sfm) {
-        //printf("SFM ");
         counter++;
     }
     if(zero_crossings >= cvad_state->min_zero_crossings && zero_crossings <= cvad_state->max_zero_crossings){
-        //printf("ZC ");
         counter++;
     }
     
-    //printf("\n");
     return counter;
 }
 
@@ -365,9 +359,5 @@ static int frame_memory_sum_last_n(short int *memory, int nb)
     }
     
     return sum;
-}
-
-void wv_detector_cvad_set_timeout(s_wv_detector_cvad_state *cvad_state, int timeout){
-    cvad_state->max_speech_time = timeout;
 }
 
