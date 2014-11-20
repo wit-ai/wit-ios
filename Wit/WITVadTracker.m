@@ -18,7 +18,7 @@
 }
 
 -(void)track:(NSString *)status withMessageId:(NSString *)messageId withVadTuning:(int)vadTuning withSDKVersion:(NSString *)sdkVersion withToken:(NSString *)token {
-    NSString *url = [[NSString alloc] initWithFormat:@"%@/speech/vad?message-id=%@&tuning=%d&sdkVer=%@", kWitAPIUrl, messageId, vadTuning, sdkVersion];
+    NSString *url = [[NSString alloc] initWithFormat:@"%@/speech/vad?message-id=%@&tuning=%d&sdk-ver=%@", kWitAPIUrl, messageId, vadTuning, sdkVersion];
     NSLog(@"here is the final url %@ and the token: %@", url, token);
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"PUT";
