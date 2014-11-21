@@ -16,9 +16,4 @@ typedef NS_ENUM(NSInteger, WITVadConfig) {
     WITVadConfigFull = 2 // Detect speech start and stop
 } NS_ENUM_AVAILABLE_IOS(6_0);
 
-typedef NS_ENUM(NSInteger, WITVadTuning) {
-    WITVadCloseTuning = 0,    // Higher voice discrimination, like from a personal mic or phone
-    WITVadAmbientTuning = 1   // Higher voice sensitivity, like for a fixed mic
-} NS_ENUM_AVAILABLE_IOS(6_0);
-
 #endif

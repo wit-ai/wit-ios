@@ -65,7 +65,7 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
     return action;
 }
 
-s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode, int speech_timeout)
+s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitivity, int speech_timeout)
 {
     s_wv_detector_cvad_state *cvad_state = malloc(sizeof(s_wv_detector_cvad_state));
     cvad_state->energy_thresh_coeff_lower = DETECTOR_CVAD_E_TH_COEFF_LOW_BAND;
@@ -95,7 +95,7 @@ s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_m
     cvad_state->samples_per_frame = pow(ceil(log2(cvad_state->sample_freq/120)),2); //around 100 frames per second, but must be a power of two
     memset(cvad_state->previous_state, 0, DETECTOR_CVAD_RESULT_MEMORY * sizeof(short int));
     
-    wv_detector_cvad_set_detection_mode(cvad_state, sensitive_mode);
+    wv_detector_cvad_set_sensitivity(cvad_state, sensitivity);
     
     return cvad_state;
 }
@@ -105,22 +105,22 @@ void wv_detector_cvad_clean(s_wv_detector_cvad_state *cvad_state)
     free(cvad_state);
 }
 
-void wv_detector_cvad_set_detection_mode(s_wv_detector_cvad_state *cvad_state, int sensitive_mode)
+void wv_detector_cvad_set_sensitivity(s_wv_detector_cvad_state *cvad_state, int sensitivity)
 {
+    float sensitivity_frac = MAX(0,MIN(100,sensitivity))/100.0;
     cvad_state->n_frames_check_start=DETECTOR_CVAD_N_FRAMES_CHECK_START;
     cvad_state->n_frames_check_end_short=DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT;
     cvad_state->n_frames_check_end_long=DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG;
     
-    if(sensitive_mode){
-        cvad_state->start_sum_threshold = DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE;
-        cvad_state->end_sum_short_coeff = DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE;
-        cvad_state->end_sum_long_coeff = DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE;
-    } else {
-        cvad_state->start_sum_threshold = DETECTOR_CVAD_COUNT_SUM_START;
-        cvad_state->end_sum_short_coeff = DETECTOR_CVAD_COUNT_END_SHORT_FACTOR;
-        cvad_state->end_sum_long_coeff = DETECTOR_CVAD_COUNT_END_LONG_FACTOR;
-    }
+    cvad_state->start_sum_threshold = DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE*sensitivity_frac;
+    cvad_state->start_sum_threshold += DETECTOR_CVAD_COUNT_SUM_START*(1-sensitivity_frac);
     
+    cvad_state->end_sum_short_coeff = DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE*sensitivity_frac;
+    cvad_state->end_sum_short_coeff += DETECTOR_CVAD_COUNT_END_SHORT_FACTOR*(1-sensitivity_frac);
+    
+    cvad_state->end_sum_long_coeff = DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE*sensitivity_frac;
+    cvad_state->end_sum_long_coeff += DETECTOR_CVAD_COUNT_END_LONG_FACTOR*(1-sensitivity_frac);
+    printf("%d %f %f\n",cvad_state->start_sum_threshold,cvad_state->end_sum_short_coeff, cvad_state->end_sum_long_coeff);
 }
 
 void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state,

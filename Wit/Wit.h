@@ -47,11 +47,12 @@
 @property int vadTimeout;
 
 /**
- * Select VAD tuning:
- * - WITVadCloseMode (For a cellphone, personal mic, or any other application with a strong voice signal. Default.)
- * - WITVadAmbientMode (For use with a fixed-position mic or any application with voice burried in ambient noise.)
+ * Set VAD sensitivity (0-100):
+ * - Lower values are for strong voice signals like for a cellphone or personal mic.
+ * - Higher values are for use with a fixed-position mic or any application with voice burried in ambient noise.
+ * - Defaults to 0
  */
-@property WITVadTuning vadTuning;
+@property int vadSensitivity;
 
 /**
  * Allow you to configure the options to pass to the AVAudioSession.

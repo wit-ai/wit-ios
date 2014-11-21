@@ -89,9 +89,9 @@ WITContextSetter *wcs;
 -(void)trackVad:(NSString *)messageId {
     if (self.vadEnabled && ![self.recorder stoppedUsingVad]) {
         NSLog(@"Tracking vad failure");
-        int vadTuning = (int)[Wit sharedInstance].vadTuning;
+        int vadSensitivity = [Wit sharedInstance].vadSensitivity;
         NSString *sdkVersion = @"ios-3.1.0";
-        [[[WITVadTracker alloc] init] track:@"vadFailed" withMessageId:messageId withVadTuning:vadTuning withSDKVersion:sdkVersion withToken:self.witToken];
+        [[[WITVadTracker alloc] init] track:@"vadFailed" withMessageId:messageId withVadSensitivity:vadSensitivity withSDKVersion:sdkVersion withToken:self.witToken];
     }
 }
 

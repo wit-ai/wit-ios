@@ -104,7 +104,7 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
  
  sensitive mode: 0 if for a close-up mic, 1 if for a fixed, distant mic
  */
-s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitive_mode, int speech_timeout);
+s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitivity, int speech_timeout);
 
 /*
  Safely frees memory for a cvad_state
@@ -116,7 +116,7 @@ void wv_detector_cvad_clean(s_wv_detector_cvad_state *cvad_state);
  0 for highly discriminating (like a mic on a phone)
  1 for high voice sensitivity (like a fixed mic in a home)
  */
-void wv_detector_cvad_set_detection_mode(s_wv_detector_cvad_state *cvad_state, int sensitive_mode);
+void wv_detector_cvad_set_sensitivity(s_wv_detector_cvad_state *cvad_state, int sensitivity);
 
 /*
  Set the reference values of the energy, most dominant frequency componant and the spectral flatness measure.
