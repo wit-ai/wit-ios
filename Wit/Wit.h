@@ -49,7 +49,7 @@
 /**
  * Set VAD sensitivity (0-100):
  * - Lower values are for strong voice signals like for a cellphone or personal mic.
- * - Higher values are for use with a fixed-position mic or any application with voice burried in ambient noise.
+ * - Higher values are for use with a fixed-position mic or any application with voice buried in ambient noise.
  * - Defaults to 0
  */
 @property int vadSensitivity;
