@@ -112,10 +112,12 @@ s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitivity
 void wv_detector_cvad_clean(s_wv_detector_cvad_state *cvad_state);
 
 /*
- Sets the detection mode.
- 0 for highly discriminating (like a mic on a phone)
- 1 for high voice sensitivity (like a fixed mic in a home)
+ Set VAD sensitivity (0-100)
+ - Lower values are for strong voice signals like for a cellphone or personal mic
+ - Higher values are for use with a fixed-position mic or any application with voice burried in ambient noise
+ - Defaults to 0
  */
+
 void wv_detector_cvad_set_sensitivity(s_wv_detector_cvad_state *cvad_state, int sensitivity);
 
 /*
