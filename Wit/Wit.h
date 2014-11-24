@@ -155,8 +155,13 @@
 - (void)witDidStartRecording;
 
 /**
- Called when Wit stop recording the audio input.
+ Called when Wit stops recording the audio input.
  */
 - (void)witDidStopRecording;
+
+/**
+ Called whenever Wit reveices an audio chunk.
+ */
+- (void)witDidGetAudio:(NSData *)chunk;
 
 @end

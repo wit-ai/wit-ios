@@ -217,7 +217,9 @@
 }
 
 -(void)recordingSessionRecorderGotChunk:(NSData *)chunk {
-
+    if ([self.delegate respondsToSelector:@selector(witDidGetAudio:)]) {
+        [self.delegate witDidGetAudio:chunk];
+    }
 }
 
 -(void)recordingSessionRecorderPowerChanged:(float)power {
