@@ -120,7 +120,6 @@ void wv_detector_cvad_set_sensitivity(s_wv_detector_cvad_state *cvad_state, int 
     
     cvad_state->end_sum_long_coeff = DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE*sensitivity_frac;
     cvad_state->end_sum_long_coeff += DETECTOR_CVAD_COUNT_END_LONG_FACTOR*(1-sensitivity_frac);
-    printf("%d %f %f\n",cvad_state->start_sum_threshold,cvad_state->end_sum_short_coeff, cvad_state->end_sum_long_coeff);
 }
 
 void wv_detector_cvad_update_ref_levels(s_wv_detector_cvad_state *cvad_state,
