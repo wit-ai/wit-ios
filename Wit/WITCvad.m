@@ -40,8 +40,6 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
         int stop_sum_short = frame_memory_sum_last_n(cvad_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT);
         int speech_time = (cvad_state->frame_number-cvad_state->speech_start_frame) * cvad_state->samples_per_frame * 1000 / cvad_state->sample_freq;
         
-        printf("%d %d %d %d\n",counter,start_sum,stop_sum_long,stop_sum_short);
-        
         if(start_sum > cvad_state->max_start_sum){
             cvad_state->max_start_sum = start_sum;
         }
@@ -236,7 +234,6 @@ short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, dou
     
     int b;
     for(b=1; b<DETECTOR_CVAD_N_ENERGY_BANDS; b++){
-        
         if(band_energy[b] > cvad_state->th_energy[b]){
             band_counter++;
         }
@@ -280,7 +277,7 @@ void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state,
 
     int b = 0;
     int k = 0;
-    
+        
     for(b = 0; b<DETECTOR_CVAD_N_ENERGY_BANDS; b++){
         band_energy[b] = 0;
         while(k*cvad_state->sample_freq/nb_samples < 1000*(b+1)){

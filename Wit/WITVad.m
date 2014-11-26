@@ -21,6 +21,19 @@
     short *bytes = (short*)[samples bytes];
     
     for(int sample_offset=0; sample_offset+self->vad_state->samples_per_frame < size/2; sample_offset+=self->vad_state->samples_per_frame){
+        
+        int nonZero=0;
+        
+        //check to make sure buffer actually has audio data
+        for(int i=0; i<self->vad_state->samples_per_frame; i++){
+            if(bytes[sample_offset+i] != 0){
+                nonZero=1;
+                break;
+            }
+        }
+
+        //skip frame if it has nothing
+        if(!nonZero) continue;
 
         float *fft_mags = [self get_fft:(bytes+sample_offset)];
         
