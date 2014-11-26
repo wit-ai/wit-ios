@@ -15,8 +15,6 @@
 #include <math.h>
 #include <string.h>
 
-#define FIXED_POINT 16 //sets fft for fixed point data
-#include "kiss_fftr.h"
 
 /*
  * This speech algorithm looks at multiple auditory compenents related to speech:
@@ -46,10 +44,10 @@
 #define DETECTOR_CVAD_COUNT_SUM_START 90
 #define DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE 75
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT 30
-#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.65
+#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.6
 #define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE 0.3
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG 130
-#define DETECTOR_CVAD_COUNT_END_LONG_FACTOR 2.0
+#define DETECTOR_CVAD_COUNT_END_LONG_FACTOR 1.8
 #define DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE 1.5
 
 typedef struct {
@@ -88,6 +86,7 @@ typedef struct {
     int n_frames_check_end_short;
     int n_frames_check_end_long;
     int start_sum_threshold;
+    int previous_state_index;
     short int previous_state[DETECTOR_CVAD_RESULT_MEMORY];
 } s_wv_detector_cvad_state;
 
@@ -145,21 +144,13 @@ void wv_detector_cvad_modify_update_coeffs(s_wv_detector_cvad_state *cvad_state)
 short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, double *band_energy, double dfc, double sfm, int zero_crossings);
 
 /*
- Compute the fourier transoformation of a frame
- */
-//kiss_fft_cpx *frames_detector_cvad_fft(short int *samples, int nb);
-//void frames_detector_cvad_fft(short int *samples, kiss_fft_cpx* results, int nb);
-
-/*
  Return the frequency with the biggest amplitude (from a frame).
  */
 double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_state, float *fft_mags, int nb_modules, double nb_samples);
 
-
 /*
  Computes the energy of the first DETECTOR_CVAD_N_ENERGY_BANDS 1 KHz bands
  */
-//double* frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, kiss_fft_cpx *fft_modules, int nb_modules, int nb_samples);
 void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state, float *fft_mags, int nb_modules, double *band_energy, int nb_samples);
 
 /*
@@ -170,13 +161,6 @@ void frames_detector_cvad_multiband_energy(s_wv_detector_cvad_state *cvad_state,
 double frames_detector_cvad_spectral_flatness(float *fft_mags, int nb);
 
 /*
- Take the output of the fourier transform and return the absolute value.
- module[0] contains the real part of the fourier transform result and module[1] contains the imaginary representation of the number.
- (module[0]^2 + module[1]^2)^1/2 is equal to the amplitude of the frequency.
- */
-double frames_detector_cvad_c2r(kiss_fft_cpx module);
-
-/*
  Counts the number of times the signal crosses zero
  Even soft vocalizations have a fairly regular number of zero crossings (~5-15 for 10ms)
  */
@@ -185,11 +169,11 @@ int frames_detector_cvad_zero_crossings(short int *samples, int nb);
 /*
  Adds value to the head of memory
  */
-static void frame_memory_push(short int *memory, int length, short int value);
+static void frame_memory_push(s_wv_detector_cvad_state *cvad_state, short int value);
 
 /*
  Sums up the last N values of memory
  */
-static int frame_memory_sum_last_n(short int *memory, int nb);
+static int frame_memory_sum_last_n(s_wv_detector_cvad_state *cvad_state, int nb);
 
 #endif

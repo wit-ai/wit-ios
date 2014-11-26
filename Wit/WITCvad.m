@@ -27,7 +27,7 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
     
     vw_detector_cvad_set_threshold(cvad_state);
     counter = vw_detector_cvad_check_frame(cvad_state, band_energy, dfc, sfm, zero_crossings);
-    frame_memory_push(cvad_state->previous_state, DETECTOR_CVAD_RESULT_MEMORY, counter);
+    frame_memory_push(cvad_state, counter);
     
     if ((counter < 3 && cvad_state->talking == 0) || !cvad_state->thresh_initialized) {
         cvad_state->silence_count++;
@@ -35,10 +35,12 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
         wv_detector_cvad_update_ref_levels(cvad_state, band_energy, dfc, sfm);
     }
     if (cvad_state->thresh_initialized) {
-        int start_sum = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_START);
-        int stop_sum_long = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG);
-        int stop_sum_short = frame_memory_sum_last_n(cvad_state->previous_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT);
+        int start_sum = frame_memory_sum_last_n(cvad_state, DETECTOR_CVAD_N_FRAMES_CHECK_START);
+        int stop_sum_long = frame_memory_sum_last_n(cvad_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG);
+        int stop_sum_short = frame_memory_sum_last_n(cvad_state, DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT);
         int speech_time = (cvad_state->frame_number-cvad_state->speech_start_frame) * cvad_state->samples_per_frame * 1000 / cvad_state->sample_freq;
+        
+        printf("%d %d %d %d\n",counter,start_sum,stop_sum_long,stop_sum_short);
         
         if(start_sum > cvad_state->max_start_sum){
             cvad_state->max_start_sum = start_sum;
@@ -93,6 +95,7 @@ s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitivity
     cvad_state->sample_freq = sample_rate;
     cvad_state->max_start_sum = 0;
     cvad_state->samples_per_frame = pow(ceil(log2(cvad_state->sample_freq/120)),2); //around 100 frames per second, but must be a power of two
+    cvad_state->previous_state_index = 0;
     memset(cvad_state->previous_state, 0, DETECTOR_CVAD_RESULT_MEMORY * sizeof(short int));
     
     wv_detector_cvad_set_sensitivity(cvad_state, sensitivity);
@@ -255,13 +258,6 @@ short int vw_detector_cvad_check_frame(s_wv_detector_cvad_state *cvad_state, dou
     return counter;
 }
 
-void frames_detector_cvad_fft(short int *samples, kiss_fft_cpx* results, int nb)
-{
-    int N = nb & 1 ? nb -1 : nb;
-    kiss_fftr_cfg fft_state = kiss_fftr_alloc(N,0,0,0);
-    kiss_fftr(fft_state, (kiss_fft_scalar*)samples, results);
-}
-
 
 double frames_detector_cvad_most_dominant_freq(s_wv_detector_cvad_state *cvad_state, float *fft_mags, int nb_modules, double nb_samples)
 {
@@ -330,31 +326,21 @@ int frames_detector_cvad_zero_crossings(short int *samples, int nb){
     return num_zero_crossings;
 }
 
-double frames_detector_cvad_c2r(kiss_fft_cpx module)
+static void frame_memory_push(s_wv_detector_cvad_state *cvad_state, short int value)
 {
-    double value;
-    
-    value = pow(module.r, 2) + pow(module.i, 2);
-    value = pow(value, (double) 1/2);
-    
-    return value;
+    cvad_state->previous_state[cvad_state->previous_state_index] = value;
+    cvad_state->previous_state_index++;
+    cvad_state->previous_state_index%=DETECTOR_CVAD_RESULT_MEMORY;
 }
 
-static void frame_memory_push(short int *memory, int length, short int value)
-{
-    while (--length) {
-        memory[length] = memory[length - 1];
-    }
-    memory[0] = value;
-}
-
-static int frame_memory_sum_last_n(short int *memory, int nb)
+static int frame_memory_sum_last_n(s_wv_detector_cvad_state *cvad_state, int nb)
 {
     int i = 0;
     int sum = 0;
     
     for (i = 0; i < nb; i++) {
-        sum += memory[i];
+        int indx = (cvad_state->previous_state_index - (i+1) + DETECTOR_CVAD_RESULT_MEMORY) % DETECTOR_CVAD_RESULT_MEMORY;
+        sum += cvad_state->previous_state[indx];
     }
     
     return sum;
