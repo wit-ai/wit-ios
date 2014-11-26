@@ -29,7 +29,7 @@
  * The end of speech is determined by most features of speech disappearing for an extended period of time (~1 sec)
  */
 
-#define DETECTOR_CVAD_FRAMES_INIT 120 /* number of frames to use to initialize values */
+#define DETECTOR_CVAD_FRAMES_INIT 40 /* number of frames to use to initialize values */
 #define DETECTOR_CVAD_E_TH_COEFF_LOW_BAND 2.5f     /* Energy threshold coefficient */
 #define DETECTOR_CVAD_E_TH_COEFF_UPPER_BANDS 2.0f     /* Energy threshold coefficient */
 #define DETECTOR_CVAD_SFM_TH 3.0f   /* Spectral Flatness Measure threshold */
@@ -46,10 +46,10 @@
 #define DETECTOR_CVAD_COUNT_SUM_START 90
 #define DETECTOR_CVAD_COUNT_SUM_START_SENSITIVE 75
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_SHORT 30
-#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.5
+#define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR 0.65
 #define DETECTOR_CVAD_COUNT_END_SHORT_FACTOR_SENSITIVE 0.3
 #define DETECTOR_CVAD_N_FRAMES_CHECK_END_LONG 130
-#define DETECTOR_CVAD_COUNT_END_LONG_FACTOR 1.8
+#define DETECTOR_CVAD_COUNT_END_LONG_FACTOR 2.0
 #define DETECTOR_CVAD_COUNT_END_LONG_FACTOR_SENSITIVE 1.5
 
 typedef struct {
