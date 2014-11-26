@@ -40,6 +40,21 @@
 @property WITVadConfig detectSpeechStop;
 
 /**
+ * Set the maximum length of time recorded by the VAD in ms
+ * Set to -1 for no timeout
+ * Defaults to 7000
+ */
+@property int vadTimeout;
+
+/**
+ * Set VAD sensitivity (0-100):
+ * - Lower values are for strong voice signals like for a cellphone or personal mic.
+ * - Higher values are for use with a fixed-position mic or any application with voice buried in ambient noise.
+ * - Defaults to 0
+ */
+@property int vadSensitivity;
+
+/**
  * Allow you to configure the options to pass to the AVAudioSession.
  * This will be passed to the function [AVAudioSession setCategory:category withOptions:options error:outError]
  *
@@ -140,8 +155,13 @@
 - (void)witDidStartRecording;
 
 /**
- Called when Wit stop recording the audio input.
+ Called when Wit stops recording the audio input.
  */
 - (void)witDidStopRecording;
+
+/**
+ Called whenever Wit reveices an audio chunk.
+ */
+- (void)witDidGetAudio:(NSData *)chunk;
 
 @end
