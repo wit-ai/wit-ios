@@ -24,8 +24,9 @@ typedef struct RecorderState RecorderState;
 @interface WITRecorder ()
 @property (nonatomic, assign) RecorderState *state;
 @property (atomic) WITVad *vad;
-
+@property int bufferLength;
 @end
+
 
 @implementation WITRecorder {
     CADisplayLink* displayLink;
@@ -202,8 +203,9 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
                        NULL,   // run loop mode
                        0,      // flags
                        &state->queue);
-
-    int bytes = (int)ceil(0.5 /* seconds */ * fmt.mSampleRate) * fmt.mBytesPerFrame;
+    
+    self.bufferLength = 0.05; /* seconds */
+    int bytes = (int)ceil(self.bufferLength * fmt.mSampleRate) * fmt.mBytesPerFrame;
     debug(@"AudioQueue buffer size: %d bytes", bytes);
 
     for (int i = 0; i < kNumberRecordBuffers; i++) {
