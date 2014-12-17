@@ -66,7 +66,7 @@
     int vadSensitivity = MIN(100,MAX(0,[Wit sharedInstance].vadSensitivity)); //must be between 0 and 100
     int vadTimeout = [Wit sharedInstance].vadTimeout;
     
-    self->vad_state = wv_detector_cvad_init(16000,vadSensitivity,vadTimeout);
+    self->vad_state = wv_detector_cvad_init(kWitAudioSampleRate,vadSensitivity,vadTimeout);
     self.stoppedUsingVad = NO;
     
     //get the next power of 2 that'll fit our data
