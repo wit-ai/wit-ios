@@ -192,8 +192,8 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     fmt.mFormatID         = kAudioFormatLinearPCM;
     fmt.mFormatFlags      = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
     fmt.mChannelsPerFrame = 1;
-    fmt.mSampleRate       = 16000.0;
-    fmt.mBitsPerChannel	  = 16;
+    fmt.mSampleRate       = kWitAudioSampleRate;
+    fmt.mBitsPerChannel	  = kWitAudioBitDepth;
     fmt.mBytesPerPacket	  = fmt.mBytesPerFrame = (fmt.mBitsPerChannel / 8) * fmt.mChannelsPerFrame;
     fmt.mFramesPerPacket  = 1;
     AudioQueueNewInput(&fmt,

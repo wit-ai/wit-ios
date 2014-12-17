@@ -165,3 +165,8 @@
 - (void)witDidGetAudio:(NSData *)chunk;
 
 @end
+
+/***** Constants *****************/
+static __unused NSString* const kWitNotificationAudioPowerChanged = @"WITAudioPowerChanged";
+static int const kWitAudioSampleRate = 16000;
+static int const kWitAudioBitDepth = 16;
