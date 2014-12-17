@@ -13,7 +13,7 @@ int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *sam
     double dfc;
     double band_energy[DETECTOR_CVAD_N_ENERGY_BANDS];
     double sfm;
-    int fft_size = pow(floor(log2(cvad_state->samples_per_frame)),2);
+    int fft_size = pow(2,floor(log2(cvad_state->samples_per_frame)));
     short int counter;
     int action = -1;
     int zero_crossings;
@@ -92,7 +92,7 @@ s_wv_detector_cvad_state* wv_detector_cvad_init(int sample_rate, int sensitivity
     memset(cvad_state->dfc_history, 0, DETECTOR_CVAD_FRAMES_INIT * sizeof(double));
     cvad_state->sample_freq = sample_rate;
     cvad_state->max_start_sum = 0;
-    cvad_state->samples_per_frame = pow(ceil(log2(cvad_state->sample_freq/120)),2); //around 100 frames per second, but must be a power of two
+    cvad_state->samples_per_frame = pow(2,ceil(log2(cvad_state->sample_freq/150))); //around 100 frames per second, but must be a power of two
     cvad_state->previous_state_index = 0;
     memset(cvad_state->previous_state, 0, DETECTOR_CVAD_RESULT_MEMORY * sizeof(short int));
     
