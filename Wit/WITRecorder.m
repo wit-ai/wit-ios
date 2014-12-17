@@ -24,7 +24,7 @@ typedef struct RecorderState RecorderState;
 @interface WITRecorder ()
 @property (nonatomic, assign) RecorderState *state;
 @property (atomic) WITVad *vad;
-@property int bufferLength;
+@property float bufferLength;
 @end
 
 
