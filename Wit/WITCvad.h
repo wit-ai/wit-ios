@@ -166,14 +166,4 @@ double frames_detector_cvad_spectral_flatness(float *fft_mags, int nb);
  */
 int frames_detector_cvad_zero_crossings(short int *samples, int nb);
 
-/*
- Adds value to the head of memory
- */
-static void frame_memory_push(s_wv_detector_cvad_state *cvad_state, short int value);
-
-/*
- Sums up the last N values of memory
- */
-static int frame_memory_sum_last_n(s_wv_detector_cvad_state *cvad_state, int nb);
-
 #endif

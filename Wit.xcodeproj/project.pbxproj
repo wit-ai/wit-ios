@@ -55,6 +55,7 @@
 		2BB2249017460BF400538704 /* WITMicButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BB2248E17460BF400538704 /* WITMicButton.m */; };
 		2BE5B2BD197832BA00B67304 /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BE5B2BB197832BA00B67304 /* util.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		2BE5B2BE197832BA00B67304 /* util.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE5B2BC197832BA00B67304 /* util.m */; };
+		8B894EA41A9C01E900CFBFE1 /* RecordingSessionStarter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B894EA31A9C01E900CFBFE1 /* RecordingSessionStarter.h */; };
 		AE4E75D4F9354ADEAB5A9B02 /* libPods-WitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7284A2A0BD494CE4BF1E6BF2 /* libPods-WitTests.a */; };
 		B95283E015F4459300F1D5E0 /* WITUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = B95283DE15F4459300F1D5E0 /* WITUploader.m */; };
 		B95D958C15DD379A00DBBABD /* Wit.m in Sources */ = {isa = PBXBuildFile; fileRef = B95D958815DD34D000DBBABD /* Wit.m */; };
@@ -140,6 +141,7 @@
 		329F90C2BC4241B2A98122BB /* Pods-WitTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WitTests.xcconfig"; path = "Pods/Pods-WitTests.xcconfig"; sourceTree = SOURCE_ROOT; };
 		33496D2620B742B797668671 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		7284A2A0BD494CE4BF1E6BF2 /* libPods-WitTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WitTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		8B894EA31A9C01E900CFBFE1 /* RecordingSessionStarter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingSessionStarter.h; sourceTree = "<group>"; };
 		B95283DD15F4459300F1D5E0 /* WITUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITUploader.h; sourceTree = "<group>"; };
 		B95283DE15F4459300F1D5E0 /* WITUploader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITUploader.m; sourceTree = "<group>"; };
 		B95283E715F448FA00F1D5E0 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
@@ -312,6 +314,7 @@
 				B9A892B4163E7083005100F2 /* WITState.m */,
 				B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */,
 				B9E8526A15E76FDE00EA8BC9 /* WITRecorder.m */,
+				8B894EA31A9C01E900CFBFE1 /* RecordingSessionStarter.h */,
 				B95283DD15F4459300F1D5E0 /* WITUploader.h */,
 				B95283DE15F4459300F1D5E0 /* WITUploader.m */,
 				2B10D7A7175561F900973536 /* WITCircleView.h */,
@@ -381,6 +384,7 @@
 				B9BA7F4216355AD500C95D37 /* Wit.h in Headers */,
 				1D5769461A143477009294C2 /* kiss_fftr.h in Headers */,
 				1D5769441A143477009294C2 /* kiss_fft.h in Headers */,
+				8B894EA41A9C01E900CFBFE1 /* RecordingSessionStarter.h in Headers */,
 				B9A892B2163E7009005100F2 /* WITUploader.h in Headers */,
 				03ED0A9F19EC85F300F57D87 /* WITVadConfig.h in Headers */,
 				03BAFA2D199D85A600CC2752 /* WITVadTracker.h in Headers */,

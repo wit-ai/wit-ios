@@ -14,7 +14,6 @@
 
 @protocol WITRecordingSessionDelegate;
 
-
 @interface WITRecordingSession : NSObject <WITRecorderDelegate, WITUploaderDelegate>
 
 @property WITRecorder *recorder;

@@ -8,6 +8,18 @@
 
 #include "WITCvad.h"
 
+
+/*
+ Adds value to the head of memory
+ */
+static void frame_memory_push(s_wv_detector_cvad_state *cvad_state, short int value);
+
+/*
+ Sums up the last N values of memory
+ */
+static int frame_memory_sum_last_n(s_wv_detector_cvad_state *cvad_state, int nb);
+
+
 int wvs_cvad_detect_talking(s_wv_detector_cvad_state *cvad_state, short int *samples, float *fft_mags)
 {
     double dfc;

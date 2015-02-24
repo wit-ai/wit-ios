@@ -9,13 +9,10 @@
 #import "WITMicButton.h"
 
 
-
-
 @class WITRecordingSession;
 @class WITContextSetter;
 @protocol WitDelegate;
 @protocol WITRecordingSessionDelegate;
-
 
 @interface Wit : NSObject  <WITRecordingSessionDelegate>
 
@@ -53,15 +50,6 @@
  * - Defaults to 0
  */
 @property int vadSensitivity;
-
-/**
- * Allow you to configure the options to pass to the AVAudioSession.
- * This will be passed to the function [AVAudioSession setCategory:category withOptions:options error:outError]
- *
- * See https://developer.apple.com/library/IOs/documentation/AVFoundation/Reference/AVAudioSession_ClassReference/index.html#//apple_ref/c/econst/AVAudioSessionCategoryOptionMixWithOthers
- *
- */
-@property AVAudioSessionCategoryOptions avAudioSessionCategoryOption;
 
 /**
  Singleton instance accessor.
