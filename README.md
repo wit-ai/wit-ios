@@ -16,7 +16,7 @@ Link to the SDK
 
 Add the following dependency to your Podfile:
 ```ruby
-pod 'Wit', '~> 3.1.0'
+pod 'Wit', '~> 3.2.0'
 ```
 
 And then run the following command in your project home directory:
@@ -32,4 +32,4 @@ You can download an archive containing the the ***.framework*** and the ***.bund
 How to use
 ----------
 
-You will find on our website a quick start guide of our iOS SDK and a fully detailed API reference: [https://wit.ai/docs/ios/3.1.0](https://wit.ai/docs/ios/3.1.0)
+You will find on our website a quick start guide of our iOS SDK and a fully detailed API reference: [https://wit.ai/docs/ios/3.2.0](https://wit.ai/docs/ios/3.2.0)
