@@ -32,4 +32,4 @@ You can download an archive containing the the ***.framework*** and the ***.bund
 How to use
 ----------
 
-You will find on our website a quick start guide of our iOS SDK and a fully detailed API reference: [https://wit.ai/docs/ios/3.2.0](https://wit.ai/docs/ios/4.0.0)
+You will find on our website a quick start guide of our iOS SDK and a fully detailed API reference: [https://wit.ai/docs/ios/4.0.0](https://wit.ai/docs/ios/4.0.0)
