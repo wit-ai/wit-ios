@@ -13,7 +13,7 @@
 
 static __unused NSString* const kWitAPIUrl = @"https://api.wit.ai";
 static __unused NSString* const kWitAPIVersion = @"20141022";
-static __unused NSString* const kWitSDKVersion = @"ios-3.1.0";
+static __unused NSString* const kWitSDKVersion = @"ios-4.1.0";
 
 static __unused NSString* const kWitKeyResponse = @"response";
 static __unused NSString* const kWitKeyError = @"error";
