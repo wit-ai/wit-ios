@@ -229,7 +229,19 @@ static const CGFloat kMicMargin = 40.0f;
 
 #pragma mark - UIButton target
 - (void)buttonPressed:(id)sender {
-    [[Wit sharedInstance] toggleCaptureVoiceIntent:self];
+    AVAudioSession *audioSession = [AVAudioSession sharedInstance];
+    Wit *wit = [Wit sharedInstance];
+
+    if ([audioSession respondsToSelector:@selector(requestRecordPermission:)]) {
+        [audioSession requestRecordPermission:^(BOOL granted) {
+            if (granted) {
+                [wit toggleCaptureVoiceIntent:self];
+            }
+        }];
+    }
+    else{
+        [wit toggleCaptureVoiceIntent:self];
+    }
 }
 
 #pragma mark - NSNoticationCenter
