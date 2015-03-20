@@ -7,6 +7,7 @@
 #import <AVFoundation/AVFoundation.h>
 #import "WITVadConfig.h"
 #import "WITMicButton.h"
+#import "WITRecordingSession.h"
 
 
 @class WITRecordingSession;
