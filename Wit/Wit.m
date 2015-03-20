@@ -12,12 +12,15 @@
 #import "WITContextSetter.h"
 
 
-@interface Wit ()  
+@interface Wit ()
 @property (strong) WITState *state;
 @property WITRecordingSession *recordingSession;
 @end
 
-@implementation Wit
+@implementation Wit {
+    dispatch_once_t _initWcsOnceToken;
+    WITContextSetter* _wcs;
+}
 
 @synthesize delegate, state;
 
@@ -74,12 +77,12 @@
                                    NSLog(@"Wit response (%f s) %@",
                                          t, [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding]);
                                }
-                               
+
                                if (connectionError) {
                                    [self gotResponse:nil customData:customData error:connectionError];
                                    return;
                                }
-                               
+
                                NSError *serializationError;
                                NSDictionary *object = [NSJSONSerialization JSONObjectWithData:data
                                                                                       options:0
@@ -88,7 +91,7 @@
                                    [self gotResponse:nil customData:customData error:serializationError];
                                    return;
                                }
-                               
+
                                if (object[@"error"]) {
                                    NSDictionary *infos = @{NSLocalizedDescriptionKey: object[@"error"],
                                                            kWitKeyError: object[@"code"]};
@@ -98,7 +101,7 @@
                                                                      userInfo:infos]];
                                    return;
                                }
-                               
+
                                [self gotResponse:object customData:customData error:nil];
                            }];
 }
@@ -148,9 +151,9 @@
         return [self errorWithDescription:@"No outcome" customData:customData];
     }
     NSString *messageId = resp[kWitKeyMsgId];
-    
+
     [self.delegate witDidGraspIntent:outcomes messageId:messageId customData:customData error:error];
-    
+
 }
 
 - (void)error:(NSError*)e customData:(id)customData; {
@@ -172,7 +175,6 @@
     self.detectSpeechStop = WITVadConfigDetectSpeechStop;
     self.vadTimeout = 7000;
     self.vadSensitivity = 0;
-    self.wcs = [[WITContextSetter alloc] init];
 }
 - (id)init {
     self = [super init];
@@ -194,6 +196,13 @@
     });
 
     return instance;
+}
+
+-(WITContextSetter*)wcs {
+    dispatch_once(&_initWcsOnceToken, ^{
+        _wcs = [[WITContextSetter alloc] init];
+    });
+    return _wcs;
 }
 
 #pragma mark - WITRecordingSessionDelegate
@@ -223,7 +232,7 @@
 }
 
 -(void)recordingSessionRecorderPowerChanged:(float)power {
-    
+
 }
 
 -(void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err {
