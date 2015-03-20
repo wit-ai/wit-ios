@@ -171,7 +171,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     // init recorder
     displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updatePower)];
     [displayLink setPaused:YES];
-    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
 
     // audio session
     AVAudioSession* session = [AVAudioSession sharedInstance];
