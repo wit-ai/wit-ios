@@ -137,6 +137,14 @@ static const CGFloat kMicMargin = 40.0f;
     self.volumeLayer.frame = CGRectMake(0, 0, actualMicWidth, actualMicHeight);
 }
 
+- (void)setTintColor:(UIColor *)tintColor {
+    [super setTintColor:tintColor];
+    self.outerCircleView.strokeColor = tintColor;
+    self.innerCircleView.strokeColor = tintColor;
+    self.microphoneLayer.backgroundColor = tintColor.CGColor;
+    self.volumeLayer.backgroundColor = tintColor.CGColor;
+    
+}
 #pragma mark - Animations
 - (void)twoPulses {
     CGRect frame = self.outerCircleView.frame;
