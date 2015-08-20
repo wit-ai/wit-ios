@@ -42,6 +42,7 @@
 }
 
 -(BOOL)locationAccess {
+    return NO;
     if (locationManager == nil) {
         locationManager = [[CLLocationManager alloc] init];
     }

@@ -56,7 +56,7 @@
     // if context, add to URL
     if (context != nil) {
         NSString *encoded = [WITContextSetter jsonEncode:context];
-        urlString = [NSString stringWithFormat:@"%@&context=%@", kWitSpeechURL, encoded];
+        urlString = [NSString stringWithFormat:@"%@&context=%@&verbose=true", kWitSpeechURL, encoded];
     } else {
         urlString = kWitSpeechURL;
     }
