@@ -224,6 +224,12 @@
     }
 }
 
+-(void)recordingSessionDidDetectSpeech {
+    if ([self.delegate respondsToSelector:@selector(witDidDetectSpeech)]) {
+        [self.delegate witDidDetectSpeech];
+    }
+}
+
 -(void)recordingSessionRecorderGotChunk:(NSData *)chunk {
     if ([self.delegate respondsToSelector:@selector(witDidGetAudio:)]) {
         [self.delegate witDidGetAudio:chunk];

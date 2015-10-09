@@ -38,6 +38,7 @@
 -(void)recordingSessionActivityDetectorStarted;
 -(void)recordingSessionDidStartRecording;
 -(void)recordingSessionDidStopRecording;
+-(void)recordingSessionDidDetectSpeech;
 -(void)recordingSessionRecorderGotChunk:(NSData*)chunk;
 -(void)recordingSessionGotResponse:(NSDictionary*)resp customData:(id)customData error:(NSError*)err;
 

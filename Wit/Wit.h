@@ -151,6 +151,11 @@
 - (void)witDidStopRecording;
 
 /**
+ Called when Wit detects speech from the audio input.
+ */
+- (void)witDidDetectSpeech;
+
+/**
  Called whenever Wit reveices an audio chunk. The format of the returned audio is 16-bit PCM, 16 kHz mono.
  */
 - (void)witDidGetAudio:(NSData *)chunk;

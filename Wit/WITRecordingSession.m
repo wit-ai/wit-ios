@@ -115,6 +115,8 @@ WITContextSetter *wcs;
 }
 
 -(void)recorderDetectedSpeech {
+    [self.delegate recordingSessionDidDetectSpeech];
+    
     if (self.vadEnabled == WITVadConfigFull) {
         dispatch_async(dispatch_get_main_queue(), ^{
             //start the uploader
