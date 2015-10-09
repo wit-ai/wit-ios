@@ -14,7 +14,6 @@
 
 @interface Wit ()
 @property (strong) WITState *state;
-@property WITRecordingSession *recordingSession;
 @end
 
 @implementation Wit {

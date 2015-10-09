@@ -17,6 +17,8 @@
 
 @interface Wit : NSObject  <WITRecordingSessionDelegate>
 
+@property(nonatomic, strong) WITRecordingSession *recordingSession;
+
 @property(strong, readonly) WITContextSetter *wcs;
 
 /**
