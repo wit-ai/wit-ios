@@ -12,7 +12,7 @@ The SDK can capture intents and entities from:
 Link to the SDK
 ---------------
 
-####Using Cocoapods
+####Using CocoaPods
 
 Add the following dependency to your Podfile:
 ```ruby

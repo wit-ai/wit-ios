@@ -14,7 +14,6 @@
 
 @interface Wit ()
 @property (strong) WITState *state;
-@property WITRecordingSession *recordingSession;
 @end
 
 @implementation Wit {
@@ -222,6 +221,12 @@
 -(void)recordingSessionDidStopRecording {
     if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {
         [self.delegate witDidStopRecording];
+    }
+}
+
+-(void)recordingSessionDidDetectSpeech {
+    if ([self.delegate respondsToSelector:@selector(witDidDetectSpeech)]) {
+        [self.delegate witDidDetectSpeech];
     }
 }
 
