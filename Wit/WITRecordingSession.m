@@ -24,18 +24,18 @@ WITContextSetter *wcs;
 -(id)initWithWitContext:(NSMutableDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
-        self.delegate = delegate;
-        self.dataBuffer = [[NSMutableArray alloc] init];
-        self.vadEnabled = vadEnabled;
-        self.uploader = [[WITUploader alloc] init];
-        self.uploader.delegate = self;
-        self.isUploading = false;
-        self.context = upContext;
-        self.recorder = [[WITRecorder alloc] init];
-        self.recorder.delegate = self;
-        [self.recorder start];
-        self.witToken = witToken;
-        self.buffersToSave = 25; //hardcode for now
+        _delegate = delegate;
+        _dataBuffer = [[NSMutableArray alloc] init];
+        _vadEnabled = vadEnabled;
+        _uploader = [[WITUploader alloc] init];
+        _uploader.delegate = self;
+        _isUploading = false;
+        _context = upContext;
+        _recorder = [[WITRecorder alloc] init];
+        _recorder.delegate = self;
+        [_recorder start];
+        _witToken = witToken;
+        _buffersToSave = 25; //hardcode for now
         if (vadEnabled == WITVadConfigDisabled) {
             [self startUploader];
         } else  {

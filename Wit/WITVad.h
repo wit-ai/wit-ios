@@ -14,7 +14,7 @@
 
 @interface WITVad : NSObject
 
-@property id<WITVadDelegate> delegate;
+@property(nonatomic, weak) id<WITVadDelegate> delegate;
 
 @property BOOL stoppedUsingVad;
 
