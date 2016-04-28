@@ -90,7 +90,7 @@ WITContextSetter *wcs;
     if (self.vadEnabled && ![self.recorder stoppedUsingVad]) {
         NSLog(@"Tracking vad failure");
         int vadSensitivity = [Wit sharedInstance].vadSensitivity;
-        [[[WITVadTracker alloc] init] track:@"vadFailed" withMessageId:messageId withVadSensitivity:vadSensitivity withToken:self.witToken];
+        //[[[WITVadTracker alloc] init] track:@"vadFailed" withMessageId:messageId withVadSensitivity:vadSensitivity withToken:self.witToken];
     }
 }
 

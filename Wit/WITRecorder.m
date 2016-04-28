@@ -48,7 +48,7 @@ static void audioQueueInputCallback(void* data,
     if (WIT_DEBUG) {
         debug(@"Audio chunk %u/%u", (unsigned int)size, (unsigned int)buffer->mAudioDataBytesCapacity);
     }
-
+    
     if (size > 0) {
         NSData* audio = [NSData dataWithBytes:bytes length:size];
         @autoreleasepool {
@@ -57,12 +57,16 @@ static void audioQueueInputCallback(void* data,
             if (recorder.vad != nil) {
                 [recorder.vad gotAudioSamples:audio];
             }
+            if (recorder.isRecording == YES) {
+                err = AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
+                if (err) {
+                    NSLog(@"Error when enqueuing buffer from callback: %d", err);
+                }
+            }
         }
     }
-    err = AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
-    if (err) {
-        NSLog(@"Error when enqueuing buffer from callback: %d", err);
-    }
+    
+    
 }
 
 static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePropertyID propertyID) {
@@ -84,7 +88,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     }
     
     self.state->recording = YES;
-
+    
     int err;
     for (int i = 0; i < kNumberRecordBuffers; i++) {
         err = AudioQueueEnqueueBuffer(self.state->queue, self.state->buffers[i], 0, NULL);
@@ -92,13 +96,13 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
             NSLog(@"error while enqueuing buffer %d", err);
         }
     }
-
+    
     err = AudioQueueStart(self.state->queue, NULL);
     if (err) {
         NSLog(@"ERROR while starting audio queue: %d", err);
         return NO;
     }
-
+    
     [displayLink setPaused:NO];
     [self.delegate recorderStarted];
     
@@ -113,6 +117,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
  */
 - (BOOL)stop {
     int err;
+    self.state->recording = NO;
     err = AudioQueueReset(self.state->queue);
     if (err) {
         NSLog(@"[Wit] ERROR: could not flush audio queue (%d)", err);
@@ -121,9 +126,8 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     if (err) {
         NSLog(@"[Wit] ERROR: could not pause audio queue (%d)", err);
     }
-
-    self.state->recording = NO;
-
+    
+    
     [displayLink setPaused:YES];
     [displayLink invalidate];
     self.power = -999;
@@ -131,7 +135,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
         self.vad.delegate = nil;
     }
     [self dispatchNewPower:self.power];
-
+    
     return YES;
 }
 
@@ -147,7 +151,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     if (![self isRecording]) {
         return;
     }
-//    debug(@"Recorder: updating power");
+    //    debug(@"Recorder: updating power");
     AudioQueueLevelMeterState meters[1];
     UInt32 dlen = sizeof(meters);
     int err;
@@ -156,7 +160,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
         debug(@"Error while reading meters %d", err);
         return;
     }
-
+    
     self.power = meters[0].mAveragePower;
     [self dispatchNewPower:self.power];
 }
@@ -172,7 +176,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updatePower)];
     [displayLink setPaused:YES];
     [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
-
+    
     // audio session
     AVAudioSession* session = [AVAudioSession sharedInstance];
     if ([session respondsToSelector:@selector(requestRecordPermission:)])
@@ -181,7 +185,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
             debug(@"Permission granted: %d", granted);
         }];
     }
-
+    
     // create audio queue
     int err;
     RecorderState* state = (RecorderState*)malloc(sizeof(RecorderState));
@@ -205,14 +209,14 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     self.bufferLength = 0.05; /* seconds */
     int bytes = (int)ceil(self.bufferLength * fmt.mSampleRate) * fmt.mBytesPerFrame;
     debug(@"AudioQueue buffer size: %d bytes", bytes);
-
+    
     for (int i = 0; i < kNumberRecordBuffers; i++) {
         err = AudioQueueAllocateBuffer(state->queue, bytes, &state->buffers[i]);
         if (err) {
             debug(@"error while allocating buffer %d", err);
         }
     }
-
+    
     UInt32 on = 1;
     AudioQueueSetProperty(state->queue, kAudioQueueProperty_EnableLevelMetering, &on, sizeof(on));
     err = AudioQueueAddPropertyListener(state->queue, kAudioQueueProperty_IsRunning,
@@ -220,7 +224,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     if (err) {
         debug(@"error while adding listener buffer %d", err);
     }
-
+    
     state->fmt = fmt;
     state->recording = NO;
     self.state = state;
@@ -257,7 +261,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     if (self) {
         [self initialize];
     }
-
+    
     return self;
 }
 
