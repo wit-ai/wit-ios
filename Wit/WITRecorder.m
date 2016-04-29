@@ -25,6 +25,7 @@ typedef struct RecorderState RecorderState;
 @property (nonatomic, assign) RecorderState *state;
 @property (atomic) WITVad *vad;
 @property float bufferLength;
+@property (nonatomic) AudioFormatID audioFormat;
 @end
 
 
@@ -191,13 +192,36 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     RecorderState* state = (RecorderState*)malloc(sizeof(RecorderState));
     AudioStreamBasicDescription fmt;
     memset(&fmt, 0, sizeof(fmt));
-    fmt.mFormatID         = kAudioFormatLinearPCM;
-    fmt.mFormatFlags      = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
-    fmt.mChannelsPerFrame = 1;
-    fmt.mSampleRate       = kWitAudioSampleRate;
-    fmt.mBitsPerChannel	  = kWitAudioBitDepth;
-    fmt.mBytesPerPacket	  = fmt.mBytesPerFrame = (fmt.mBitsPerChannel / 8) * fmt.mChannelsPerFrame;
-    fmt.mFramesPerPacket  = 1;
+    int bufferMultiplier = 1;
+    
+    switch (self.audioFormat) {
+        case kAudioFormatULaw:
+            fmt.mFormatID         = kAudioFormatULaw;
+            fmt.mChannelsPerFrame = 1;
+            fmt.mSampleRate       = 8000;
+            fmt.mBitsPerChannel	  = kWitAudioBitDepth;
+            fmt.mBytesPerPacket	  = fmt.mBytesPerFrame = (fmt.mBitsPerChannel / 8) * fmt.mChannelsPerFrame;
+            fmt.mFramesPerPacket  = 1;
+            bufferMultiplier = 2;
+            break;
+            
+        default:
+            fmt.mFormatID         = kAudioFormatLinearPCM;
+            fmt.mFormatFlags      = kAudioFormatFlagIsSignedInteger | kAudioFormatFlagIsPacked;
+            fmt.mChannelsPerFrame = 1;
+            fmt.mSampleRate       = kWitAudioSampleRate;
+            fmt.mBitsPerChannel	  = kWitAudioBitDepth;
+            fmt.mBytesPerPacket	  = fmt.mBytesPerFrame = (fmt.mBitsPerChannel / 8) * fmt.mChannelsPerFrame;
+            fmt.mFramesPerPacket  = 1;
+            
+            break;
+    }
+    
+
+    
+
+    
+    
     AudioQueueNewInput(&fmt,
                        audioQueueInputCallback,
                        (__bridge void *)(self), // user data
@@ -206,8 +230,11 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
                        0,      // flags
                        &state->queue);
     
+    
+    
+    
     self.bufferLength = 0.05; /* seconds */
-    int bytes = (int)ceil(self.bufferLength * fmt.mSampleRate) * fmt.mBytesPerFrame;
+    int bytes = (int)ceil(self.bufferLength * fmt.mSampleRate) * fmt.mBytesPerFrame * bufferMultiplier;
     debug(@"AudioQueue buffer size: %d bytes", bytes);
     
     for (int i = 0; i < kNumberRecordBuffers; i++) {
@@ -259,6 +286,17 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 - (id)init {
     self = [super init];
     if (self) {
+        self.audioFormat = kAudioFormatLinearPCM;
+        [self initialize];
+    }
+    
+    return self;
+}
+
+- (id)initWithAudioFormat: (AudioFormatID) audioFormat {
+    self = [super init];
+    if (self) {
+        self.audioFormat = audioFormat;
         [self initialize];
     }
     

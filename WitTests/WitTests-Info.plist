@@ -9,7 +9,7 @@
 	<key>CFBundleExecutable</key>
 	<string>${EXECUTABLE_NAME}</string>
 	<key>CFBundleIdentifier</key>
-	<string>Wit.${PRODUCT_NAME:rfc1034identifier}</string>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
 	<key>CFBundleInfoDictionaryVersion</key>
 	<string>6.0</string>
 	<key>CFBundleName</key>
@@ -41,9 +41,9 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
-	<key>WitInstanceId</key>
-	<string>bb01eed2-5d07-43ac-9851-c8b08672a59f</string>
 	<key>WitAccessToken</key>
 	<string>PQRDK75IWF2UUCAVYT6TAB3XC7OXRR75</string>
+	<key>WitInstanceId</key>
+	<string>bb01eed2-5d07-43ac-9851-c8b08672a59f</string>
 </dict>
 </plist>

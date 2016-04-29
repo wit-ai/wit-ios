@@ -11,8 +11,8 @@
 #import "WITUploader.h"
 #import "WITVadTracker.h"
 #import "WitPrivate.h"
+#import "WITRecordingSessionDelegate.h"
 
-@protocol WITRecordingSessionDelegate;
 
 @interface WITRecordingSession : NSObject <WITRecorderDelegate, WITUploaderDelegate>
 
@@ -28,20 +28,7 @@
 -(id)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate;
 -(void)stop;
 -(BOOL)isRecording;
--(void)trackVad:(NSString *)messageId;
-
 @end
 
 
-@protocol WITRecordingSessionDelegate <NSObject>
 
--(void)recordingSessionActivityDetectorStarted;
--(void)recordingSessionDidStartRecording;
--(void)recordingSessionDidStopRecording;
--(void)recordingSessionDidDetectSpeech;
--(void)recordingSessionRecorderGotChunk:(NSData*)chunk;
--(void)recordingSessionGotResponse:(NSDictionary*)resp customData:(id)customData error:(NSError*)err;
-
--(void)stop;
-
-@end

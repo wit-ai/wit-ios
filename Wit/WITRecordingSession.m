@@ -10,6 +10,9 @@
 #import "WITVadConfig.h"
 #import "WITContextSetter.h"
 
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+
+#import <GCNetworkReachability/GCNetworkReachability.h>
 @interface WITRecordingSession ()
 
 @property WITVadConfig vadEnabled;
@@ -27,11 +30,47 @@ WITContextSetter *wcs;
         self.delegate = delegate;
         self.dataBuffer = [[NSMutableArray alloc] init];
         self.vadEnabled = vadEnabled;
-        self.uploader = [[WITUploader alloc] init];
+        
+        GCNetworkReachability *reachability = [GCNetworkReachability reachabilityForInternetConnection];
+        
+        if ([reachability isReachable])
+        {
+            // do stuff that requires an internet connection…
+        }
+        
+        CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
+        NSString *connectionType = networkInfo.currentRadioAccessTechnology;
+        BOOL fastConnection = YES;
+        switch ([reachability currentReachabilityStatus]) {
+            case GCNetworkReachabilityStatusWWAN:
+                // e.g. download smaller file sized images...
+                
+                if ([connectionType isEqualToString:CTRadioAccessTechnologyGPRS] || [connectionType isEqualToString:CTRadioAccessTechnologyWCDMA] || [connectionType isEqualToString:CTRadioAccessTechnologyEdge] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMA1x] || [connectionType isEqualToString:CTRadioAccessTechnologyHSUPA] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB]) {
+                    fastConnection = NO;
+                }
+                
+                if (fastConnection) {
+                    self.uploader = [[WITUploader alloc] initWithAudioFormat:kAudioFormatLinearPCM];
+                    self.recorder = [[WITRecorder alloc] initWithAudioFormat:kAudioFormatLinearPCM];
+                    
+                    NSLog(@"Got FAST GSM connection");
+                } else {
+                    self.uploader = [[WITUploader alloc] initWithAudioFormat:kAudioFormatULaw];
+                    self.recorder = [[WITRecorder alloc] initWithAudioFormat:kAudioFormatULaw];
+                    NSLog(@"Got SLOW GSM connection");
+                }
+
+                break;
+            default:
+                    self.uploader = [[WITUploader alloc] initWithAudioFormat:kAudioFormatLinearPCM];
+                    self.recorder = [[WITRecorder alloc] initWithAudioFormat:kAudioFormatLinearPCM];
+                NSLog(@"Got FAST default connection");
+                break;
+        }
+
         self.uploader.delegate = self;
         self.isUploading = false;
         self.context = upContext;
-        self.recorder = [[WITRecorder alloc] init];
         self.recorder.delegate = self;
         [self.recorder start];
         self.witToken = witToken;
@@ -76,9 +115,6 @@ WITContextSetter *wcs;
 
     [self.delegate recordingSessionGotResponse:resp customData:self.customData error:err];
     
-    if (!err && resp[kWitKeyMsgId]) {
-        [self trackVad:resp[kWitKeyMsgId]];
-    }
     if (err) {
         NSLog(@"Wit stopped recording because of a (network?) error");
         [self stop];
@@ -86,13 +122,6 @@ WITContextSetter *wcs;
     [self clean];
 }
 
--(void)trackVad:(NSString *)messageId {
-    if (self.vadEnabled && ![self.recorder stoppedUsingVad]) {
-        NSLog(@"Tracking vad failure");
-        int vadSensitivity = [Wit sharedInstance].vadSensitivity;
-        //[[[WITVadTracker alloc] init] track:@"vadFailed" withMessageId:messageId withVadSensitivity:vadSensitivity withToken:self.witToken];
-    }
-}
 
 
 #pragma mark - WITRecorderDelegate implementation

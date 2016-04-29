@@ -19,6 +19,7 @@
 // will be suspended / resumed according to stream availability
 @property (atomic) NSOperationQueue* q;
 @property (atomic) WITRecorder *recorder;
+@property (nonatomic) AudioFormatID audioFormat;
 @end
 
 @implementation WITUploader {
@@ -67,7 +68,21 @@
     [req setTimeoutInterval:15.0];
     [req setHTTPBodyStream:inStream];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
-    [req setValue:@"wit/ios" forHTTPHeaderField:@"Content-type"];
+    
+    NSString *contentType = nil;
+    
+    switch (self.audioFormat) {
+        case kAudioFormatULaw:
+            contentType = @"audio/ulaw";
+            break;
+        case kAudioFormatLinearPCM:
+            contentType = @"wit/ios";
+            break;
+        default:
+            contentType = @"wit/ios";
+            break;
+    }
+    [req setValue:contentType forHTTPHeaderField:@"Content-type"];
     [req setValue:@"chunked" forHTTPHeaderField:@"Transfer-encoding"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     debug(@"HTTP %@ %@", req.HTTPMethod, urlString);
@@ -196,8 +211,18 @@
         q = [[NSOperationQueue alloc] init];
         [q setMaxConcurrentOperationCount:1];
         kWitSpeechURL = [NSString stringWithFormat: @"%@/speech?v=%@", kWitAPIUrl, kWitAPIVersion];
+        self.audioFormat = kAudioFormatLinearPCM;
     }
 
+    return self;
+}
+
+- (instancetype) initWithAudioFormat: (AudioFormatID) audioFormat {
+    self = [self init];
+    if (self) {
+        self.audioFormat = audioFormat;
+    }
+    
     return self;
 }
 -(void)dealloc {

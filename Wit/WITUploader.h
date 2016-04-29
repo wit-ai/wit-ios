@@ -20,6 +20,8 @@
 -(BOOL)startRequestWithContext:(NSDictionary *)context;
 -(void)sendChunk:(NSData*)chunk;
 -(void)endRequest;
+
+- (instancetype) initWithAudioFormat: (AudioFormatID) audioFormat;
 @end
 
 @protocol WITUploaderDelegate <NSObject>

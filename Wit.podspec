@@ -14,7 +14,8 @@ Pod::Spec.new do |s|
   s.license = { :type => 'MIT', :file => 'LICENSE' }
 
   s.requires_arc = true
-  s.frameworks = 'QuartzCore', 'AudioToolbox'
+  s.frameworks = 'QuartzCore','CoreTelephony', 'AudioToolbox'
+  s.dependency 'GCNetworkReachability', '~> 1.3'
   s.source_files = 'Classes', 'Classes/**/*.{h,m}', 'Wit/*.{h,m}'
   s.preserve_path = 'WitResources/Images'
   s.resources = ['WitResources/Images/*.png']

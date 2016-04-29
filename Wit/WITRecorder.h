@@ -26,6 +26,7 @@
 -(BOOL)isRecording;
 -(BOOL)stoppedUsingVad;
 -(void)enabledVad;
+- (instancetype) initWithAudioFormat: (AudioFormatID) audioFormat;
 @end
 
 @protocol WITRecorderDelegate <NSObject>
