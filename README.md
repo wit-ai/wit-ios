@@ -1,5 +1,4 @@
-Wit-iOS 4.1.0
-=============
+# Wit-iOS 4.1.0
 
 The wit.ai iOS SDK is the easiest way to integrate [wit.ai](https://wit.ai) features into your iOS application.
 
@@ -9,10 +8,10 @@ The SDK can capture intents and entities from:
 - text
 
 
-Link to the SDK
----------------
+## Link to the SDK
 
-####Using CocoaPods
+
+#### Using CocoaPods
 
 Add the following dependency to your Podfile:
 ```ruby
@@ -25,11 +24,165 @@ pod install
 ```
 
 
-####Using Wit.framework
+#### Using Wit.framework
+
 You can download an archive containing the the ***.framework*** and the ***.bundle*** files under the [release section](https://github.com/wit-ai/wit-ios-sdk/releases).
 
 
-How to use
-----------
+## How to use
 
 You will find on our website a quick start guide of our iOS SDK and a fully detailed API reference: [https://wit.ai/docs/ios/4.0.0](https://wit.ai/docs/ios/4.0.0)
+
+
+### API
+
+##### @property and static methods
+```objc
+Delegate to send feedback for the application
+@property(nonatomic, strong) id <WitDelegate> delegate;
+```
+
+```objc
+Access token used to contact Wit.ai
+@property (strong) NSString* accessToken;
+```
+
+```objc
+Configure the voice activity detection algorithm:
+- WITVadConfigDisabled
+- WITVadConfigDetectSpeechStop (default)
+- WITVadConfigFull
+@property WITVadConfig detectSpeechStop;
+```
+
+```objc
+Set the maximum length of time recorded by the VAD in ms
+- Set to -1 for no timeout
+- Defaults to 7000
+@property int vadTimeout;
+```
+
+```objc
+Set VAD sensitivity (0-100)
+- Lower values are for strong voice signals like for a cellphone or personal mic
+- Higher values are for use with a fixed-position mic or any application with voice burried in ambient noise
+- Defaults to 0
+@property int VadSensitivity;
+```
+
+```objc
+Singleton instance accessor.
++ (Wit*)sharedInstance;
+```
+
+##### Understanding text
+```objc
+InterpretString
+Sends an NSString to wit.ai for interpretation. Same as sending a voice input, but with text.
+- (void) interpretString: (NSString *) string customData:(id)customData;
+```
+
+##### Recording audio
+```objc
+Starts a new recording session. [self.delegate witDidGraspIntent:…] will be called once completed.
+- (void)start;
+```
+
+```objc
+Same as the start method but allow a custom object to be passed, which will be passed back as an argument of the
+[self.delegate witDidGraspIntent:… customData:(id)customData]. This is how you should link a request to a response, if needed.
+- (void)start: (id)customData;
+```
+
+```objc
+Stops the current recording if any, which will lead to [self.delegate witDidGraspIntent:…] call.
+- (void)stop;
+```
+
+```objc
+Start / stop the audio processing. Once the API response is received, [self.delegate witDidGraspIntent:…] method will be called.
+- (void)toggleCaptureVoiceIntent;
+```
+
+```objc
+Same as toggleCaptureVoiceIntent, allowing you to pass a customData object to the [self start:(id)customData] function.
+- (void)toggleCaptureVoiceIntent:(id) customData;
+```
+
+```objc
+YES if Wit is recording.
+- (BOOL)isRecording;
+```
+
+##### Context
+```objc
+Sets context from NSDictionary. Merge semantics!
+See the context documentation in our doc for for more information: Context documentation
+- (void)setContext:(NSDictionary*)dict;
+Returns the current context.
+- (NSDictionary*)getContext;
+```
+
+##### Implementing the WitDelegate protocol
+
+```objc
+/**
+ * Protocol used by Wit to communicate with the app
+ */
+@protocol WitDelegate <NSObject>
+
+   /**
+    * Called when the Wit request is completed.
+    * param outcomes a NSDictionary of outcomes returned by the Wit API. Outcomes are ordered by confidence, highest first. Each outcome contains (at least) the following keys:
+    *       intent, entities[], confidence, _text. For more information please refer to our online documentation: https://wit.ai/docs/http/20141022#get-intent-via-text-link
+    *
+    * param messageId the message id returned by the api
+    * param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
+    * param error Nil if no error occurred during processing
+    */
+   - (void)witDidGraspIntent:(NSArray *)outcomes messageId:(NSString *)messageId customData:(id) customData error:(NSError*)e;
+
+@optional
+
+/**
+ * When using the hands free voice activity detection option (WITVadConfigFull), this callback will be called when the microphone started to listen
+ * and is waiting to detect voice activity in order to start streaming the data to the Wit API.
+ * This function will not be called if the [Wit sharedInstance].detectSpeechStop is not equal to WITVadConfigFull
+ */
+- (void)witActivityDetectorStarted;
+
+/**
+ * Called when the streaming of the audio data to the Wit API starts.
+ * The streaming to the Wit API starts right after calling one of the start methods when
+ * detectSpeechStop is equal to WITVadConfigDisabled or WITVadConfigDetectSpeechStop.
+ * If detectSpeechStop is equal to WITVadConfigFull, the streaming to the Wit API starts only when the SDK
+ * detected a voice activity.
+ */
+- (void)witDidStartRecording;
+
+/**
+ Called when Wit stop recording the audio input.
+ */
+- (void)witDidStopRecording;
+
+/**
+ Called whenever Wit reveices an audio chunk. The format of the returned audio is 16-bit PCM, 16 kHz mono.
+ */
+- (void)witDidGetAudio:(NSData *)chunk;
+
+ @end
+```
+
+##### Notifications
+```objc
+// A NSNotification is sent on the default center when the power of the audio signal changes
+NSNumber *newPower = [[NSNumber alloc] initWithFloat:power];
+[[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioPowerChanged object:newPower];        
+```
+
+##### Constants
+```objc
+static NSString* const kWitNotificationAudioPowerChanged = @"WITAudioPowerChanged";
+static int const kWitAudioSampleRate = 16000;
+static int const kWitAudioBitDepth = 16;
+```
