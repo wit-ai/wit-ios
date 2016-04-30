@@ -27,6 +27,7 @@
     NSOutputStream *outStream;
     NSInputStream *inStream;
     NSDate *start; // used to time requests
+    unsigned int bytesSent;
 }
 @synthesize requestEnding, q;
 
@@ -42,6 +43,7 @@
     readStream = NULL;
     writeStream = NULL;
     CFStreamCreateBoundPair(NULL, &readStream, &writeStream, 65536);
+    bytesSent = 0;
 
     // convert to NSStream and set as property
     inStream = CFBridgingRelease(readStream);
@@ -74,6 +76,9 @@
     switch (self.audioFormat) {
         case kAudioFormatULaw:
             contentType = @"audio/ulaw";
+            break;
+        case kAudioFormatAppleIMA4:
+            contentType = @"audio/raw;encoding=ima-adpcm;bits=16;rate=16000;endian=little";
             break;
         case kAudioFormatLinearPCM:
             contentType = @"wit/ios";
@@ -133,6 +138,7 @@
 -(void)sendChunk:(NSData*)chunk {
     
     debug(@"Adding operation %u bytes", (unsigned int)[chunk length]);
+    bytesSent = bytesSent + (unsigned int)[chunk length];
     [q addOperationWithBlock:^{
         if (outStream) {
             [q setSuspended:YES];
@@ -150,7 +156,7 @@
 }
 
 - (void) cleanUp {
-        debug(@"Cleaning up");
+        debug(@"Cleaning up uploader");
         if (outStream) {
             debug(@"Cleaning up output stream");
             outStream.delegate = nil;
@@ -226,7 +232,7 @@
     return self;
 }
 -(void)dealloc {
-        NSLog(@"Clean WITUploader");
+        debug(@"dealloc WITUploader, total bytes sent %d", bytesSent);
     if (outStream) {
         [outStream close];
         outStream = nil;

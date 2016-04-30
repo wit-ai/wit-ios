@@ -47,21 +47,24 @@ static void audioQueueInputCallback(void* data,
     int err;
     
     if (WIT_DEBUG) {
-        debug(@"Audio chunk %u/%u", (unsigned int)size, (unsigned int)buffer->mAudioDataBytesCapacity);
+        debug(@"Audio chunk %u/%u, numofpacdescriptions %d", (unsigned int)size, (unsigned int)buffer->mAudioDataBytesCapacity, numberPacketDescriptions);
     }
     
     if (size > 0) {
         NSData* audio = [NSData dataWithBytes:bytes length:size];
         @autoreleasepool {
             WITRecorder* recorder = (__bridge WITRecorder*)data;
-            [recorder.delegate recorderGotChunk:audio];
+            if (recorder.delegate) {
+                [recorder.delegate recorderGotChunk:audio];
+            }
+            
             if (recorder.vad != nil) {
                 [recorder.vad gotAudioSamples:audio];
             }
             if (recorder.isRecording == YES) {
                 err = AudioQueueEnqueueBuffer(q, buffer, 0, NULL);
                 if (err) {
-                    NSLog(@"Error when enqueuing buffer from callback: %d", err);
+                    debug(@"Error when enqueuing buffer from callback: %d", err);
                 }
             }
         }
@@ -71,8 +74,16 @@ static void audioQueueInputCallback(void* data,
 }
 
 static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePropertyID propertyID) {
-    if (propertyID == kAudioQueueProperty_IsRunning)
-        debug(@"Queue running state changed");
+    UInt32      state = NO,
+    size = sizeof(UInt32);
+    OSStatus    err = AudioQueueGetProperty( queue, kAudioQueueProperty_IsRunning, &state, &size );
+    if( err != noErr )
+        debug(@"Couldn't get play state of queue.");
+
+    if (state == 0) {
+        WITRecorder* recorder = (__bridge WITRecorder*)userData;
+        [recorder.delegate recorderStopped];
+    }
 }
 
 #pragma mark - Recording
@@ -119,11 +130,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 - (BOOL)stop {
     int err;
     self.state->recording = NO;
-    err = AudioQueueReset(self.state->queue);
-    if (err) {
-        NSLog(@"[Wit] ERROR: could not flush audio queue (%d)", err);
-    }
-    err = AudioQueuePause(self.state->queue);
+    err = AudioQueueStop(self.state->queue,false);
     if (err) {
         NSLog(@"[Wit] ERROR: could not pause audio queue (%d)", err);
     }
@@ -204,6 +211,14 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
             fmt.mFramesPerPacket  = 1;
             bufferMultiplier = 2;
             break;
+        case kAudioFormatAppleIMA4:
+            fmt.mFormatID         = kAudioFormatAppleIMA4;
+            fmt.mChannelsPerFrame = 1;
+            fmt.mSampleRate       = kWitAudioSampleRate;
+            fmt.mBitsPerChannel	  = kWitAudioBitDepth;
+            fmt.mBytesPerPacket	  = fmt.mBytesPerFrame = (fmt.mBitsPerChannel / 8) * fmt.mChannelsPerFrame;
+            //fmt.mFramesPerPacket  = 1;
+            break;
             
         default:
             fmt.mFormatID         = kAudioFormatLinearPCM;
@@ -222,7 +237,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 
     
     
-    AudioQueueNewInput(&fmt,
+    err =  AudioQueueNewInput(&fmt,
                        audioQueueInputCallback,
                        (__bridge void *)(self), // user data
                        NULL,   // run loop
@@ -230,7 +245,9 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
                        0,      // flags
                        &state->queue);
     
-    
+    if (err) {
+        debug(@"error while queue new input %d", err);
+    }
     
     
     self.bufferLength = 0.05; /* seconds */
@@ -247,7 +264,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     UInt32 on = 1;
     AudioQueueSetProperty(state->queue, kAudioQueueProperty_EnableLevelMetering, &on, sizeof(on));
     err = AudioQueueAddPropertyListener(state->queue, kAudioQueueProperty_IsRunning,
-                                        MyPropertyListener, &state);
+                                        MyPropertyListener, (__bridge void *)(self));
     if (err) {
         debug(@"error while adding listener buffer %d", err);
     }
@@ -304,7 +321,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 }
 
 - (void)dealloc {
-    NSLog(@"Clean WITRecorder");
+    debug(@"Clean WITRecorder");
     [displayLink invalidate];
     AudioQueueDispose(self.state->queue, YES);
     free(self.state);

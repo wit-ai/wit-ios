@@ -40,33 +40,27 @@ WITContextSetter *wcs;
         
         CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
         NSString *connectionType = networkInfo.currentRadioAccessTechnology;
-        BOOL fastConnection = YES;
+        AudioFormatID formatToUse = kAudioFormatLinearPCM;
         switch ([reachability currentReachabilityStatus]) {
             case GCNetworkReachabilityStatusWWAN:
                 // e.g. download smaller file sized images...
                 
                 if ([connectionType isEqualToString:CTRadioAccessTechnologyGPRS] || [connectionType isEqualToString:CTRadioAccessTechnologyWCDMA] || [connectionType isEqualToString:CTRadioAccessTechnologyEdge] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMA1x] || [connectionType isEqualToString:CTRadioAccessTechnologyHSUPA] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB]) {
-                    fastConnection = NO;
+                    formatToUse = kAudioFormatULaw;
+                } else {
+                    formatToUse = kAudioFormatLinearPCM;
                 }
                 
-                if (fastConnection) {
-                    self.uploader = [[WITUploader alloc] initWithAudioFormat:kAudioFormatLinearPCM];
-                    self.recorder = [[WITRecorder alloc] initWithAudioFormat:kAudioFormatLinearPCM];
-                    
-                    NSLog(@"Got FAST GSM connection");
-                } else {
-                    self.uploader = [[WITUploader alloc] initWithAudioFormat:kAudioFormatULaw];
-                    self.recorder = [[WITRecorder alloc] initWithAudioFormat:kAudioFormatULaw];
-                    NSLog(@"Got SLOW GSM connection");
-                }
 
                 break;
             default:
-                    self.uploader = [[WITUploader alloc] initWithAudioFormat:kAudioFormatLinearPCM];
-                    self.recorder = [[WITRecorder alloc] initWithAudioFormat:kAudioFormatLinearPCM];
-                NSLog(@"Got FAST default connection");
+                debug(@"Got FAST default connection");
+                formatToUse = kAudioFormatLinearPCM;
                 break;
         }
+        
+        self.uploader = [[WITUploader alloc] initWithAudioFormat:formatToUse];
+        self.recorder = [[WITRecorder alloc] initWithAudioFormat:formatToUse];
 
         self.uploader.delegate = self;
         self.isUploading = false;
@@ -101,8 +95,7 @@ WITContextSetter *wcs;
 -(void)stop
 {
         [self.recorder stop];
-        [self.uploader endRequest];
-        self.isUploading = false;
+        // self.isUploading = false;
         [self.delegate recordingSessionDidStopRecording];
 
 }
@@ -163,6 +156,10 @@ WITContextSetter *wcs;
     [self.delegate recordingSessionActivityDetectorStarted];
 }
 
+- (void) recorderStopped {
+    [self.uploader endRequest];
+}
+
 
 -(void)recorderVadStoppedTalking {
     [self.delegate stop];
@@ -179,7 +176,7 @@ WITContextSetter *wcs;
 
 -(void)dealloc {
     
-    NSLog(@"Clean WITRecordingSession");
+    debug(@"Clean WITRecordingSession");
 }
 
 @end

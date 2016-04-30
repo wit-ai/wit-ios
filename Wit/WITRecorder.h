@@ -34,6 +34,7 @@
 -(void)recorderDetectedSpeech;
 -(void)recorderGotChunk:(NSData*)chunk;
 -(void)recorderStarted;
+-(void)recorderStopped;
 -(void)recorderVadStoppedTalking;
 
 
