@@ -212,6 +212,8 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
             bufferMultiplier = 2;
             break;
         case kAudioFormatAppleIMA4:
+            // THIS ONE DOES NOT WORK!
+            NSLog(@"Warning: 'kAudioFormatAppleIMA4' is broken at the moment, use kAudioFormatULaw for compression");
             fmt.mFormatID         = kAudioFormatAppleIMA4;
             fmt.mChannelsPerFrame = 1;
             fmt.mSampleRate       = kWitAudioSampleRate;
