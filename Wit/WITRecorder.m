@@ -77,8 +77,11 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     UInt32      state = NO,
     size = sizeof(UInt32);
     OSStatus    err = AudioQueueGetProperty( queue, kAudioQueueProperty_IsRunning, &state, &size );
-    if( err != noErr )
-        debug(@"Couldn't get play state of queue.");
+    if( err != noErr ) {
+       debug(@"Couldn't get play state of queue.");
+    }
+    NSLog(@"running state is %d", state);
+    
 
     if (state == 0) {
         WITRecorder* recorder = (__bridge WITRecorder*)userData;
@@ -132,7 +135,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     self.state->recording = NO;
     err = AudioQueueStop(self.state->queue,false);
     if (err) {
-        NSLog(@"[Wit] ERROR: could not pause audio queue (%d)", err);
+        NSLog(@"[Wit] ERROR: could not stop audio queue (%d)", err);
     }
     
     
