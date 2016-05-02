@@ -64,7 +64,7 @@ WITContextSetter *wcs;
 
         self.uploader.delegate = self;
         self.isUploading = false;
-        self.context = upContext;
+        _context = upContext;
         self.recorder.delegate = self;
         [self.recorder start];
         self.witToken = witToken;
@@ -106,7 +106,7 @@ WITContextSetter *wcs;
 
 -(void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
 
-    [self.delegate recordingSessionGotResponse:resp customData:self.customData error:err];
+    [self.delegate recordingSessionGotResponse:resp customData:self.customData error:err sender: self];
     
     if (err) {
         NSLog(@"Wit stopped recording because of a (network?) error");

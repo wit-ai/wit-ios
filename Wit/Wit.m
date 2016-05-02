@@ -51,7 +51,6 @@
 
 - (void)stop{
     [self.recordingSession stop];
-    self.recordingSession = nil;
 }
 
 - (BOOL)isRecording {
@@ -240,8 +239,11 @@
 
 }
 
--(void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err {
+-(void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err sender: (id) sender {
     [self gotResponse:resp customData:customData error:err];
+    if (self.recordingSession == sender) {
+        self.recordingSession = nil;
+    }
 }
 
 @end

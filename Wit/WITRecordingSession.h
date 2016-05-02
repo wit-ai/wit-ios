@@ -16,12 +16,12 @@
 
 @interface WITRecordingSession : NSObject <WITRecorderDelegate, WITUploaderDelegate>
 
-@property WITRecorder *recorder;
-@property WITUploader *uploader;
-@property id <WITRecordingSessionDelegate> delegate;
-@property id customData;
-@property NSString *witToken;
-@property NSMutableDictionary *context;
+@property(nonatomic, strong) WITRecorder *recorder;
+@property(nonatomic, strong) WITUploader *uploader;
+@property(nonatomic, weak) id <WITRecordingSessionDelegate> delegate;
+@property(nonatomic, strong) id customData;
+@property(nonatomic, strong) NSString *witToken;
+@property(nonatomic, strong, readonly) NSMutableDictionary *context;
 @property BOOL isUploading;
 
 
