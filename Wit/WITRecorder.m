@@ -80,7 +80,6 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     if( err != noErr ) {
        debug(@"Couldn't get play state of queue.");
     }
-    NSLog(@"running state is %d", state);
     
 
     if (state == 0) {
