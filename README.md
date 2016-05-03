@@ -29,12 +29,7 @@ pod install
 You can download an archive containing the the ***.framework*** and the ***.bundle*** files under the [release section](https://github.com/wit-ai/wit-ios-sdk/releases).
 
 
-## How to use
-
-You will find on our website a quick start guide of our iOS SDK and a fully detailed API reference: [https://wit.ai/docs/ios/4.0.0](https://wit.ai/docs/ios/4.0.0)
-
-
-### API
+## API
 
 ##### @property and static methods
 ```objc
