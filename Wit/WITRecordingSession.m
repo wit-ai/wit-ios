@@ -105,13 +105,13 @@ WITContextSetter *wcs;
 }
 
 -(void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
-
-    [self.delegate recordingSessionGotResponse:resp customData:self.customData error:err sender: self];
-    
     if (err) {
         NSLog(@"Wit stopped recording because of a (network?) error");
         [self stop];
     }
+
+    [self.delegate recordingSessionGotResponse:resp customData:self.customData error:err sender: self];
+    
     [self clean];
 }
 
