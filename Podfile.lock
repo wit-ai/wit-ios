@@ -1,16 +1,10 @@
 PODS:
   - GCNetworkReachability (1.3.2)
-  - GHUnitIOS (0.5.8)
-  - OCMock (2.0.1)
 
 DEPENDENCIES:
-  - GCNetworkReachability
-  - GHUnitIOS (~> 0.5.6)
-  - OCMock (~> 2.0.1)
+  - GCNetworkReachability (~> 1.3)
 
 SPEC CHECKSUMS:
   GCNetworkReachability: 2a7dd53d362220326b3e38df68c91b3ef84418d1
-  GHUnitIOS: 6b098f0ca4887ab7a3ec2f130280f109e93da055
-  OCMock: 7a839b55abfb78e8ec3bf6eaa3cdcc567ac71d2a
 
 COCOAPODS: 0.39.0

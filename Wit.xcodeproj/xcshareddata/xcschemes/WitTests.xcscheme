@@ -14,8 +14,8 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "C5EC36EA17094E9200E0916B"
-               BuildableName = "WitTests.app"
+               BlueprintIdentifier = "CDC0B9D11CD8C7540046D9C9"
+               BuildableName = "WitTests.xctest"
                BlueprintName = "WitTests"
                ReferencedContainer = "container:Wit.xcodeproj">
             </BuildableReference>
@@ -32,8 +32,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C5EC36EA17094E9200E0916B"
-            BuildableName = "WitTests.app"
+            BlueprintIdentifier = "CDC0B9D11CD8C7540046D9C9"
+            BuildableName = "WitTests.xctest"
             BlueprintName = "WitTests"
             ReferencedContainer = "container:Wit.xcodeproj">
          </BuildableReference>
@@ -55,8 +55,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C5EC36EA17094E9200E0916B"
-            BuildableName = "WitTests.app"
+            BlueprintIdentifier = "CDC0B9D11CD8C7540046D9C9"
+            BuildableName = "WitTests.xctest"
             BlueprintName = "WitTests"
             ReferencedContainer = "container:Wit.xcodeproj">
          </BuildableReference>
@@ -74,8 +74,8 @@
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "C5EC36EA17094E9200E0916B"
-            BuildableName = "WitTests.app"
+            BlueprintIdentifier = "CDC0B9D11CD8C7540046D9C9"
+            BuildableName = "WitTests.xctest"
             BlueprintName = "WitTests"
             ReferencedContainer = "container:Wit.xcodeproj">
          </BuildableReference>

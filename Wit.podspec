@@ -9,8 +9,8 @@ Pod::Spec.new do |s|
   s.author       = { "Willy Blandin" => "willy@wit.ai" }
   s.source       = { :git => "https://github.com/wit-ai/wit-ios-sdk.git", :tag => "4.1.0" }
 
-  s.platform = :ios, '6.0'
-  s.ios.deployment_target = "6.0"
+  s.platform = :ios, '7.0'
+  s.ios.deployment_target = "7.0"
   s.license = { :type => 'MIT', :file => 'LICENSE' }
 
   s.requires_arc = true
