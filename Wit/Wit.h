@@ -7,13 +7,14 @@
 #import <AVFoundation/AVFoundation.h>
 #import "WITVadConfig.h"
 #import "WITMicButton.h"
+#import "WITRecordingSessionDelegate.h"
 #import "WITRecordingSession.h"
+
 
 
 @class WITRecordingSession;
 @class WITContextSetter;
 @protocol WitDelegate;
-@protocol WITRecordingSessionDelegate;
 
 @interface Wit : NSObject  <WITRecordingSessionDelegate>
 

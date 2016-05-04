@@ -16,19 +16,6 @@
 }
 
 
-
--(void)ensureLocation:(NSMutableDictionary *)context {
-    if ([self locationAccess] == NO) {
-        return ;
-    }
-    CLLocationDegrees latitude = locationManager.location.coordinate.latitude;
-    CLLocationDegrees longitude = locationManager.location.coordinate.longitude;
-    NSNumber *oLatitude = [[NSNumber alloc] initWithDouble:latitude];
-    NSNumber *oLongitude = [[NSNumber alloc] initWithDouble:longitude];
-    NSDictionary *locationData = [[NSDictionary alloc] initWithObjectsAndKeys:oLatitude, @"latitude", oLongitude, @"longitude", nil];
-    [context setObject:locationData forKey:@"location"];
-}
-
 -(void)ensureReferenceTime:(NSMutableDictionary *)context {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSLocale *enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
@@ -41,40 +28,13 @@
     
 }
 
--(BOOL)locationAccess {
-    if (locationManager == nil) {
-        locationManager = [[CLLocationManager alloc] init];
-    }
-    
-    
-    CLAuthorizationStatus currentStatus = [CLLocationManager authorizationStatus];
-    if (currentStatus == kCLAuthorizationStatusDenied
-        || currentStatus == kCLAuthorizationStatusRestricted) {
-        return NO;
-    }
-    if (currentStatus == kCLAuthorizationStatusNotDetermined
-        && [locationManager respondsToSelector:@selector(requestWhenInUseAuthorization)]) {
-        [locationManager requestWhenInUseAuthorization];
-        currentStatus = [CLLocationManager authorizationStatus];
-    }
-    if (currentStatus == kCLAuthorizationStatusDenied
-        || currentStatus == kCLAuthorizationStatusRestricted) {
-        return NO;
-    }
-    NSLog(@"Location access status: %d", currentStatus);
-    [locationManager startMonitoringSignificantLocationChanges];
-    
-    return YES;
-}
 
 -(void)contextFillup:(NSMutableDictionary *)context {
-    [self ensureLocation:context];
     [self ensureReferenceTime:context];
 }
 
 -(id)init {
     self = [super init];
-    [self locationAccess];
     
     return self;
 }

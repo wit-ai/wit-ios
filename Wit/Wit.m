@@ -51,7 +51,6 @@
 
 - (void)stop{
     [self.recordingSession stop];
-    self.recordingSession = nil;
 }
 
 - (BOOL)isRecording {
@@ -62,7 +61,7 @@
     [self.wcs contextFillup:self.state.context];
     NSDate *start = [NSDate date];
     NSString *contextEncoded = [WITContextSetter jsonEncode:self.state.context];
-    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@&context=%@", urlencodeString(string), kWitAPIVersion, contextEncoded];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@&context=%@&verbose=true", urlencodeString(string), kWitAPIVersion, contextEncoded];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [req setTimeoutInterval:15.0];
@@ -240,8 +239,11 @@
 
 }
 
--(void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err {
+-(void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err sender: (id) sender {
     [self gotResponse:resp customData:customData error:err];
+    if (self.recordingSession == sender) {
+        self.recordingSession = nil;
+    }
 }
 
 @end

@@ -42,16 +42,12 @@
 		2B25FE451829A36800F698ED /* WitPrivate.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B25FE441829A25700F698ED /* WitPrivate.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		2B2F81D1174C1BC4001A12BE /* WITCircleLayer.h in Headers */ = {isa = PBXBuildFile; fileRef = 2B2F81CF174C1BC4001A12BE /* WITCircleLayer.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2B2F81D2174C1BC4001A12BE /* WITCircleLayer.m in Sources */ = {isa = PBXBuildFile; fileRef = 2B2F81D0174C1BC4001A12BE /* WITCircleLayer.m */; };
-		2B878CFD1748310D00405629 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 2B878CFC1748310D00405629 /* Default-568h@2x.png */; };
-		2B878D001748354500405629 /* libWit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164415DD327500C025BD /* libWit.a */; };
-		2B878D03174836A500405629 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B83741163A6FA600F9C914 /* QuartzCore.framework */; };
-		2B878D04174836D400405629 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B95283E715F448FA00F1D5E0 /* Security.framework */; };
 		2BB2248F17460BF400538704 /* WITMicButton.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BB2248D17460BF400538704 /* WITMicButton.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		2BB2249017460BF400538704 /* WITMicButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BB2248E17460BF400538704 /* WITMicButton.m */; };
 		2BE5B2BD197832BA00B67304 /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BE5B2BB197832BA00B67304 /* util.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		2BE5B2BE197832BA00B67304 /* util.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE5B2BC197832BA00B67304 /* util.m */; };
+		69270C9875247A92B85C6108 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 33496D2620B742B797668671 /* libPods.a */; };
 		8B894EA41A9C01E900CFBFE1 /* RecordingSessionStarter.h in Headers */ = {isa = PBXBuildFile; fileRef = 8B894EA31A9C01E900CFBFE1 /* RecordingSessionStarter.h */; };
-		AE4E75D4F9354ADEAB5A9B02 /* libPods-WitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7284A2A0BD494CE4BF1E6BF2 /* libPods-WitTests.a */; };
 		B95283E015F4459300F1D5E0 /* WITUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = B95283DE15F4459300F1D5E0 /* WITUploader.m */; };
 		B95D958C15DD379A00DBBABD /* Wit.m in Sources */ = {isa = PBXBuildFile; fileRef = B95D958815DD34D000DBBABD /* Wit.m */; };
 		B95D960215DD3D7400DBBABD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B95D95F115DD3CDD00DBBABD /* CoreFoundation.framework */; };
@@ -66,27 +62,18 @@
 		B9C0164815DD327500C025BD /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164715DD327500C025BD /* Foundation.framework */; };
 		B9E8526C15E76FDE00EA8BC9 /* WITRecorder.m in Sources */ = {isa = PBXBuildFile; fileRef = B9E8526A15E76FDE00EA8BC9 /* WITRecorder.m */; };
 		B9E8526E15E77DD200EA8BC9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9E8526D15E77DD200EA8BC9 /* UIKit.framework */; };
-		C50A7D43170A5386001C81BC /* MobileCoreServices.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C50A7D40170A5355001C81BC /* MobileCoreServices.framework */; };
-		C50A7D44170A5386001C81BC /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C50A7D3E170A52F6001C81BC /* SystemConfiguration.framework */; };
-		C50A7D47170A5BA0001C81BC /* Wit.bundle in Resources */ = {isa = PBXBuildFile; fileRef = B95D960115DD3D7400DBBABD /* Wit.bundle */; };
+		BB3A1FD93EF72507751FE308 /* libPods-WitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7284A2A0BD494CE4BF1E6BF2 /* libPods-WitTests.a */; };
 		C50E65671709251C009F81E9 /* WITRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		C5EC36EC17094E9200E0916B /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9E8526D15E77DD200EA8BC9 /* UIKit.framework */; };
-		C5EC36ED17094E9200E0916B /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164715DD327500C025BD /* Foundation.framework */; };
-		C5EC36EE17094E9200E0916B /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9B8372B163A5C5100F9C914 /* CoreGraphics.framework */; };
-		C5EC36F417094E9200E0916B /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = C5EC36F217094E9200E0916B /* InfoPlist.strings */; };
-		C5EC36F617094E9200E0916B /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = C5EC36F517094E9200E0916B /* main.m */; };
-		C5EC370317094F1500E0916B /* AVFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B95D969715DD538000DBBABD /* AVFoundation.framework */; };
-		C5EC370617094F4D00E0916B /* WitTest.m in Sources */ = {isa = PBXBuildFile; fileRef = C5EC370517094F4D00E0916B /* WitTest.m */; };
+		CD6E6DFC1CD385A5003B0A7F /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6E6DFB1CD385A5003B0A7F /* CoreTelephony.framework */; };
+		CD6E6DFE1CD3904A003B0A7F /* WITRecordingSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CD6E6DFD1CD3904A003B0A7F /* WITRecordingSessionDelegate.h */; };
+		CDC0B9D51CD8C7540046D9C9 /* WitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CDC0B9D41CD8C7540046D9C9 /* WitTests.m */; };
+		CDC0B9D71CD8C7540046D9C9 /* libWit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164415DD327500C025BD /* libWit.a */; };
+		CDC0B9DD1CD8D3400046D9C9 /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6E6DFB1CD385A5003B0A7F /* CoreTelephony.framework */; };
+		CDC0B9DE1CD8D3470046D9C9 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9C0164715DD327500C025BD /* Foundation.framework */; };
+		CDC0B9DF1CD8D34E0046D9C9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9E8526D15E77DD200EA8BC9 /* UIKit.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
-		2B878CFE1748354000405629 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = B9C0163B15DD327500C025BD /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = B9C0164315DD327500C025BD;
-			remoteInfo = Wit;
-		};
 		B95D95E915DD3BCF00DBBABD /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B9C0163B15DD327500C025BD /* Project object */;
@@ -100,6 +87,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = B95D960015DD3D7400DBBABD;
 			remoteInfo = WitResources;
+		};
+		CDC0B9D81CD8C7540046D9C9 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B9C0163B15DD327500C025BD /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B9C0164315DD327500C025BD;
+			remoteInfo = Wit;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -115,8 +109,11 @@
 		03D32A691A01B9350081C7D3 /* WITContextSetter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITContextSetter.m; sourceTree = "<group>"; };
 		03ED0A9E19EC56E300F57D87 /* WITVadConfig.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WITVadConfig.h; sourceTree = "<group>"; };
 		03F276CD1992D1BC00B53E61 /* WITVadSimple.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WITVadSimple.h; sourceTree = "<group>"; };
+		0C316EB139851255B3A94701 /* libPods-Wit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Wit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		18A39D8B0CFA14849E154A51 /* Pods-WitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WitTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WitTests/Pods-WitTests.debug.xcconfig"; sourceTree = "<group>"; };
 		1D5769391A14281A009294C2 /* WITCvad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITCvad.m; sourceTree = "<group>"; };
 		1D57693B1A1429C3009294C2 /* WITCvad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WITCvad.h; sourceTree = "<group>"; };
+		25566F2161A3E6AEAC9FF065 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 		2B10D7A7175561F900973536 /* WITCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITCircleView.h; sourceTree = "<group>"; };
 		2B10D7A8175561F900973536 /* WITCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITCircleView.m; sourceTree = "<group>"; };
 		2B25FE441829A25700F698ED /* WitPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WitPrivate.h; sourceTree = "<group>"; };
@@ -128,8 +125,8 @@
 		2BB2248E17460BF400538704 /* WITMicButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITMicButton.m; sourceTree = "<group>"; };
 		2BE5B2BB197832BA00B67304 /* util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = util.h; sourceTree = "<group>"; };
 		2BE5B2BC197832BA00B67304 /* util.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = util.m; sourceTree = "<group>"; };
-		329F90C2BC4241B2A98122BB /* Pods-WitTests.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WitTests.xcconfig"; path = "Pods/Pods-WitTests.xcconfig"; sourceTree = SOURCE_ROOT; };
 		33496D2620B742B797668671 /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		5EF4135D954033241F0018AD /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		7284A2A0BD494CE4BF1E6BF2 /* libPods-WitTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-WitTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		8B894EA31A9C01E900CFBFE1 /* RecordingSessionStarter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecordingSessionStarter.h; sourceTree = "<group>"; };
 		B95283DD15F4459300F1D5E0 /* WITUploader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITUploader.h; sourceTree = "<group>"; };
@@ -160,12 +157,12 @@
 		C50A7D3E170A52F6001C81BC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C50A7D40170A5355001C81BC /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		C5A1C8171745954500201A6B /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Release-iphoneos/libPods.a"; sourceTree = "<group>"; };
-		C5EC36EB17094E9200E0916B /* WitTests.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WitTests.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		C5EC36F117094E9200E0916B /* WitTests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "WitTests-Info.plist"; sourceTree = "<group>"; };
-		C5EC36F317094E9200E0916B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		C5EC36F517094E9200E0916B /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
-		C5EC36F717094E9200E0916B /* WitTests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WitTests-Prefix.pch"; sourceTree = "<group>"; };
-		C5EC370517094F4D00E0916B /* WitTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WitTest.m; sourceTree = "<group>"; };
+		CD6E6DFB1CD385A5003B0A7F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
+		CD6E6DFD1CD3904A003B0A7F /* WITRecordingSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITRecordingSessionDelegate.h; sourceTree = "<group>"; };
+		CDC0B9D21CD8C7540046D9C9 /* WitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		CDC0B9D41CD8C7540046D9C9 /* WitTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = WitTests.m; sourceTree = "<group>"; };
+		CDC0B9D61CD8C7540046D9C9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		CF5900366A765EA20B3EB19D /* Pods-WitTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WitTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WitTests/Pods-WitTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -181,28 +178,25 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				CD6E6DFC1CD385A5003B0A7F /* CoreTelephony.framework in Frameworks */,
 				B9C0164815DD327500C025BD /* Foundation.framework in Frameworks */,
 				B9E8526E15E77DD200EA8BC9 /* UIKit.framework in Frameworks */,
 				B95D969815DD538000DBBABD /* AVFoundation.framework in Frameworks */,
 				B9B8372C163A5C5100F9C914 /* CoreGraphics.framework in Frameworks */,
 				B9B8374E163A7C2100F9C914 /* QuartzCore.framework in Frameworks */,
+				69270C9875247A92B85C6108 /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C5EC36E817094E9200E0916B /* Frameworks */ = {
+		CDC0B9CF1CD8C7540046D9C9 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				2B878D04174836D400405629 /* Security.framework in Frameworks */,
-				2B878D03174836A500405629 /* QuartzCore.framework in Frameworks */,
-				2B878D001748354500405629 /* libWit.a in Frameworks */,
-				C5EC370317094F1500E0916B /* AVFoundation.framework in Frameworks */,
-				C50A7D43170A5386001C81BC /* MobileCoreServices.framework in Frameworks */,
-				C50A7D44170A5386001C81BC /* SystemConfiguration.framework in Frameworks */,
-				C5EC36EC17094E9200E0916B /* UIKit.framework in Frameworks */,
-				C5EC36ED17094E9200E0916B /* Foundation.framework in Frameworks */,
-				C5EC36EE17094E9200E0916B /* CoreGraphics.framework in Frameworks */,
-				AE4E75D4F9354ADEAB5A9B02 /* libPods-WitTests.a in Frameworks */,
+				CDC0B9DF1CD8D34E0046D9C9 /* UIKit.framework in Frameworks */,
+				CDC0B9DE1CD8D3470046D9C9 /* Foundation.framework in Frameworks */,
+				CDC0B9DD1CD8D3400046D9C9 /* CoreTelephony.framework in Frameworks */,
+				CDC0B9D71CD8C7540046D9C9 /* libWit.a in Frameworks */,
+				BB3A1FD93EF72507751FE308 /* libPods-WitTests.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,6 +216,17 @@
 				2B80E60A1755A1AA000C3A7B /* microphone.png */,
 			);
 			path = Images;
+			sourceTree = "<group>";
+		};
+		5672AA6816606A83B14F00C8 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				18A39D8B0CFA14849E154A51 /* Pods-WitTests.debug.xcconfig */,
+				CF5900366A765EA20B3EB19D /* Pods-WitTests.release.xcconfig */,
+				25566F2161A3E6AEAC9FF065 /* Pods.debug.xcconfig */,
+				5EF4135D954033241F0018AD /* Pods.release.xcconfig */,
+			);
+			name = Pods;
 			sourceTree = "<group>";
 		};
 		B95D960315DD3D7400DBBABD /* WitResources */ = {
@@ -249,10 +254,10 @@
 				2B878CFC1748310D00405629 /* Default-568h@2x.png */,
 				B9C0164915DD327500C025BD /* Wit */,
 				B95D960315DD3D7400DBBABD /* WitResources */,
-				C5EC36EF17094E9200E0916B /* WitTests */,
+				CDC0B9D31CD8C7540046D9C9 /* WitTests */,
 				B9C0164615DD327500C025BD /* Frameworks */,
 				B9C0164515DD327500C025BD /* Products */,
-				329F90C2BC4241B2A98122BB /* Pods-WitTests.xcconfig */,
+				5672AA6816606A83B14F00C8 /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -261,7 +266,7 @@
 			children = (
 				B9C0164415DD327500C025BD /* libWit.a */,
 				B95D960115DD3D7400DBBABD /* Wit.bundle */,
-				C5EC36EB17094E9200E0916B /* WitTests.app */,
+				CDC0B9D21CD8C7540046D9C9 /* WitTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -269,6 +274,7 @@
 		B9C0164615DD327500C025BD /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				CD6E6DFB1CD385A5003B0A7F /* CoreTelephony.framework */,
 				C5A1C8171745954500201A6B /* libPods.a */,
 				C50A7D40170A5355001C81BC /* MobileCoreServices.framework */,
 				C50A7D3E170A52F6001C81BC /* SystemConfiguration.framework */,
@@ -285,6 +291,7 @@
 				B95D95F115DD3CDD00DBBABD /* CoreFoundation.framework */,
 				33496D2620B742B797668671 /* libPods.a */,
 				7284A2A0BD494CE4BF1E6BF2 /* libPods-WitTests.a */,
+				0C316EB139851255B3A94701 /* libPods-Wit.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -300,6 +307,7 @@
 				B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */,
 				B9E8526A15E76FDE00EA8BC9 /* WITRecorder.m */,
 				8B894EA31A9C01E900CFBFE1 /* RecordingSessionStarter.h */,
+				CD6E6DFD1CD3904A003B0A7F /* WITRecordingSessionDelegate.h */,
 				B95283DD15F4459300F1D5E0 /* WITUploader.h */,
 				B95283DE15F4459300F1D5E0 /* WITUploader.m */,
 				2B10D7A7175561F900973536 /* WITCircleView.h */,
@@ -337,24 +345,13 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
-		C5EC36EF17094E9200E0916B /* WitTests */ = {
+		CDC0B9D31CD8C7540046D9C9 /* WitTests */ = {
 			isa = PBXGroup;
 			children = (
-				C5EC36F017094E9200E0916B /* Supporting Files */,
-				C5EC370517094F4D00E0916B /* WitTest.m */,
+				CDC0B9D41CD8C7540046D9C9 /* WitTests.m */,
+				CDC0B9D61CD8C7540046D9C9 /* Info.plist */,
 			);
 			path = WitTests;
-			sourceTree = "<group>";
-		};
-		C5EC36F017094E9200E0916B /* Supporting Files */ = {
-			isa = PBXGroup;
-			children = (
-				C5EC36F117094E9200E0916B /* WitTests-Info.plist */,
-				C5EC36F217094E9200E0916B /* InfoPlist.strings */,
-				C5EC36F517094E9200E0916B /* main.m */,
-				C5EC36F717094E9200E0916B /* WitTests-Prefix.pch */,
-			);
-			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -377,6 +374,7 @@
 				2B2F81D1174C1BC4001A12BE /* WITCircleLayer.h in Headers */,
 				2B10D7A9175561F900973536 /* WITCircleView.h in Headers */,
 				2BB2248F17460BF400538704 /* WITMicButton.h in Headers */,
+				CD6E6DFE1CD3904A003B0A7F /* WITRecordingSessionDelegate.h in Headers */,
 				C50E65671709251C009F81E9 /* WITRecorder.h in Headers */,
 				03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */,
 				039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */,
@@ -408,10 +406,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9C0166915DD327600C025BD /* Build configuration list for PBXNativeTarget "Wit" */;
 			buildPhases = (
+				9234382868CBACF6E78DCC83 /* Check Pods Manifest.lock */,
 				B9C0164015DD327500C025BD /* Sources */,
 				B9C0164115DD327500C025BD /* Frameworks */,
 				B95D95E315DD3B3800DBBABD /* Headers */,
 				B95D958A15DD356000DBBABD /* Prepare framework */,
+				90C7FFE312D4E5E9952E5C8F /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -422,25 +422,26 @@
 			productReference = B9C0164415DD327500C025BD /* libWit.a */;
 			productType = "com.apple.product-type.library.static";
 		};
-		C5EC36EA17094E9200E0916B /* WitTests */ = {
+		CDC0B9D11CD8C7540046D9C9 /* WitTests */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = C5EC36FB17094E9200E0916B /* Build configuration list for PBXNativeTarget "WitTests" */;
+			buildConfigurationList = CDC0B9DC1CD8C7540046D9C9 /* Build configuration list for PBXNativeTarget "WitTests" */;
 			buildPhases = (
-				97C02DFF3E1D49D4835EFB72 /* Check Pods Manifest.lock */,
-				C5EC36E717094E9200E0916B /* Sources */,
-				C5EC36E817094E9200E0916B /* Frameworks */,
-				C5EC36E917094E9200E0916B /* Resources */,
-				3D62453297594C798B1B2362 /* Copy Pods Resources */,
+				67E865D230B7B416E4E6B182 /* Check Pods Manifest.lock */,
+				CDC0B9CE1CD8C7540046D9C9 /* Sources */,
+				CDC0B9CF1CD8C7540046D9C9 /* Frameworks */,
+				CDC0B9D01CD8C7540046D9C9 /* Resources */,
+				CCB15FE836B783BC98645352 /* Embed Pods Frameworks */,
+				59EC019D969E8C89D1D6A3FF /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
-				2B878CFF1748354000405629 /* PBXTargetDependency */,
+				CDC0B9D91CD8C7540046D9C9 /* PBXTargetDependency */,
 			);
 			name = WitTests;
 			productName = WitTests;
-			productReference = C5EC36EB17094E9200E0916B /* WitTests.app */;
-			productType = "com.apple.product-type.application";
+			productReference = CDC0B9D21CD8C7540046D9C9 /* WitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
 		};
 /* End PBXNativeTarget section */
 
@@ -448,8 +449,13 @@
 		B9C0163B15DD327500C025BD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0600;
+				LastUpgradeCheck = 0730;
 				ORGANIZATIONNAME = "Willy Blandin";
+				TargetAttributes = {
+					CDC0B9D11CD8C7540046D9C9 = {
+						CreatedOnToolsVersion = 7.3;
+					};
+				};
 			};
 			buildConfigurationList = B9C0163E15DD327500C025BD /* Build configuration list for PBXProject "Wit" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -466,7 +472,7 @@
 				B95D95E515DD3BBA00DBBABD /* WitFramework */,
 				B9C0164315DD327500C025BD /* Wit */,
 				B95D960015DD3D7400DBBABD /* WitResources */,
-				C5EC36EA17094E9200E0916B /* WitTests */,
+				CDC0B9D11CD8C7540046D9C9 /* WitTests */,
 			);
 		};
 /* End PBXProject section */
@@ -481,20 +487,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C5EC36E917094E9200E0916B /* Resources */ = {
+		CDC0B9D01CD8C7540046D9C9 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C50A7D47170A5BA0001C81BC /* Wit.bundle in Resources */,
-				C5EC36F417094E9200E0916B /* InfoPlist.strings in Resources */,
-				2B878CFD1748310D00405629 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3D62453297594C798B1B2362 /* Copy Pods Resources */ = {
+		59EC019D969E8C89D1D6A3FF /* Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -506,9 +509,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Pods-WitTests-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WitTests/Pods-WitTests-resources.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
-		97C02DFF3E1D49D4835EFB72 /* Check Pods Manifest.lock */ = {
+		67E865D230B7B416E4E6B182 /* Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -521,6 +525,37 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		90C7FFE312D4E5E9952E5C8F /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9234382868CBACF6E78DCC83 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
 		};
 		B95D958A15DD356000DBBABD /* Prepare framework */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -549,6 +584,21 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "set -e\nset +u\n# Avoid recursively calling this script.\nif [[ $SF_MASTER_SCRIPT_RUNNING ]]\nthen\nexit 0\nfi\nset -u\nexport SF_MASTER_SCRIPT_RUNNING=1\n\nSF_TARGET_NAME=${PROJECT_NAME}\nSF_EXECUTABLE_PATH=\"lib${SF_TARGET_NAME}.a\"\nSF_WRAPPER_NAME=\"${SF_TARGET_NAME}.framework\"\n\n# The following conditionals come from\n# https://github.com/kstenerud/iOS-Universal-Framework\n\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]\nthen\nSF_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]\nthen\nSF_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SF_SDK_PLATFORM\" = \"iphoneos\" ]]\nthen\nSF_OTHER_PLATFORM=iphonesimulator\nelse\nSF_OTHER_PLATFORM=iphoneos\nfi\n\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$SF_SDK_PLATFORM$ ]]\nthen\nSF_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${SF_OTHER_PLATFORM}\"\nelse\necho \"Could not find platform name from build products directory: $BUILT_PRODUCTS_DIR\"\nexit 1\nfi\n\n# Build the other platform.\nxcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SF_OTHER_PLATFORM}${SF_SDK_VERSION} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n# Smash the two static libraries into one fat binary and store it in the .framework\nlipo -create \"${BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" -output \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/${FRAMEWORK_VERSION}/${SF_TARGET_NAME}\"\n\n# Copy the binary to the other architecture folder to have a complete framework in both.\ncp -a \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/${FRAMEWORK_VERSION}/${SF_TARGET_NAME}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/${FRAMEWORK_VERSION}/${SF_TARGET_NAME}\"";
+		};
+		CCB15FE836B783BC98645352 /* Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Embed Pods Frameworks";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WitTests/Pods-WitTests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -581,23 +631,17 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		C5EC36E717094E9200E0916B /* Sources */ = {
+		CDC0B9CE1CD8C7540046D9C9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				C5EC36F617094E9200E0916B /* main.m in Sources */,
-				C5EC370617094F4D00E0916B /* WitTest.m in Sources */,
+				CDC0B9D51CD8C7540046D9C9 /* WitTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		2B878CFF1748354000405629 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = B9C0164315DD327500C025BD /* Wit */;
-			targetProxy = 2B878CFE1748354000405629 /* PBXContainerItemProxy */;
-		};
 		B95D95EA15DD3BCF00DBBABD /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = B9C0164315DD327500C025BD /* Wit */;
@@ -607,6 +651,11 @@
 			isa = PBXTargetDependency;
 			target = B95D960015DD3D7400DBBABD /* WitResources */;
 			targetProxy = B95D960D15DD3DBE00DBBABD /* PBXContainerItemProxy */;
+		};
+		CDC0B9D91CD8C7540046D9C9 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B9C0164315DD327500C025BD /* Wit */;
+			targetProxy = CDC0B9D81CD8C7540046D9C9 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -619,14 +668,6 @@
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
 		};
-		C5EC36F217094E9200E0916B /* InfoPlist.strings */ = {
-			isa = PBXVariantGroup;
-			children = (
-				C5EC36F317094E9200E0916B /* en */,
-			);
-			name = InfoPlist.strings;
-			sourceTree = "<group>";
-		};
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
@@ -634,7 +675,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = "${PODS_HEADERS_SEARCH_PATHS}";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -643,7 +684,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = "${PODS_HEADERS_SEARCH_PATHS}";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -658,8 +699,9 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				INFOPLIST_FILE = "WitResources/WitResources-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_BUNDLE_IDENTIFIER = "wy.io.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Wit;
 				WRAPPER_EXTENSION = bundle;
 			};
@@ -676,8 +718,9 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				INFOPLIST_FILE = "WitResources/WitResources-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
+				PRODUCT_BUNDLE_IDENTIFIER = "wy.io.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Wit;
 				WRAPPER_EXTENSION = bundle;
 			};
@@ -697,8 +740,10 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
@@ -712,7 +757,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -733,6 +778,7 @@
 				COPY_PHASE_STRIP = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -740,7 +786,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -748,8 +794,9 @@
 		};
 		B9C0166A15DD327600C025BD /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 25566F2161A3E6AEAC9FF065 /* Pods.debug.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = domoteam;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/Wit.dst;
 				FRAMEWORK_SEARCH_PATHS = (
@@ -766,7 +813,7 @@
 					"$(inherited)",
 					"${PODS_HEADERS_SEARCH_PATHS}",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -782,8 +829,9 @@
 		};
 		B9C0166B15DD327600C025BD /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 5EF4135D954033241F0018AD /* Pods.release.xcconfig */;
 			buildSettings = {
-				CODE_SIGN_IDENTITY = domoteam;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/Wit.dst;
@@ -797,7 +845,7 @@
 					"$(inherited)",
 					"${PODS_HEADERS_SEARCH_PATHS}",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-ObjC",
@@ -812,47 +860,51 @@
 			};
 			name = Release;
 		};
-		C5EC36FC17094E9200E0916B /* Debug */ = {
+		CDC0B9DA1CD8C7540046D9C9 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 329F90C2BC4241B2A98122BB /* Pods-WitTests.xcconfig */;
+			baseConfigurationReference = 18A39D8B0CFA14849E154A51 /* Pods-WitTests.debug.xcconfig */;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "WitTests/WitTests-Prefix.pch";
-				INFOPLIST_FILE = "WitTests/WitTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				ONLY_ACTIVE_ARCH = YES;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = WitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				PRODUCT_BUNDLE_IDENTIFIER = eu.subzero.WitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "";
-				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
 		};
-		C5EC36FD17094E9200E0916B /* Release */ = {
+		CDC0B9DB1CD8C7540046D9C9 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 329F90C2BC4241B2A98122BB /* Pods-WitTests.xcconfig */;
+			baseConfigurationReference = CF5900366A765EA20B3EB19D /* Pods-WitTests.release.xcconfig */;
 			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
 				CLANG_CXX_LIBRARY = "libc++";
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "WitTests/WitTests-Prefix.pch";
-				INFOPLIST_FILE = "WitTests/WitTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
-				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				INFOPLIST_FILE = WitTests/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.3;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_BUNDLE_IDENTIFIER = eu.subzero.WitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				TARGETED_DEVICE_FAMILY = "1,2";
-				USER_HEADER_SEARCH_PATHS = "";
-				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
 		};
@@ -895,11 +947,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		C5EC36FB17094E9200E0916B /* Build configuration list for PBXNativeTarget "WitTests" */ = {
+		CDC0B9DC1CD8C7540046D9C9 /* Build configuration list for PBXNativeTarget "WitTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				C5EC36FC17094E9200E0916B /* Debug */,
-				C5EC36FD17094E9200E0916B /* Release */,
+				CDC0B9DA1CD8C7540046D9C9 /* Debug */,
+				CDC0B9DB1CD8C7540046D9C9 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

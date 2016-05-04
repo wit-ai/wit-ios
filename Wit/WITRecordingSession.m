@@ -10,6 +10,9 @@
 #import "WITVadConfig.h"
 #import "WITContextSetter.h"
 
+#import <CoreTelephony/CTTelephonyNetworkInfo.h>
+
+#import <GCNetworkReachability/GCNetworkReachability.h>
 @interface WITRecordingSession ()
 
 @property WITVadConfig vadEnabled;
@@ -27,11 +30,43 @@ WITContextSetter *wcs;
         self.delegate = delegate;
         self.dataBuffer = [[NSMutableArray alloc] init];
         self.vadEnabled = vadEnabled;
-        self.uploader = [[WITUploader alloc] init];
+        
+        GCNetworkReachability *reachability = [GCNetworkReachability reachabilityForInternetConnection];
+        
+        if ([reachability isReachable])
+        {
+            // do stuff that requires an internet connection…
+        }
+        
+        CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
+        NSString *connectionType = networkInfo.currentRadioAccessTechnology;
+        AudioFormatID formatToUse = kAudioFormatLinearPCM;
+        switch ([reachability currentReachabilityStatus]) {
+            case GCNetworkReachabilityStatusWWAN:
+                // e.g. download smaller file sized images...
+                
+                if ([connectionType isEqualToString:CTRadioAccessTechnologyGPRS] || [connectionType isEqualToString:CTRadioAccessTechnologyWCDMA] || [connectionType isEqualToString:CTRadioAccessTechnologyEdge] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMA1x] || [connectionType isEqualToString:CTRadioAccessTechnologyHSUPA] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB] || [connectionType isEqualToString:CTRadioAccessTechnologyHSDPA]) {
+                    formatToUse = kAudioFormatULaw;
+                    debug(@"Got SLOW connection");
+                } else {
+                    debug(@"Got FAST default connection");
+                    formatToUse = kAudioFormatLinearPCM;
+                }
+                
+
+                break;
+            default:
+                debug(@"Got FAST default connection");
+                formatToUse = kAudioFormatLinearPCM;
+                break;
+        }
+        
+        self.uploader = [[WITUploader alloc] initWithAudioFormat:formatToUse];
+        self.recorder = [[WITRecorder alloc] initWithAudioFormat:formatToUse];
+
         self.uploader.delegate = self;
         self.isUploading = false;
-        self.context = upContext;
-        self.recorder = [[WITRecorder alloc] init];
+        _context = upContext;
         self.recorder.delegate = self;
         [self.recorder start];
         self.witToken = witToken;
@@ -62,8 +97,7 @@ WITContextSetter *wcs;
 -(void)stop
 {
         [self.recorder stop];
-        [self.uploader endRequest];
-        self.isUploading = false;
+        // self.isUploading = false;
         [self.delegate recordingSessionDidStopRecording];
 
 }
@@ -73,26 +107,16 @@ WITContextSetter *wcs;
 }
 
 -(void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
-
-    [self.delegate recordingSessionGotResponse:resp customData:self.customData error:err];
-    
-    if (!err && resp[kWitKeyMsgId]) {
-        [self trackVad:resp[kWitKeyMsgId]];
-    }
     if (err) {
         NSLog(@"Wit stopped recording because of a (network?) error");
         [self stop];
     }
+
+    [self.delegate recordingSessionGotResponse:resp customData:self.customData error:err sender: self];
+    
     [self clean];
 }
 
--(void)trackVad:(NSString *)messageId {
-    if (self.vadEnabled && ![self.recorder stoppedUsingVad]) {
-        NSLog(@"Tracking vad failure");
-        int vadSensitivity = [Wit sharedInstance].vadSensitivity;
-        [[[WITVadTracker alloc] init] track:@"vadFailed" withMessageId:messageId withVadSensitivity:vadSensitivity withToken:self.witToken];
-    }
-}
 
 
 #pragma mark - WITRecorderDelegate implementation
@@ -134,6 +158,10 @@ WITContextSetter *wcs;
     [self.delegate recordingSessionActivityDetectorStarted];
 }
 
+- (void) recorderStopped {
+    [self.uploader endRequest];
+}
+
 
 -(void)recorderVadStoppedTalking {
     [self.delegate stop];
@@ -150,7 +178,7 @@ WITContextSetter *wcs;
 
 -(void)dealloc {
     
-    NSLog(@"Clean WITRecordingSession");
+    debug(@"Clean WITRecordingSession");
 }
 
 @end

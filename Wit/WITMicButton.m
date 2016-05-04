@@ -17,7 +17,6 @@ static const CGFloat kMicWidth = 50.0f;
 static const CGFloat kMicMargin = 40.0f;
 
 @interface WITMicButton ()
-@property (strong, atomic) CALayer* micMask;
 @end
 
 @implementation WITMicButton {
@@ -27,7 +26,7 @@ static const CGFloat kMicMargin = 40.0f;
 - (void)defaultStyles {
     [self setTitle:@"" forState:UIControlStateNormal];
     self.clipsToBounds = NO;
-
+    
     NSNumber* lineWidth = @(2.0);
     UIColor* strokeColor = [UIColor colorWithRed:0.7f green:0.7f blue:0.7f alpha:0.5f];
     
@@ -53,7 +52,7 @@ static const CGFloat kMicMargin = 40.0f;
     if (!micUIImage) {
         NSString* path = [[WITState frameworkBundle] pathForResource:kMicrophoneImage ofType:nil];
         micUIImage = [UIImage imageWithContentsOfFile:path];
-
+        
         if (!micUIImage) {
             NSLog(@"Wit: couldn't find microphone image: %@", kMicrophoneImage);
         }
@@ -69,7 +68,7 @@ static const CGFloat kMicMargin = 40.0f;
     // sublayer for volume level
     self.volumeLayer = [CALayer layer];
     self.volumeLayer.backgroundColor = [UIColor colorWithRed:0.50f green:0.50f blue:0.50f alpha:1.00f].CGColor;
-
+    
     [self addSubview:self.outerCircleView];
     [self insertSubview:self.innerCircleView aboveSubview:self.outerCircleView];
     [self.layer addSublayer:self.microphoneLayer];
@@ -81,7 +80,7 @@ static const CGFloat kMicMargin = 40.0f;
     CGFloat y = self.bounds.origin.y;
     CGFloat w = self.bounds.size.width;
     CGFloat h = self.bounds.size.height;
-
+    
     CGPoint center = CGPointMake(w/2, h/2);
     
     // outer circle, should be able to expand on the whole screen
@@ -97,14 +96,14 @@ static const CGFloat kMicMargin = 40.0f;
     CGFloat largestVerticalOffset = fmaxf(topVerticalOffset, bottomOffset);
     CGFloat outerH = largestVerticalOffset*2;
     CGFloat outerY = witButtonCenterAbsolute.y - largestVerticalOffset;
-
+    
     // horizontal
     CGFloat leftHorizontalOffset = witButtonCenterAbsolute.x;
     CGFloat rightHorizontalOffset = screenW - witButtonCenterAbsolute.x;
     CGFloat largestHorizontalOffset = fmaxf(leftHorizontalOffset, rightHorizontalOffset);
     CGFloat outerW =  largestHorizontalOffset * 2;
     CGFloat outerX = witButtonCenterAbsolute.x - largestHorizontalOffset;
-
+    
     CGRect outerFrameAbsolute = CGRectMake(outerX, outerY, outerW, outerH);
     self.outerCircleView.frame = [self convertRect:outerFrameAbsolute fromView:nil];
     
@@ -129,7 +128,7 @@ static const CGFloat kMicMargin = 40.0f;
                                             circleRadius*2,
                                             circleRadius*2);
     self.innerCircleView.radius = @(circleRadius);
-
+    
     // mic
     self.micMask.frame = CGRectMake(0, 0, actualMicWidth, actualMicHeight);
     self.microphoneLayer.mask = self.micMask;
@@ -137,48 +136,56 @@ static const CGFloat kMicMargin = 40.0f;
     self.volumeLayer.frame = CGRectMake(0, 0, actualMicWidth, actualMicHeight);
 }
 
+- (void)setTintColor:(UIColor *)tintColor {
+    [super setTintColor:tintColor];
+    self.outerCircleView.strokeColor = tintColor;
+    self.innerCircleView.strokeColor = tintColor;
+    self.microphoneLayer.backgroundColor = tintColor.CGColor;
+    self.volumeLayer.backgroundColor = tintColor.CGColor;
+    
+}
 #pragma mark - Animations
 - (void)twoPulses {
     CGRect frame = self.outerCircleView.frame;
     CGRect pulseBounds = CGRectMake(0, 0, frame.size.width, frame.size.height);
     UIColor* pulseColor = [UIColor colorWithRed:0.92f green:0.91f blue:0.92f alpha:0.2f];
-
+    
     WITCircleLayer* circle1 = [[WITCircleLayer alloc] init];
     circle1.frame = pulseBounds;
     circle1.fillColor = nil;
     circle1.strokeColor = pulseColor;
     circle1.lineWidth = @3.0;
-
+    
     WITCircleLayer* circle2 = [[WITCircleLayer alloc] init];
     circle2.frame = pulseBounds;
     circle2.fillColor = nil;
     circle2.strokeColor = pulseColor;
     circle2.lineWidth = @3.0;
-
+    
     [self.outerCircleView.circleLayer addSublayer:circle1];
     [self.outerCircleView.circleLayer addSublayer:circle2];
-
+    
     NSNumber* newRadius = @(self.innerCircleView.radius.floatValue * 2.75f);
     float growDuration = 1.0f;
     float pulseInterval = 0.25f;
-
+    
     CABasicAnimation* growAnim = [CABasicAnimation animation];
     growAnim.duration = growDuration;
     growAnim.keyPath = @"radius";
     growAnim.fromValue = self.innerCircleView.radius;
     growAnim.toValue = newRadius;
     growAnim.timingFunction = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionEaseOut];
-
+    
     CABasicAnimation* fadeAnim = [CABasicAnimation animation];
     fadeAnim.keyPath = @"opacity";
     fadeAnim.fromValue = @1.0;
     fadeAnim.toValue = @0.0;
     fadeAnim.duration = growDuration/2;
-
+    
     void(^doPulse)(WITCircleLayer*) = ^(WITCircleLayer* circle) {
         circle.radius = newRadius;
         [circle addAnimation:growAnim forKey:@"grow"];
-
+        
         // fade out towards the end of growing anim
         dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(growDuration/2 * NSEC_PER_SEC));
         dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
@@ -186,14 +193,14 @@ static const CGFloat kMicMargin = 40.0f;
             [circle addAnimation:fadeAnim forKey:@"fade"];
         });
     };
-
+    
     doPulse(circle1);
-
+    
     // send second pulse after a few millis
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(pulseInterval * NSEC_PER_SEC)), dispatch_get_main_queue(), ^(void){
         doPulse(circle2);
     });
-
+    
     // clean subviews after completion
     dispatch_time_t popTime2 = dispatch_time(DISPATCH_TIME_NOW, (int64_t)(growDuration*3 * NSEC_PER_SEC));
     dispatch_after(popTime2, dispatch_get_main_queue(), ^(void){
@@ -207,7 +214,7 @@ static const CGFloat kMicMargin = 40.0f;
     if ([self pointInside:point withEvent:event]) {
         return self;
     }
-
+    
     return nil;
 }
 
@@ -231,7 +238,7 @@ static const CGFloat kMicMargin = 40.0f;
 - (void)buttonPressed:(id)sender {
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
     Wit *wit = [Wit sharedInstance];
-
+    
     if ([audioSession respondsToSelector:@selector(requestRecordPermission:)]) {
         [audioSession requestRecordPermission:^(BOOL granted) {
             if (granted) {
@@ -291,11 +298,11 @@ static const CGFloat kMicMargin = 40.0f;
     
     [self addObserver:self forKeyPath:@"frame" options:0 context:nil];
     
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
-//                                                 name:kWitNotificationAudioStart object:nil];
-//    
-//    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioend:)
-//                                                 name:kWitNotificationAudioEnd object:nil];
+    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
+    //                                                 name:kWitNotificationAudioStart object:nil];
+    //
+    //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audioend:)
+    //                                                 name:kWitNotificationAudioEnd object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(newAudioLevel:) name:kWitNotificationAudioPowerChanged object:nil];
     
     // retinarize

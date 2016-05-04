@@ -1,7 +1,7 @@
-platform :ios, '6.0'
+platform :ios, '7.0'
 podspec
 
-target :WitTests, :exclusive => true do
-  pod 'OCMock', '~> 2.0.1'
-  pod 'GHUnitIOS', '~> 0.5.6'
+target 'WitTests' do
+  pod 'GCNetworkReachability', '~> 1.3'
 end
+
