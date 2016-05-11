@@ -33,11 +33,6 @@ WITContextSetter *wcs;
         
         GCNetworkReachability *reachability = [GCNetworkReachability reachabilityForInternetConnection];
         
-        if ([reachability isReachable])
-        {
-            // do stuff that requires an internet connection…
-        }
-        
         CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
         NSString *connectionType = networkInfo.currentRadioAccessTechnology;
         AudioFormatID formatToUse = kAudioFormatLinearPCM;
