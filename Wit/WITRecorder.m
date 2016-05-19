@@ -54,11 +54,11 @@ static void audioQueueInputCallback(void* data,
         NSData* audio = [NSData dataWithBytes:bytes length:size];
         @autoreleasepool {
             WITRecorder* recorder = (__bridge WITRecorder*)data;
-            if (recorder.delegate) {
+            if (recorder.delegate && recorder.isRecording == YES) {
                 [recorder.delegate recorderGotChunk:audio];
             }
             
-            if (recorder.vad != nil) {
+            if (recorder.vad != nil && recorder.isRecording == YES) {
                 [recorder.vad gotAudioSamples:audio];
             }
             if (recorder.isRecording == YES) {
