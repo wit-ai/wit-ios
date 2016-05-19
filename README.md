@@ -1,5 +1,7 @@
 # Wit-iOS 4.1.0
 
+*This SDK is community-maintained. Please use the HTTP API or the Node.js/Python/Ruby SDKs for non-experimental needs (https://wit.ai/docs). We gladly accept pull requests*
+
 The wit.ai iOS SDK is the easiest way to integrate [wit.ai](https://wit.ai) features into your iOS application.
 
 The SDK can capture intents and entities from:
