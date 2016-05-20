@@ -19,6 +19,7 @@
 // will be suspended / resumed according to stream availability
 @property (atomic) NSOperationQueue* q;
 @property (atomic) WITRecorder *recorder;
+@property (nonatomic) AudioFormatID audioFormat;
 @end
 
 @implementation WITUploader {
@@ -26,6 +27,7 @@
     NSOutputStream *outStream;
     NSInputStream *inStream;
     NSDate *start; // used to time requests
+    unsigned int bytesSent;
 }
 @synthesize requestEnding, q;
 
@@ -41,6 +43,7 @@
     readStream = NULL;
     writeStream = NULL;
     CFStreamCreateBoundPair(NULL, &readStream, &writeStream, 65536);
+    bytesSent = 0;
 
     // convert to NSStream and set as property
     inStream = CFBridgingRelease(readStream);
@@ -56,7 +59,7 @@
     // if context, add to URL
     if (context != nil) {
         NSString *encoded = [WITContextSetter jsonEncode:context];
-        urlString = [NSString stringWithFormat:@"%@&context=%@", kWitSpeechURL, encoded];
+        urlString = [NSString stringWithFormat:@"%@&context=%@&verbose=true", kWitSpeechURL, encoded];
     } else {
         urlString = kWitSpeechURL;
     }
@@ -67,7 +70,24 @@
     [req setTimeoutInterval:15.0];
     [req setHTTPBodyStream:inStream];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
-    [req setValue:@"wit/ios" forHTTPHeaderField:@"Content-type"];
+    
+    NSString *contentType = nil;
+    
+    switch (self.audioFormat) {
+        case kAudioFormatULaw:
+            contentType = @"audio/ulaw";
+            break;
+        case kAudioFormatAppleIMA4:
+            contentType = @"audio/raw;encoding=ima-adpcm;bits=16;rate=16000;endian=little";
+            break;
+        case kAudioFormatLinearPCM:
+            contentType = @"wit/ios";
+            break;
+        default:
+            contentType = @"wit/ios";
+            break;
+    }
+    [req setValue:contentType forHTTPHeaderField:@"Content-type"];
     [req setValue:@"chunked" forHTTPHeaderField:@"Transfer-encoding"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     debug(@"HTTP %@ %@", req.HTTPMethod, urlString);
@@ -118,6 +138,7 @@
 -(void)sendChunk:(NSData*)chunk {
     
     debug(@"Adding operation %u bytes", (unsigned int)[chunk length]);
+    bytesSent = bytesSent + (unsigned int)[chunk length];
     [q addOperationWithBlock:^{
         if (outStream) {
             [q setSuspended:YES];
@@ -135,7 +156,7 @@
 }
 
 - (void) cleanUp {
-        debug(@"Cleaning up");
+        debug(@"Cleaning up uploader");
         if (outStream) {
             debug(@"Cleaning up output stream");
             outStream.delegate = nil;
@@ -196,12 +217,22 @@
         q = [[NSOperationQueue alloc] init];
         [q setMaxConcurrentOperationCount:1];
         kWitSpeechURL = [NSString stringWithFormat: @"%@/speech?v=%@", kWitAPIUrl, kWitAPIVersion];
+        self.audioFormat = kAudioFormatLinearPCM;
     }
 
     return self;
 }
+
+- (instancetype) initWithAudioFormat: (AudioFormatID) audioFormat {
+    self = [self init];
+    if (self) {
+        self.audioFormat = audioFormat;
+    }
+    
+    return self;
+}
 -(void)dealloc {
-        NSLog(@"Clean WITUploader");
+        debug(@"dealloc WITUploader, total bytes sent %d", bytesSent);
     if (outStream) {
         [outStream close];
         outStream = nil;

@@ -12,6 +12,7 @@ The SDK can capture intents and entities from:
 
 ## Link to the SDK
 
+
 #### Using CocoaPods
 
 Add the following dependency to your Podfile:

@@ -9,12 +9,13 @@ Pod::Spec.new do |s|
   s.author       = { "Willy Blandin" => "willy@wit.ai" }
   s.source       = { :git => "https://github.com/wit-ai/wit-ios-sdk.git", :tag => "4.1.0" }
 
-  s.platform = :ios, '6.0'
-  s.ios.deployment_target = "6.0"
+  s.platform = :ios, '7.0'
+  s.ios.deployment_target = "7.0"
   s.license = { :type => 'MIT', :file => 'LICENSE' }
 
   s.requires_arc = true
-  s.frameworks = 'QuartzCore', 'AudioToolbox'
+  s.frameworks = 'QuartzCore','CoreTelephony', 'AudioToolbox'
+  s.dependency 'GCNetworkReachability', '~> 1.3'
   s.source_files = 'Classes', 'Classes/**/*.{h,m}', 'Wit/*.{h,m}'
   s.preserve_path = 'WitResources/Images'
   s.resources = ['WitResources/Images/*.png']

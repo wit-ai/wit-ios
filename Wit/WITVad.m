@@ -43,13 +43,13 @@
         
         if ( detected_speech == 1){
             //someone just started talking
-            NSLog(@"Starting......................");
+            debug(@"Starting......................");
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate vadStartedTalking];
             });
         } else if ( detected_speech == 0) {
             //someone just stopped talking
-            NSLog(@"Stopping......................");
+            debug(@"Stopping......................");
             self.stoppedUsingVad = YES;
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate vadStoppedTalking];
@@ -61,7 +61,7 @@
 }
 
 -(id) init {
-    NSLog(@"WITVad init");
+    debug(@"WITVad init");
     self = [super init];
     int vadSensitivity = MIN(100,MAX(0,[Wit sharedInstance].vadSensitivity)); //must be between 0 and 100
     int vadTimeout = [Wit sharedInstance].vadTimeout;
@@ -78,7 +78,7 @@
 }
 
 -(void) dealloc {
-    NSLog(@"Clean WITVad");
+    debug(@"Clean WITVad");
     wv_detector_cvad_clean(self->vad_state);
 }
 
