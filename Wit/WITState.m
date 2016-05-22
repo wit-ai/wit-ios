@@ -60,7 +60,7 @@
     
     _resourcePath = [[self.class frameworkBundle] resourcePath];
     [self readPlist];
-    _context = [[NSMutableDictionary alloc] init];
+    _context = [[NSDictionary alloc] init];
     
     return self;
 }

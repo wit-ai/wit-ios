@@ -55,9 +55,9 @@
 }
 
 - (void)interpretString: (NSString *) string customData:(id)customData {
-    [self.wcs contextFillup:self.state.context];
+    NSDictionary *context = [self.wcs contextFillup:self.state.context];
     NSDate *start = [NSDate date];
-    NSString *contextEncoded = [WITContextSetter jsonEncode:self.state.context];
+    NSString *contextEncoded = [WITContextSetter jsonEncode:context];
     NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@&context=%@&verbose=true", urlencodeString(string), kWitAPIVersion, contextEncoded];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
@@ -112,7 +112,7 @@
         newContext[key] = obj;
     }];
 
-    self.state.context = newContext;
+    self.state.context = [newContext copy];
 }
 
 -(NSDictionary*)getContext {
