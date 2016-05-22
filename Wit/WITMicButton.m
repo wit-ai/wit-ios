@@ -218,10 +218,6 @@ static const CGFloat kMicMargin = 40.0f;
     return nil;
 }
 
-- (void)didMoveToSuperview {
-    [super didMoveToSuperview];
-}
-
 #pragma mark - UIButton target
 - (void)buttonPressed:(id)sender {
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
