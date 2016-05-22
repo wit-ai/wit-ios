@@ -13,13 +13,13 @@
 #import "WITContextSetter.h"
 
 @interface WITUploader ()
-@property (atomic) BOOL requestEnding;
+@property (nonatomic, assign) BOOL requestEnding;
 
 // queue used to send audio chunks in HTTP body
 // will be suspended / resumed according to stream availability
-@property (atomic) NSOperationQueue* q;
-@property (atomic) WITRecorder *recorder;
-@property (nonatomic) AudioFormatID audioFormat;
+@property (nonatomic, strong) NSOperationQueue *q;
+@property (nonatomic, strong) WITRecorder *recorder;
+@property (nonatomic, assign) AudioFormatID audioFormat;
 @end
 
 @implementation WITUploader {
@@ -29,13 +29,11 @@
     NSDate *start; // used to time requests
     unsigned int bytesSent;
 }
-@synthesize requestEnding, q;
-
 
 #pragma mark - Stream networking
--(BOOL)startRequestWithContext:(NSMutableDictionary *)context {
-    requestEnding = NO;
-    NSString* token = [[WITState sharedInstance] accessToken];
+-(BOOL)startRequestWithContext:(NSDictionary *)context {
+    self.requestEnding = NO;
+    NSString *token = [[WITState sharedInstance] accessToken];
 
     // CF wiring
     CFWriteStreamRef writeStream;
@@ -135,27 +133,27 @@
 
     return YES;
 }
--(void)sendChunk:(NSData*)chunk {
+- (void)sendChunk:(NSData *)chunk {
     
     debug(@"Adding operation %u bytes", (unsigned int)[chunk length]);
     bytesSent = bytesSent + (unsigned int)[chunk length];
-    [q addOperationWithBlock:^{
+    [self.q addOperationWithBlock:^{
         if (outStream) {
-            [q setSuspended:YES];
+            [self.q setSuspended:YES];
 
             debug(@"Uploading %u bytes", (unsigned int)[chunk length]);
             [outStream write:[chunk bytes] maxLength:[chunk length]];
         }
 
-        NSUInteger cnt = q.operationCount;
+        NSUInteger cnt = self.q.operationCount;
         debug(@"Operation count: %d", cnt);
-        if (requestEnding && cnt <= 1) {
+        if (self.requestEnding && cnt <= 1) {
             [self cleanUp];
         }
     }];
 }
 
-- (void) cleanUp {
+- (void)cleanUp {
         debug(@"Cleaning up uploader");
         if (outStream) {
             debug(@"Cleaning up output stream");
@@ -168,14 +166,14 @@
             start = [NSDate date];
         }
         
-        [q cancelAllOperations];
-        [q setSuspended:NO];
+        [self.q cancelAllOperations];
+        [self.q setSuspended:NO];
 }
 
 -(void)endRequest {
     debug(@"Ending request");
-    requestEnding = YES;
-    if (q.operationCount <= 0) {
+    self.requestEnding = YES;
+    if (self.q.operationCount <= 0) {
         [self cleanUp];
     }
 }
@@ -192,8 +190,8 @@
         case NSStreamEventHasSpaceAvailable:
             if (s == outStream) {
 //                debug(@"outStream has space, resuming dispatch");
-                if ([q isSuspended]) {
-                    [q setSuspended:NO];
+                if ([self.q isSuspended]) {
+                    [self.q setSuspended:NO];
                 }
             }
             break;
@@ -214,10 +212,10 @@
 -(id)init {
     self = [super init];
     if (self) {
-        q = [[NSOperationQueue alloc] init];
-        [q setMaxConcurrentOperationCount:1];
+        _q = [[NSOperationQueue alloc] init];
+        [_q setMaxConcurrentOperationCount:1];
         kWitSpeechURL = [NSString stringWithFormat: @"%@/speech?v=%@", kWitAPIUrl, kWitAPIVersion];
-        self.audioFormat = kAudioFormatLinearPCM;
+        _audioFormat = kAudioFormatLinearPCM;
     }
 
     return self;
@@ -232,7 +230,7 @@
     return self;
 }
 -(void)dealloc {
-        debug(@"dealloc WITUploader, total bytes sent %d", bytesSent);
+    debug(@"dealloc WITUploader, total bytes sent %d", bytesSent);
     if (outStream) {
         [outStream close];
         outStream = nil;
@@ -241,8 +239,8 @@
         [inStream close];
         inStream = nil;
     }
-    if (q) {
-        [q cancelAllOperations];
+    if (self.q) {
+        [self.q cancelAllOperations];
     }
 }
 

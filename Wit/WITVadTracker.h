@@ -12,6 +12,4 @@
 
 -(void)track:(NSString *)status withMessageId:(NSString *)messageId withVadSensitivity:(int)vadSensitivity withToken:(NSString *)token;
 
-
-
 @end

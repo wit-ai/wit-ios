@@ -10,12 +10,11 @@
 #import "WITVadTracker.h"
 
 @interface WITVadTracker ()
-@property NSMutableData *_responseData;
+@property (nonatomic, strong) NSMutableData *responseData;
+@property (nonatomic, strong) NSURLConnection *conn;
 @end
 
-@implementation WITVadTracker {
-    NSURLConnection *conn;
-}
+@implementation WITVadTracker
 
 -(void)track:(NSString *)status withMessageId:(NSString *)messageId withVadSensitivity:(int)vadSensitivity withToken:(NSString *)token {
     NSString *url = [[NSString alloc] initWithFormat:@"%@/speech/vad?message-id=%@&sensitivity=%d&sdk-ver=%@", kWitAPIUrl, messageId, vadSensitivity, kWitSDKVersion];
@@ -23,7 +22,7 @@
     NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:url]];
     request.HTTPMethod = @"PUT";
     [request setValue:[NSString stringWithFormat:@"Bearer %@", token] forHTTPHeaderField:@"Authorization"];
-    conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
+    self.conn = [[NSURLConnection alloc] initWithRequest:request delegate:self];
 }
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
@@ -45,7 +44,7 @@
     NSLog(@"WITVadTracker error: %@", error);
 }
 
--(void) dealloc {
+- (void)dealloc {
         NSLog(@"Clean WITVadTracker");
 }
 

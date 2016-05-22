@@ -229,6 +229,13 @@
 			name = Pods;
 			sourceTree = "<group>";
 		};
+		B87FAB3F1CF0C56C00ECA72D /* Converse */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Converse;
+			sourceTree = "<group>";
+		};
 		B95D960315DD3D7400DBBABD /* WitResources */ = {
 			isa = PBXGroup;
 			children = (
@@ -299,6 +306,7 @@
 		B9C0164915DD327500C025BD /* Wit */ = {
 			isa = PBXGroup;
 			children = (
+				B87FAB3F1CF0C56C00ECA72D /* Converse */,
 				B9C0166F15DD32D400C025BD /* Wit.h */,
 				B95D958815DD34D000DBBABD /* Wit.m */,
 				2B25FE441829A25700F698ED /* WitPrivate.h */,

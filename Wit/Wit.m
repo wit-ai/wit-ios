@@ -10,18 +10,15 @@
 #import "util.h"
 //#import "WITRecordingSession.h"
 #import "WITContextSetter.h"
+#import "WITRecordingSessionDelegate.h"
 
-
-@interface Wit ()
-@property (strong) WITState *state;
+@interface Wit () <WITRecordingSessionDelegate>
+@property (nonatomic, strong) WITState *state;
 @end
 
 @implementation Wit {
-    dispatch_once_t _initWcsOnceToken;
     WITContextSetter* _wcs;
 }
-
-@synthesize delegate, state;
 
 #pragma mark - Public API
 - (void)toggleCaptureVoiceIntent {
@@ -42,7 +39,7 @@
 
 
 - (void)start: (id)customData {
-    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context
+    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:self.state.context
                                                                  vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
                                                                withDelegate:self];
     self.recordingSession.customData = customData;
@@ -57,7 +54,7 @@
     return [self.recordingSession isRecording];
 }
 
-- (void) interpretString: (NSString *) string customData:(id)customData {
+- (void)interpretString: (NSString *) string customData:(id)customData {
     [self.wcs contextFillup:self.state.context];
     NSDate *start = [NSDate date];
     NSString *contextEncoded = [WITContextSetter jsonEncode:self.state.context];
@@ -106,7 +103,7 @@
 
 #pragma mark - Context management
 -(void)setContext:(NSDictionary *)dict {
-    NSMutableDictionary* newContext = [state.context mutableCopy];
+    NSMutableDictionary* newContext = [self.state.context mutableCopy];
     if (!newContext) {
         newContext = [@{} mutableCopy];
     }
@@ -115,11 +112,11 @@
         newContext[key] = obj;
     }];
 
-    state.context = newContext;
+    self.state.context = newContext;
 }
 
 -(NSDictionary*)getContext {
-    return state.context;
+    return self.state.context;
 }
 
 #pragma mark - WITUploaderDelegate
@@ -160,16 +157,16 @@
 
 #pragma mark - Getters and setters
 - (NSString *)accessToken {
-    return state.accessToken;
+    return self.state.accessToken;
 }
 
 - (void)setAccessToken:(NSString *)accessToken {
-    state.accessToken = accessToken;
+    self.state.accessToken = accessToken;
 }
 
 #pragma mark - Lifecycle
 - (void)initialize {
-    state = [WITState sharedInstance];
+    self.state = [WITState sharedInstance];
     self.detectSpeechStop = WITVadConfigDetectSpeechStop;
     self.vadTimeout = 7000;
     self.vadSensitivity = 0;
@@ -196,10 +193,10 @@
     return instance;
 }
 
--(WITContextSetter*)wcs {
-    dispatch_once(&_initWcsOnceToken, ^{
+-(WITContextSetter *)wcs {
+    if (!_wcs) {
         _wcs = [[WITContextSetter alloc] init];
-    });
+    }
     return _wcs;
 }
 

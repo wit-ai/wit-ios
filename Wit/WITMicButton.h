@@ -13,11 +13,11 @@
 #import "WITRecorder.h"
 
 @interface WITMicButton : UIButton
-@property (strong, atomic) CALayer* volumeLayer;
-@property (strong, atomic) CALayer* microphoneLayer;
-@property (strong, atomic) WITCircleView* outerCircleView;
-@property (strong, atomic) WITCircleView* innerCircleView;
-@property (strong, atomic) CALayer* micMask;
+@property (nonatomic, strong) CALayer* volumeLayer;
+@property (nonatomic, strong) CALayer* microphoneLayer;
+@property (nonatomic, strong) WITCircleView* outerCircleView;
+@property (nonatomic, strong) WITCircleView* innerCircleView;
+@property (nonatomic, strong) CALayer* micMask;
 
 - (void)newAudioLevel:(NSNotification*)n;
 

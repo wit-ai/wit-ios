@@ -19,8 +19,7 @@ static const CGFloat kMicMargin = 40.0f;
 @interface WITMicButton ()
 @end
 
-@implementation WITMicButton {
-}
+@implementation WITMicButton
 
 #pragma mark - Styles
 - (void)defaultStyles {
@@ -48,7 +47,7 @@ static const CGFloat kMicMargin = 40.0f;
     
     // microphone mask
     // try to find image in mainBundle (CocoaPods), then frameworkBundle (.framework)
-    UIImage* micUIImage = [UIImage imageNamed:kMicrophoneImage];
+    UIImage *micUIImage = [UIImage imageNamed:kMicrophoneImage];
     if (!micUIImage) {
         NSString* path = [[WITState frameworkBundle] pathForResource:kMicrophoneImage ofType:nil];
         micUIImage = [UIImage imageWithContentsOfFile:path];
@@ -75,7 +74,8 @@ static const CGFloat kMicMargin = 40.0f;
     [self.microphoneLayer addSublayer:self.volumeLayer];
 }
 
-- (void)recomputePositions {
+- (void)layoutSubviews {
+    [super layoutSubviews];
     CGFloat x = self.bounds.origin.x;
     CGFloat y = self.bounds.origin.y;
     CGFloat w = self.bounds.size.width;
@@ -182,7 +182,7 @@ static const CGFloat kMicMargin = 40.0f;
     fadeAnim.toValue = @0.0;
     fadeAnim.duration = growDuration/2;
     
-    void(^doPulse)(WITCircleLayer*) = ^(WITCircleLayer* circle) {
+    void(^doPulse)(WITCircleLayer *) = ^(WITCircleLayer *circle) {
         circle.radius = newRadius;
         [circle addAnimation:growAnim forKey:@"grow"];
         
@@ -218,20 +218,8 @@ static const CGFloat kMicMargin = 40.0f;
     return nil;
 }
 
-- (void) didMoveToSuperview {
+- (void)didMoveToSuperview {
     [super didMoveToSuperview];
-    [self recomputePositions];
-}
-
-#pragma mark - KVO
-- (void)observeValueForKeyPath:(NSString *)keyPath
-                      ofObject:(id)object
-                        change:(NSDictionary *)change
-                       context:(void *)context {
-    if (object == self && [keyPath isEqualToString:@"frame"]) {
-        [self recomputePositions];
-        return;
-    }
 }
 
 #pragma mark - UIButton target
@@ -277,10 +265,10 @@ static const CGFloat kMicMargin = 40.0f;
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (self) {
-        [self initialize];
-        self.frame = frame;
+    if (!self) {
+        return nil;
     }
+    [self initialize];
     return self;
 }
 
@@ -296,7 +284,6 @@ static const CGFloat kMicMargin = 40.0f;
 - (void)initialize {
     [self addTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
     
-    [self addObserver:self forKeyPath:@"frame" options:0 context:nil];
     
     //    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(audiostart:)
     //                                                 name:kWitNotificationAudioStart object:nil];

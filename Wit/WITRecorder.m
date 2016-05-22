@@ -23,17 +23,15 @@ typedef struct RecorderState RecorderState;
 
 @interface WITRecorder ()
 @property (nonatomic, assign) RecorderState *state;
-@property (atomic) WITVad *vad;
-@property float bufferLength;
+@property (nonatomic, strong) WITVad *vad;
+@property CGFloat bufferLength;
 @property (nonatomic) AudioFormatID audioFormat;
+@property (nonatomic, strong) CADisplayLink* displayLink;
+
 @end
 
 
-@implementation WITRecorder {
-    CADisplayLink* displayLink;
-}
-
-@synthesize vad;
+@implementation WITRecorder
 
 #pragma mark - AudioQueue callbacks
 static void audioQueueInputCallback(void* data,
@@ -53,7 +51,7 @@ static void audioQueueInputCallback(void* data,
     if (size > 0) {
         NSData* audio = [NSData dataWithBytes:bytes length:size];
         @autoreleasepool {
-            WITRecorder* recorder = (__bridge WITRecorder*)data;
+            WITRecorder* recorder = (__bridge WITRecorder *)data;
             if (recorder.delegate && recorder.isRecording == YES) {
                 [recorder.delegate recorderGotChunk:audio];
             }
@@ -94,7 +92,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
  * internal behavior.
  * The thread used as of today is the main thread.
  */
-- (BOOL) start {
+- (BOOL)start {
     NSString *category = [[AVAudioSession sharedInstance] category];
     if (!([category isEqualToString:@"AVAudioSessionCategoryRecord"] ||
           [category isEqualToString:@"AVAudioSessionCategoryPlayAndRecord"])) {
@@ -117,7 +115,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
         return NO;
     }
     
-    [displayLink setPaused:NO];
+    [self.displayLink setPaused:NO];
     [self.delegate recorderStarted];
     
     return YES;
@@ -138,8 +136,8 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     }
     
     
-    [displayLink setPaused:YES];
-    [displayLink invalidate];
+    [self.displayLink setPaused:YES];
+    [self.displayLink invalidate];
     self.power = -999;
     if (self.vad) {
         self.vad.delegate = nil;
@@ -183,9 +181,9 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 #pragma mark - Lifecycle
 - (void)initialize {
     // init recorder
-    displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updatePower)];
-    [displayLink setPaused:YES];
-    [displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
+    self.displayLink = [CADisplayLink displayLinkWithTarget:self selector:@selector(updatePower)];
+    [self.displayLink setPaused:YES];
+    [self.displayLink addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSRunLoopCommonModes];
     
     // audio session
     AVAudioSession* session = [AVAudioSession sharedInstance];
@@ -198,7 +196,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
     
     // create audio queue
     int err;
-    RecorderState* state = (RecorderState*)malloc(sizeof(RecorderState));
+    RecorderState *state = (RecorderState *)malloc(sizeof(RecorderState));
     AudioStreamBasicDescription fmt;
     memset(&fmt, 0, sizeof(fmt));
     int bufferMultiplier = 1;
@@ -305,19 +303,13 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 }
 
 - (id)init {
-    self = [super init];
-    if (self) {
-        self.audioFormat = kAudioFormatLinearPCM;
-        [self initialize];
-    }
-    
-    return self;
+    return [self initWithAudioFormat:kAudioFormatLinearPCM];
 }
 
-- (id)initWithAudioFormat: (AudioFormatID) audioFormat {
+- (id)initWithAudioFormat:(AudioFormatID) audioFormat {
     self = [super init];
     if (self) {
-        self.audioFormat = audioFormat;
+        _audioFormat = audioFormat;
         [self initialize];
     }
     
@@ -326,7 +318,7 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
 
 - (void)dealloc {
     debug(@"Clean WITRecorder");
-    [displayLink invalidate];
+    [self.displayLink invalidate];
     AudioQueueDispose(self.state->queue, YES);
     free(self.state);
     [[NSNotificationCenter defaultCenter] removeObserver:self];

@@ -11,13 +11,11 @@
 @implementation WITState
 
 #pragma mark - Util
-+(NSString*)UUID {
++ (NSString *)UUID {
     static NSString* uuidString;
     static dispatch_once_t once;
     dispatch_once(&once, ^{
-        CFUUIDRef newUniqueId = CFUUIDCreate(kCFAllocatorDefault);
-        uuidString = (__bridge_transfer NSString*)CFUUIDCreateString(kCFAllocatorDefault, newUniqueId);
-        CFRelease(newUniqueId);
+        uuidString = [NSUUID UUID].UUIDString;
     });
     
     return uuidString;
@@ -43,7 +41,7 @@
 }
 
 #pragma mark - Lifecycle
-+(WITState*)sharedInstance {
++ (WITState *)sharedInstance {
     static WITState* instance;
     static dispatch_once_t once;
 
@@ -54,15 +52,15 @@
     return instance;
 }
 
--(id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
     }
     
-    self.resourcePath = [[self.class frameworkBundle] resourcePath];
+    _resourcePath = [[self.class frameworkBundle] resourcePath];
     [self readPlist];
-    self.context = [[NSMutableDictionary alloc] init];
+    _context = [[NSMutableDictionary alloc] init];
     
     return self;
 }
