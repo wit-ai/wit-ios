@@ -54,7 +54,7 @@
     return [self.recordingSession isRecording];
 }
 
-- (void)interpretString: (NSString *) string customData:(id)customData {
+- (void)interpretString:(NSString *) string customData:(id)customData {
     NSDictionary *context = [self.wcs contextFillup:self.state.context];
     NSDate *start = [NSDate date];
     NSString *contextEncoded = [WITContextSetter jsonEncode:context];
@@ -103,16 +103,7 @@
 
 #pragma mark - Context management
 -(void)setContext:(NSDictionary *)dict {
-    NSMutableDictionary* newContext = [self.state.context mutableCopy];
-    if (!newContext) {
-        newContext = [@{} mutableCopy];
-    }
-
-    [dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        newContext[key] = obj;
-    }];
-
-    self.state.context = [newContext copy];
+    self.state.context = dict;
 }
 
 -(NSDictionary*)getContext {
@@ -130,14 +121,14 @@
 
 #pragma mark - Response processing
 - (void)errorWithDescription:(NSString*)errorDesc customData:(id)customData {
-    NSError* e = [NSError errorWithDomain:@"WitProcessing" code:1 userInfo:@{NSLocalizedDescriptionKey: errorDesc}];
+    NSError *e = [NSError errorWithDomain:@"WitProcessing" code:1 userInfo:@{NSLocalizedDescriptionKey: errorDesc}];
     [self error:e customData:customData];
 }
 
 - (void)processMessage:(NSDictionary *)resp customData:(id)customData {
     id error = resp[kWitKeyError];
     if (error) {
-        NSString* errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
+        NSString *errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
         return [self errorWithDescription:errorDesc customData:customData];
     }
 
@@ -171,7 +162,8 @@
     self.vadTimeout = 7000;
     self.vadSensitivity = 0;
 }
-- (id)init {
+
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self initialize];
@@ -193,7 +185,7 @@
     return instance;
 }
 
--(WITContextSetter *)wcs {
+- (WITContextSetter *)wcs {
     if (!_wcs) {
         _wcs = [[WITContextSetter alloc] init];
     }
@@ -202,41 +194,41 @@
 
 #pragma mark - WITRecordingSessionDelegate
 
--(void)recordingSessionActivityDetectorStarted {
+- (void)recordingSessionActivityDetectorStarted {
     if ([self.delegate respondsToSelector:@selector(witActivityDetectorStarted)]) {
         [self.delegate witActivityDetectorStarted];
     }
 }
 
--(void)recordingSessionDidStartRecording {
+- (void)recordingSessionDidStartRecording {
     if ([self.delegate respondsToSelector:@selector(witDidStartRecording)]) {
         [self.delegate witDidStartRecording];
     }
 }
 
--(void)recordingSessionDidStopRecording {
+- (void)recordingSessionDidStopRecording {
     if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {
         [self.delegate witDidStopRecording];
     }
 }
 
--(void)recordingSessionDidDetectSpeech {
+- (void)recordingSessionDidDetectSpeech {
     if ([self.delegate respondsToSelector:@selector(witDidDetectSpeech)]) {
         [self.delegate witDidDetectSpeech];
     }
 }
 
--(void)recordingSessionRecorderGotChunk:(NSData *)chunk {
+- (void)recordingSessionRecorderGotChunk:(NSData *)chunk {
     if ([self.delegate respondsToSelector:@selector(witDidGetAudio:)]) {
         [self.delegate witDidGetAudio:chunk];
     }
 }
 
--(void)recordingSessionRecorderPowerChanged:(float)power {
+- (void)recordingSessionRecorderPowerChanged:(float)power {
 
 }
 
--(void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err sender: (id) sender {
+- (void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err sender:(id) sender {
     [self gotResponse:resp customData:customData error:err];
     if (self.recordingSession == sender) {
         self.recordingSession = nil;
