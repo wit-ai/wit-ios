@@ -14,7 +14,7 @@
 @implementation WITCircleView
 
 #pragma mark - Lifecycle
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (!self) {
         return nil;
