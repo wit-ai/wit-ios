@@ -209,27 +209,22 @@
     }
 }
 
--(id)init {
-    self = [super init];
+- (instancetype)init {
+    return [self initWithAudioFormat:kAudioFormatLinearPCM];
+}
+
+- (instancetype)initWithAudioFormat:(AudioFormatID) audioFormat {
+    self = [self init];
     if (self) {
         _q = [[NSOperationQueue alloc] init];
         [_q setMaxConcurrentOperationCount:1];
         kWitSpeechURL = [NSString stringWithFormat: @"%@/speech?v=%@", kWitAPIUrl, kWitAPIVersion];
-        _audioFormat = kAudioFormatLinearPCM;
-    }
-
-    return self;
-}
-
-- (instancetype) initWithAudioFormat: (AudioFormatID) audioFormat {
-    self = [self init];
-    if (self) {
-        self.audioFormat = audioFormat;
+        _audioFormat = audioFormat;
     }
     
     return self;
 }
--(void)dealloc {
+- (void)dealloc {
     debug(@"dealloc WITUploader, total bytes sent %d", bytesSent);
     if (outStream) {
         [outStream close];

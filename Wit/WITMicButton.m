@@ -252,10 +252,9 @@ static const CGFloat kMicMargin = 40.0f;
 - (id)initWithFrame:(CGRect)frame
 {
     self = [super initWithFrame:frame];
-    if (!self) {
-        return nil;
+    if (self) {
+        [self initialize];
     }
-    [self initialize];
     return self;
 }
 

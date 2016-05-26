@@ -54,14 +54,11 @@
 
 - (instancetype)init {
     self = [super init];
-    if (!self) {
-        return nil;
+    if (self) {
+        _resourcePath = [[self.class frameworkBundle] resourcePath];
+        [self readPlist];
+        _context = [[NSDictionary alloc] init];
     }
-    
-    _resourcePath = [[self.class frameworkBundle] resourcePath];
-    [self readPlist];
-    _context = [[NSDictionary alloc] init];
-    
     return self;
 }
 @end

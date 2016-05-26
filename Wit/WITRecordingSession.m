@@ -27,32 +27,31 @@
 
 -(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
-    if (!self) {
-        return nil;
-    }
-    _delegate = delegate;
-    _dataBuffer = [[NSMutableArray alloc] init];
-    _vadEnabled = vadEnabled;
+    if (self) {
+        _delegate = delegate;
+        _dataBuffer = [[NSMutableArray alloc] init];
+        _vadEnabled = vadEnabled;
 
-    AudioFormatID formatToUse = [self configureFormat];
-    _uploader = [[WITUploader alloc] initWithAudioFormat:formatToUse];
-    _recorder = [[WITRecorder alloc] initWithAudioFormat:formatToUse];
+        AudioFormatID formatToUse = [self configureFormat];
+        _uploader = [[WITUploader alloc] initWithAudioFormat:formatToUse];
+        _recorder = [[WITRecorder alloc] initWithAudioFormat:formatToUse];
 
-    _uploader.delegate = self;
-    _isUploading = false;
-    _context = upContext;
-    _recorder.delegate = self;
-    [_recorder start];
-    _witToken = witToken;
-    _buffersToSave = 25; //hardcode for now
-    if (vadEnabled == WITVadConfigDisabled) {
-        [self startUploader];
-    } else  {
-        [_recorder enabledVad];
-        if (vadEnabled == WITVadConfigDetectSpeechStop) {
+        _uploader.delegate = self;
+        _isUploading = false;
+        _context = upContext;
+        _recorder.delegate = self;
+        [_recorder start];
+        _witToken = witToken;
+        _buffersToSave = 25; //hardcode for now
+        if (vadEnabled == WITVadConfigDisabled) {
             [self startUploader];
-        } else if (vadEnabled == WITVadConfigFull) {
-            
+        } else  {
+            [_recorder enabledVad];
+            if (vadEnabled == WITVadConfigDetectSpeechStop) {
+                [self startUploader];
+            } else if (vadEnabled == WITVadConfigFull) {
+                
+            }
         }
     }
 

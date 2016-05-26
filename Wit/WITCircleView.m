@@ -16,15 +16,15 @@
 #pragma mark - Lifecycle
 - (instancetype)init {
     self = [super init];
-    if (!self) {
-        return nil;
-    }
-    _circleLayer = (WITCircleLayer *)self.layer;
+    if (self) {
+        _circleLayer = (WITCircleLayer *)self.layer;
 
-    // retinarize
-    if ([self respondsToSelector:@selector(setContentScaleFactor:)]) {
-        self.contentScaleFactor = [[UIScreen mainScreen] scale];
+        // retinarize
+        if ([self respondsToSelector:@selector(setContentScaleFactor:)]) {
+            self.contentScaleFactor = [[UIScreen mainScreen] scale];
+        }
     }
+
     return self;
 }
 
