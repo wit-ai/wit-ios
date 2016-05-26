@@ -10,18 +10,15 @@
 #import "util.h"
 //#import "WITRecordingSession.h"
 #import "WITContextSetter.h"
+#import "WITRecordingSessionDelegate.h"
 
-
-@interface Wit ()
-@property (strong) WITState *state;
+@interface Wit () <WITRecordingSessionDelegate>
+@property (nonatomic, strong) WITState *state;
 @end
 
 @implementation Wit {
-    dispatch_once_t _initWcsOnceToken;
     WITContextSetter* _wcs;
 }
-
-@synthesize delegate, state;
 
 #pragma mark - Public API
 - (void)toggleCaptureVoiceIntent {
@@ -42,7 +39,7 @@
 
 
 - (void)start: (id)customData {
-    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:state.context
+    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:self.state.context
                                                                  vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
                                                                withDelegate:self];
     self.recordingSession.customData = customData;
@@ -57,10 +54,10 @@
     return [self.recordingSession isRecording];
 }
 
-- (void) interpretString: (NSString *) string customData:(id)customData {
-    [self.wcs contextFillup:self.state.context];
+- (void)interpretString:(NSString *) string customData:(id)customData {
+    NSDictionary *context = [self.wcs contextFillup:self.state.context];
     NSDate *start = [NSDate date];
-    NSString *contextEncoded = [WITContextSetter jsonEncode:self.state.context];
+    NSString *contextEncoded = [WITContextSetter jsonEncode:context];
     NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@&context=%@&verbose=true", urlencodeString(string), kWitAPIVersion, contextEncoded];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
@@ -106,20 +103,11 @@
 
 #pragma mark - Context management
 -(void)setContext:(NSDictionary *)dict {
-    NSMutableDictionary* newContext = [state.context mutableCopy];
-    if (!newContext) {
-        newContext = [@{} mutableCopy];
-    }
-
-    [dict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
-        newContext[key] = obj;
-    }];
-
-    state.context = newContext;
+    self.state.context = dict;
 }
 
 -(NSDictionary*)getContext {
-    return state.context;
+    return self.state.context;
 }
 
 #pragma mark - WITUploaderDelegate
@@ -133,14 +121,14 @@
 
 #pragma mark - Response processing
 - (void)errorWithDescription:(NSString*)errorDesc customData:(id)customData {
-    NSError* e = [NSError errorWithDomain:@"WitProcessing" code:1 userInfo:@{NSLocalizedDescriptionKey: errorDesc}];
+    NSError *e = [NSError errorWithDomain:@"WitProcessing" code:1 userInfo:@{NSLocalizedDescriptionKey: errorDesc}];
     [self error:e customData:customData];
 }
 
 - (void)processMessage:(NSDictionary *)resp customData:(id)customData {
     id error = resp[kWitKeyError];
     if (error) {
-        NSString* errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
+        NSString *errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
         return [self errorWithDescription:errorDesc customData:customData];
     }
 
@@ -160,21 +148,22 @@
 
 #pragma mark - Getters and setters
 - (NSString *)accessToken {
-    return state.accessToken;
+    return self.state.accessToken;
 }
 
 - (void)setAccessToken:(NSString *)accessToken {
-    state.accessToken = accessToken;
+    self.state.accessToken = accessToken;
 }
 
 #pragma mark - Lifecycle
 - (void)initialize {
-    state = [WITState sharedInstance];
+    self.state = [WITState sharedInstance];
     self.detectSpeechStop = WITVadConfigDetectSpeechStop;
     self.vadTimeout = 7000;
     self.vadSensitivity = 0;
 }
-- (id)init {
+
+- (instancetype)init {
     self = [super init];
     if (self) {
         [self initialize];
@@ -196,50 +185,50 @@
     return instance;
 }
 
--(WITContextSetter*)wcs {
-    dispatch_once(&_initWcsOnceToken, ^{
+- (WITContextSetter *)wcs {
+    if (!_wcs) {
         _wcs = [[WITContextSetter alloc] init];
-    });
+    }
     return _wcs;
 }
 
 #pragma mark - WITRecordingSessionDelegate
 
--(void)recordingSessionActivityDetectorStarted {
+- (void)recordingSessionActivityDetectorStarted {
     if ([self.delegate respondsToSelector:@selector(witActivityDetectorStarted)]) {
         [self.delegate witActivityDetectorStarted];
     }
 }
 
--(void)recordingSessionDidStartRecording {
+- (void)recordingSessionDidStartRecording {
     if ([self.delegate respondsToSelector:@selector(witDidStartRecording)]) {
         [self.delegate witDidStartRecording];
     }
 }
 
--(void)recordingSessionDidStopRecording {
+- (void)recordingSessionDidStopRecording {
     if ([self.delegate respondsToSelector:@selector(witDidStopRecording)]) {
         [self.delegate witDidStopRecording];
     }
 }
 
--(void)recordingSessionDidDetectSpeech {
+- (void)recordingSessionDidDetectSpeech {
     if ([self.delegate respondsToSelector:@selector(witDidDetectSpeech)]) {
         [self.delegate witDidDetectSpeech];
     }
 }
 
--(void)recordingSessionRecorderGotChunk:(NSData *)chunk {
+- (void)recordingSessionRecorderGotChunk:(NSData *)chunk {
     if ([self.delegate respondsToSelector:@selector(witDidGetAudio:)]) {
         [self.delegate witDidGetAudio:chunk];
     }
 }
 
--(void)recordingSessionRecorderPowerChanged:(float)power {
+- (void)recordingSessionRecorderPowerChanged:(float)power {
 
 }
 
--(void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err sender: (id) sender {
+- (void)recordingSessionGotResponse:(NSDictionary *)resp customData:(id)customData error:(NSError *)err sender:(id) sender {
     [self gotResponse:resp customData:customData error:err];
     if (self.recordingSession == sender) {
         self.recordingSession = nil;

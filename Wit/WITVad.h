@@ -14,12 +14,12 @@
 
 @interface WITVad : NSObject
 
-@property(nonatomic, weak) id<WITVadDelegate> delegate;
+@property (nonatomic, weak) id<WITVadDelegate> delegate;
 
-@property BOOL stoppedUsingVad;
+@property (nonatomic, assign) BOOL stoppedUsingVad;
 
 
--(void) gotAudioSamples:(NSData *)samples;
+- (void)gotAudioSamples:(NSData *)samples;
 
 @end
 

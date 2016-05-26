@@ -12,23 +12,19 @@
 @end
 
 @implementation WITCircleView
-#pragma mark - Layout
-- (void)layoutSublayersOfLayer:(CALayer *)layer {
-    if (layer == self.layer) {
-    }
-}
 
 #pragma mark - Lifecycle
-- (id)init {
+- (instancetype)init {
     self = [super init];
     if (self) {
-        self.circleLayer = (WITCircleLayer*)self.layer;
+        _circleLayer = (WITCircleLayer *)self.layer;
 
         // retinarize
         if ([self respondsToSelector:@selector(setContentScaleFactor:)]) {
             self.contentScaleFactor = [[UIScreen mainScreen] scale];
         }
     }
+
     return self;
 }
 
@@ -37,27 +33,34 @@
 }
 
 #pragma mark - Getters and setters
-- (NSNumber*)radius {
+- (NSNumber *)radius {
     return self.circleLayer.radius;
 }
+
 - (void)setRadius:(NSNumber *)radius {
     self.circleLayer.radius = radius;
 }
+
 - (UIColor *)fillColor {
     return self.circleLayer.fillColor;
 }
+
 - (void)setFillColor:(UIColor *)color {
     self.circleLayer.fillColor = color;
 }
+
 - (NSNumber *)lineWidth {
     return self.circleLayer.lineWidth;
 }
+
 - (void)setLineWidth:(NSNumber *)lineWidth {
     self.circleLayer.lineWidth = lineWidth;
 }
+
 - (void)setStrokeColor:(UIColor *)strokeColor {
     self.circleLayer.strokeColor = strokeColor;
 }
+
 - (UIColor *)strokeColor {
     return self.circleLayer.strokeColor;
 }

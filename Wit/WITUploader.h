@@ -18,12 +18,12 @@
 @property (nonatomic, weak) id<WITUploaderDelegate> delegate;
 
 -(BOOL)startRequestWithContext:(NSDictionary *)context;
--(void)sendChunk:(NSData*)chunk;
+-(void)sendChunk:(NSData *)chunk;
 -(void)endRequest;
 
-- (instancetype) initWithAudioFormat: (AudioFormatID) audioFormat;
+- (instancetype)initWithAudioFormat:(AudioFormatID)audioFormat;
 @end
 
 @protocol WITUploaderDelegate <NSObject>
--(void)gotResponse:(NSDictionary*)resp error:(NSError*)err;
+-(void)gotResponse:(NSDictionary *)resp error:(NSError *)err;
 @end

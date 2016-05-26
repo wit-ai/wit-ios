@@ -16,7 +16,7 @@
 }
 
 
--(void)ensureReferenceTime:(NSMutableDictionary *)context {
+- (void)ensureReferenceTime:(NSMutableDictionary *)context {
     NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
     NSLocale *enUSPOSIXLocale = [NSLocale localeWithLocaleIdentifier:@"en_US_POSIX"];
     [dateFormatter setLocale:enUSPOSIXLocale];
@@ -28,18 +28,13 @@
     
 }
 
-
--(void)contextFillup:(NSMutableDictionary *)context {
-    [self ensureReferenceTime:context];
+- (NSDictionary *)contextFillup:(NSDictionary *)context {
+    NSMutableDictionary *mutableContext = [context mutableCopy];
+    [self ensureReferenceTime:mutableContext];
+    return [mutableContext copy];
 }
 
--(id)init {
-    self = [super init];
-    
-    return self;
-}
-
-+(NSString *)jsonEncode: (NSMutableDictionary *)context {
++ (NSString *)jsonEncode:(NSDictionary *)context {
     NSError* serializationError;
     NSData *data = [NSJSONSerialization dataWithJSONObject:context
                                                    options:0

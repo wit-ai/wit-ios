@@ -18,26 +18,26 @@
 //
 @interface WITRecorder : NSObject <WITVadDelegate>
 @property (nonatomic, weak) id<WITRecorderDelegate> delegate;
-@property (atomic) float power; // recording volume power
+@property (atomic) CGFloat power; // recording volume power
 
 #pragma mark - Recording
--(BOOL)start;
--(BOOL)stop;
--(BOOL)isRecording;
--(BOOL)stoppedUsingVad;
--(void)enabledVad;
-- (instancetype) initWithAudioFormat: (AudioFormatID) audioFormat;
+- (BOOL)start;
+- (BOOL)stop;
+- (BOOL)isRecording;
+- (BOOL)stoppedUsingVad;
+- (void)enabledVad;
+- (instancetype)initWithAudioFormat:(AudioFormatID)audioFormat;
 @end
 
 @protocol WITRecorderDelegate <NSObject>
 
--(void)recorderDetectedSpeech;
--(void)recorderGotChunk:(NSData*)chunk;
--(void)recorderStarted;
--(void)recorderStopped;
--(void)recorderVadStoppedTalking;
+- (void)recorderDetectedSpeech;
+- (void)recorderGotChunk:(NSData *)chunk;
+- (void)recorderStarted;
+- (void)recorderStopped;
+- (void)recorderVadStoppedTalking;
 
 
 
--(void)stop;
+- (void)stop;
 @end
