@@ -10,8 +10,8 @@
 #import <UIKit/UIKit.h>
 
 @interface WITCircleLayer : CALayer
-@property (nonatomic) NSNumber* radius;
-@property (nonatomic) NSNumber* lineWidth;
-@property (strong) UIColor* fillColor;
-@property (strong) UIColor* strokeColor;
+@property (nonatomic, strong) NSNumber* radius;
+@property (nonatomic, strong) NSNumber* lineWidth;
+@property (nonatomic, strong) UIColor* fillColor;
+@property (nonatomic, strong) UIColor* strokeColor;
 @end

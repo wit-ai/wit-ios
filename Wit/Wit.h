@@ -7,7 +7,6 @@
 #import <AVFoundation/AVFoundation.h>
 #import "WITVadConfig.h"
 #import "WITMicButton.h"
-#import "WITRecordingSessionDelegate.h"
 #import "WITRecordingSession.h"
 
 
@@ -16,7 +15,7 @@
 @class WITContextSetter;
 @protocol WitDelegate;
 
-@interface Wit : NSObject  <WITRecordingSessionDelegate>
+@interface Wit : NSObject
 
 @property(nonatomic, strong) WITRecordingSession *recordingSession;
 
@@ -25,12 +24,12 @@
 /**
  Delegate to send feedback for the application
  */
-@property(nonatomic, strong) id <WitDelegate> delegate;
+@property(nonatomic, weak) id<WitDelegate> delegate;
 
 /**
  Access token used to contact Wit.ai
  */
-@property (strong) NSString* accessToken;
+@property (nonatomic, copy, readonly) NSString *accessToken;
 
 /**
  * Configure the voice activity detection algorithm:
@@ -38,14 +37,14 @@
  * - WITVadConfigDetectSpeechStop (default)
  * - WITVadConfigFull
  */
-@property WITVadConfig detectSpeechStop;
+@property (nonatomic, assign) WITVadConfig detectSpeechStop;
 
 /**
  * Set the maximum length of time recorded by the VAD in ms
  * Set to -1 for no timeout
  * Defaults to 7000
  */
-@property int vadTimeout;
+@property (nonatomic, assign) NSInteger vadTimeout;
 
 /**
  * Set VAD sensitivity (0-100):
@@ -53,12 +52,12 @@
  * - Higher values are for use with a fixed-position mic or any application with voice buried in ambient noise.
  * - Defaults to 0
  */
-@property int vadSensitivity;
+@property (nonatomic, assign) NSInteger vadSensitivity;
 
 /**
  Singleton instance accessor.
  */
-+ (Wit*)sharedInstance;
++ (Wit *)sharedInstance;
 
 /**
  * Starts a new recording session. [self.delegate witDidGraspIntent:...] will be called once completed.
@@ -69,7 +68,7 @@
  * Same as the start method but allow a custom object to be passed, which will be passed back as an argument of the
  * [self.delegate witDidGraspIntent:... customData:(id)customData]. This is how you should link a request to a response, if needed.
  */
-- (void)start: (id)customData;
+- (void)start:(id)customData;
 
 /**
  * Start / stop the audio processing. Once the API response is received, [self.delegate witDidGraspIntent:...] method will be called.
@@ -95,7 +94,7 @@
 /**
  * Sends an NSString to wit.ai for interpretation. Same as sending a voice input, but with text.
  */
-- (void) interpretString: (NSString *) string customData:(id)customData;
+- (void)interpretString:(NSString *)string customData:(id)customData;
 
 
 #pragma mark - Context management
@@ -104,12 +103,12 @@
  * Sets context from NSDictionary. Merge semantics! 
  * See the context documentation in our doc for for more information:  http://wit.ai/docs/http/20140923#context-link
  */
-- (void)setContext:(NSDictionary*)dict;
+- (void)setContext:(NSDictionary *)dict;
 
 /**
  * Returns the current context
  */
-- (NSDictionary*)getContext;
+- (NSDictionary *)getContext;
 @end
 
 /**
@@ -126,7 +125,7 @@
  * param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
  * param error Nil if no error occurred during processing
  */
-- (void)witDidGraspIntent:(NSArray *)outcomes messageId:(NSString *)messageId customData:(id) customData error:(NSError*)e;
+- (void)witDidGraspIntent:(NSArray *)outcomes messageId:(NSString *)messageId customData:(id)customData error:(NSError *)error;
 
 @optional
 
@@ -164,6 +163,6 @@
 @end
 
 /***** Constants *****************/
-static __unused NSString* const kWitNotificationAudioPowerChanged = @"WITAudioPowerChanged";
+static __unused NSString *const kWitNotificationAudioPowerChanged = @"WITAudioPowerChanged";
 static int const kWitAudioSampleRate = 16000;
 static int const kWitAudioBitDepth = 16;

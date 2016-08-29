@@ -6,7 +6,7 @@
 //
 //
 
-NSString* urlencodeString(NSString * string) {
+NSString *urlencodeString(NSString *string) {
     NSMutableString *output = [NSMutableString string];
     const unsigned char *source = (const unsigned char *)[string UTF8String];
     long sourceLen = strlen((const char *)source);

@@ -10,10 +10,10 @@
 #import "WITCircleLayer.h"
 
 @interface WITCircleView : UIView
-@property NSNumber* radius;
-@property UIColor* fillColor;
-@property UIColor* strokeColor;
-@property NSNumber* lineWidth;
+@property (nonatomic, strong) NSNumber* radius;
+@property (nonatomic, strong) UIColor* fillColor;
+@property (nonatomic, strong) UIColor* strokeColor;
+@property (nonatomic, strong) NSNumber* lineWidth;
 
-@property (strong) WITCircleLayer* circleLayer;
+@property (nonatomic, strong) WITCircleLayer* circleLayer;
 @end

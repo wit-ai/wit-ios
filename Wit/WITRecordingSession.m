@@ -15,61 +15,38 @@
 #import <GCNetworkReachability/GCNetworkReachability.h>
 @interface WITRecordingSession ()
 
-@property WITVadConfig vadEnabled;
-@property NSMutableArray *dataBuffer;
-@property int buffersToSave;
+@property (assign) WITVadConfig vadEnabled;
+@property (nonatomic, strong) NSMutableArray *dataBuffer;
+@property (assign) int buffersToSave;
+@property (nonatomic, strong) WITContextSetter *wcs;
+
 @end
 
 @implementation WITRecordingSession {
-WITContextSetter *wcs;
 }
 
--(id)initWithWitContext:(NSMutableDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
+-(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
-        self.delegate = delegate;
-        self.dataBuffer = [[NSMutableArray alloc] init];
-        self.vadEnabled = vadEnabled;
-        
-        GCNetworkReachability *reachability = [GCNetworkReachability reachabilityForInternetConnection];
-        
-        CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
-        NSString *connectionType = networkInfo.currentRadioAccessTechnology;
-        AudioFormatID formatToUse = kAudioFormatLinearPCM;
-        switch ([reachability currentReachabilityStatus]) {
-            case GCNetworkReachabilityStatusWWAN:
-                // e.g. download smaller file sized images...
-                
-                if ([connectionType isEqualToString:CTRadioAccessTechnologyGPRS] || [connectionType isEqualToString:CTRadioAccessTechnologyWCDMA] || [connectionType isEqualToString:CTRadioAccessTechnologyEdge] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMA1x] || [connectionType isEqualToString:CTRadioAccessTechnologyHSUPA] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB] || [connectionType isEqualToString:CTRadioAccessTechnologyHSDPA]) {
-                    formatToUse = kAudioFormatULaw;
-                    debug(@"Got SLOW connection");
-                } else {
-                    debug(@"Got FAST default connection");
-                    formatToUse = kAudioFormatLinearPCM;
-                }
-                
+        _delegate = delegate;
+        _dataBuffer = [[NSMutableArray alloc] init];
+        _vadEnabled = vadEnabled;
 
-                break;
-            default:
-                debug(@"Got FAST default connection");
-                formatToUse = kAudioFormatLinearPCM;
-                break;
-        }
-        
-        self.uploader = [[WITUploader alloc] initWithAudioFormat:formatToUse];
-        self.recorder = [[WITRecorder alloc] initWithAudioFormat:formatToUse];
+        AudioFormatID formatToUse = [self configureFormat];
+        _uploader = [[WITUploader alloc] initWithAudioFormat:formatToUse];
+        _recorder = [[WITRecorder alloc] initWithAudioFormat:formatToUse];
 
-        self.uploader.delegate = self;
-        self.isUploading = false;
+        _uploader.delegate = self;
+        _isUploading = false;
         _context = upContext;
-        self.recorder.delegate = self;
-        [self.recorder start];
-        self.witToken = witToken;
-        self.buffersToSave = 25; //hardcode for now
+        _recorder.delegate = self;
+        [_recorder start];
+        _witToken = witToken;
+        _buffersToSave = 25; //hardcode for now
         if (vadEnabled == WITVadConfigDisabled) {
             [self startUploader];
         } else  {
-            [self.recorder enabledVad];
+            [_recorder enabledVad];
             if (vadEnabled == WITVadConfigDetectSpeechStop) {
                 [self startUploader];
             } else if (vadEnabled == WITVadConfigFull) {
@@ -77,23 +54,53 @@ WITContextSetter *wcs;
             }
         }
     }
-    
+
     return self;
 }
 
--(void)startUploader
+- (AudioFormatID)configureFormat
 {
-    [[Wit sharedInstance].wcs contextFillup:self.context];
-    [self.uploader startRequestWithContext:self.context];
-    self.isUploading = true;
-    [self.delegate recordingSessionDidStartRecording];
+    GCNetworkReachability *reachability = [GCNetworkReachability reachabilityForInternetConnection];
+
+    CTTelephonyNetworkInfo *networkInfo = [[CTTelephonyNetworkInfo alloc] init];
+    NSString *connectionType = networkInfo.currentRadioAccessTechnology;
+    AudioFormatID formatToUse = kAudioFormatLinearPCM;
+    switch ([reachability currentReachabilityStatus]) {
+        case GCNetworkReachabilityStatusWWAN:
+            // e.g. download smaller file sized images...
+
+            if ([connectionType isEqualToString:CTRadioAccessTechnologyGPRS] || [connectionType isEqualToString:CTRadioAccessTechnologyWCDMA] || [connectionType isEqualToString:CTRadioAccessTechnologyEdge] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMA1x] || [connectionType isEqualToString:CTRadioAccessTechnologyHSUPA] || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORev0]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevA]  || [connectionType isEqualToString:CTRadioAccessTechnologyCDMAEVDORevB] || [connectionType isEqualToString:CTRadioAccessTechnologyHSDPA]) {
+                formatToUse = kAudioFormatULaw;
+                debug(@"Got SLOW connection");
+            } else {
+                debug(@"Got FAST default connection");
+                formatToUse = kAudioFormatLinearPCM;
+            }
+
+
+            break;
+        default:
+            debug(@"Got FAST default connection");
+            formatToUse = kAudioFormatLinearPCM;
+            break;
+    }
+    return formatToUse;
 }
 
--(void)stop
+- (void)startUploader
 {
-        [self.recorder stop];
-        // self.isUploading = false;
-        [self.delegate recordingSessionDidStopRecording];
+   _context = [[Wit sharedInstance].wcs contextFillup:_context];
+    
+    [_uploader startRequestWithContext:_context];
+    _isUploading = true;
+    [_delegate recordingSessionDidStartRecording];
+}
+
+- (void)stop
+{
+    [self.recorder stop];
+    // self.isUploading = false;
+    [self.delegate recordingSessionDidStopRecording];
 
 }
 
@@ -101,7 +108,7 @@ WITContextSetter *wcs;
     return [self.recorder isRecording];
 }
 
--(void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
+- (void)gotResponse:(NSDictionary*)resp error:(NSError*)err {
     if (err) {
         NSLog(@"Wit stopped recording because of a (network?) error");
         [self stop];
@@ -116,7 +123,7 @@ WITContextSetter *wcs;
 
 #pragma mark - WITRecorderDelegate implementation
 
--(void)recorderGotChunk:(NSData*)chunk {
+- (void)recorderGotChunk:(NSData*)chunk {
     dispatch_async(dispatch_get_main_queue(), ^{
     if(self.isUploading) {
         [self.uploader sendChunk:chunk];
@@ -133,7 +140,7 @@ WITContextSetter *wcs;
     });
 }
 
--(void)recorderDetectedSpeech {
+- (void)recorderDetectedSpeech {
     [self.delegate recordingSessionDidDetectSpeech];
     
     if (self.vadEnabled == WITVadConfigFull) {
@@ -142,23 +149,23 @@ WITContextSetter *wcs;
             [self startUploader];
     
             //then prepend buffered data
-            for(NSData* bufferedData in self.dataBuffer){
+            for (NSData *bufferedData in self.dataBuffer){
                 [self.uploader sendChunk:bufferedData];
             }
         });
     }
 }
 
--(void)recorderStarted {
+- (void)recorderStarted {
     [self.delegate recordingSessionActivityDetectorStarted];
 }
 
-- (void) recorderStopped {
+- (void)recorderStopped {
     [self.uploader endRequest];
 }
 
 
--(void)recorderVadStoppedTalking {
+- (void)recorderVadStoppedTalking {
     [self.delegate stop];
 }
 

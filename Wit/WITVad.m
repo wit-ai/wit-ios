@@ -16,7 +16,7 @@
     FFTSetup fft_setup;
 }
 
--(void) gotAudioSamples:(NSData *)samples {
+- (void)gotAudioSamples:(NSData *)samples {
     UInt32 size = (UInt32)[samples length];
     short *bytes = (short*)[samples bytes];
     
@@ -60,11 +60,14 @@
 
 }
 
--(id) init {
+- (instancetype)init {
     debug(@"WITVad init");
     self = [super init];
-    int vadSensitivity = MIN(100,MAX(0,[Wit sharedInstance].vadSensitivity)); //must be between 0 and 100
-    int vadTimeout = [Wit sharedInstance].vadTimeout;
+    if (!self) {
+        return nil;
+    }
+    int vadSensitivity = (int)MIN(100,MAX(0,[Wit sharedInstance].vadSensitivity)); //must be between 0 and 100
+    int vadTimeout = (int)[Wit sharedInstance].vadTimeout;
     
     self->vad_state = wv_detector_cvad_init(kWitAudioSampleRate,vadSensitivity,vadTimeout);
     self.stoppedUsingVad = NO;
@@ -77,12 +80,12 @@
     return self;
 }
 
--(void) dealloc {
+- (void)dealloc {
     debug(@"Clean WITVad");
     wv_detector_cvad_clean(self->vad_state);
 }
 
--(float*) get_fft:(short *)samples {
+- (float*)get_fft:(short *)samples {
     int N = self->vad_state->samples_per_frame; //guarenteed to be a power of 2
     
     //dynamically allocate an array for our results since we don't want to mutate the input samples

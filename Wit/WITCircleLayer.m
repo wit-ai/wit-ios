@@ -9,7 +9,6 @@
 #import "WITCircleLayer.h"
 
 @implementation WITCircleLayer
-@dynamic radius, lineWidth, strokeColor, fillColor, opacity;
 
 + (BOOL)needsDisplayForKey:(NSString *)key {
     if ([key isEqualToString:@"radius"]
@@ -52,16 +51,4 @@
     }
 }
 
-#pragma mark - Lifecycle
-- (id)init {
-    self = [super init];
-    
-    if (self) {
-    }
-    
-    return self;
-}
-
-- (void)dealloc {
-}
 @end
