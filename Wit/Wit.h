@@ -29,7 +29,7 @@
 /**
  Access token used to contact Wit.ai
  */
-@property (nonatomic, copy, readonly) NSString *accessToken;
+@property (nonatomic, copy) NSString *accessToken;
 
 /**
  * Configure the voice activity detection algorithm:

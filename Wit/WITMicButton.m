@@ -209,6 +209,15 @@ static const CGFloat kMicMargin = 40.0f;
     });
 }
 
+#pragma mark - UIView
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if ([self pointInside:point withEvent:event]) {
+        return self;
+    }
+    
+    return nil;
+}
+
 #pragma mark - UIButton target
 - (void)buttonPressed:(id)sender {
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
