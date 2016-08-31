@@ -63,6 +63,8 @@
 		B9E8526E15E77DD200EA8BC9 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B9E8526D15E77DD200EA8BC9 /* UIKit.framework */; };
 		BB3A1FD93EF72507751FE308 /* libPods-WitTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7284A2A0BD494CE4BF1E6BF2 /* libPods-WitTests.a */; };
 		C50E65671709251C009F81E9 /* WITRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		CD0FD54B1D76387E00905C48 /* WITSFSpeechRecordingSession.h in Headers */ = {isa = PBXBuildFile; fileRef = CD0FD5491D76387E00905C48 /* WITSFSpeechRecordingSession.h */; };
+		CD0FD54C1D76387E00905C48 /* WITSFSpeechRecordingSession.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0FD54A1D76387E00905C48 /* WITSFSpeechRecordingSession.m */; };
 		CD6E6DFC1CD385A5003B0A7F /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6E6DFB1CD385A5003B0A7F /* CoreTelephony.framework */; };
 		CD6E6DFE1CD3904A003B0A7F /* WITRecordingSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CD6E6DFD1CD3904A003B0A7F /* WITRecordingSessionDelegate.h */; };
 		CDC0B9D51CD8C7540046D9C9 /* WitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CDC0B9D41CD8C7540046D9C9 /* WitTests.m */; };
@@ -155,6 +157,8 @@
 		C50A7D3E170A52F6001C81BC /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		C50A7D40170A5355001C81BC /* MobileCoreServices.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MobileCoreServices.framework; path = System/Library/Frameworks/MobileCoreServices.framework; sourceTree = SDKROOT; };
 		C5A1C8171745954500201A6B /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Release-iphoneos/libPods.a"; sourceTree = "<group>"; };
+		CD0FD5491D76387E00905C48 /* WITSFSpeechRecordingSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITSFSpeechRecordingSession.h; sourceTree = "<group>"; };
+		CD0FD54A1D76387E00905C48 /* WITSFSpeechRecordingSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITSFSpeechRecordingSession.m; sourceTree = "<group>"; };
 		CD6E6DFB1CD385A5003B0A7F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		CD6E6DFD1CD3904A003B0A7F /* WITRecordingSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITRecordingSessionDelegate.h; sourceTree = "<group>"; };
 		CDC0B9D21CD8C7540046D9C9 /* WitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -331,6 +335,8 @@
 				039C23C01992FE3B00BEA5C8 /* WITVad.m */,
 				03BAFA25199D6BF600CC2752 /* WITRecordingSession.h */,
 				03BAFA26199D6BF600CC2752 /* WITRecordingSession.m */,
+				CD0FD5491D76387E00905C48 /* WITSFSpeechRecordingSession.h */,
+				CD0FD54A1D76387E00905C48 /* WITSFSpeechRecordingSession.m */,
 				03BAFA2B199D85A600CC2752 /* WITVadTracker.h */,
 				03BAFA2C199D85A600CC2752 /* WITVadTracker.m */,
 				03ED0A9E19EC56E300F57D87 /* WITVadConfig.h */,
@@ -371,6 +377,7 @@
 				B9A892B2163E7009005100F2 /* WITUploader.h in Headers */,
 				03ED0A9F19EC85F300F57D87 /* WITVadConfig.h in Headers */,
 				03BAFA2D199D85A600CC2752 /* WITVadTracker.h in Headers */,
+				CD0FD54B1D76387E00905C48 /* WITSFSpeechRecordingSession.h in Headers */,
 				2B25FE451829A36800F698ED /* WitPrivate.h in Headers */,
 				B9A892B5163E7083005100F2 /* WITState.h in Headers */,
 				03BAFA27199D6BF600CC2752 /* WITRecordingSession.h in Headers */,
@@ -620,6 +627,7 @@
 			files = (
 				03BAFA2E199D85A600CC2752 /* WITVadTracker.m in Sources */,
 				03BAFA28199D6BF600CC2752 /* WITRecordingSession.m in Sources */,
+				CD0FD54C1D76387E00905C48 /* WITSFSpeechRecordingSession.m in Sources */,
 				03A57A8719A3C62200149BAD /* WITVadSimple.m in Sources */,
 				B9E8526C15E76FDE00EA8BC9 /* WITRecorder.m in Sources */,
 				B95D958C15DD379A00DBBABD /* Wit.m in Sources */,

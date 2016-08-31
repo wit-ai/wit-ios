@@ -248,6 +248,7 @@ static const CGFloat kMicMargin = 40.0f;
 
 #pragma mark - Audio Levels
 - (void)newAudioLevel:(NSNotification*)n {
+    
     NSNumber *NSPower = [n object];
     float power = [NSPower floatValue];
     //CGFloat coeff = fmax(0, fmin(1, (power+51) / 30));

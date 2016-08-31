@@ -11,6 +11,8 @@
 //#import "WITRecordingSession.h"
 #import "WITContextSetter.h"
 #import "WITRecordingSessionDelegate.h"
+#import "WITSFSpeechRecordingSession.h"
+@import Speech;
 
 @interface Wit () <WITRecordingSessionDelegate>
 @property (nonatomic, strong) WITState *state;
@@ -39,11 +41,19 @@
 
 
 - (void)start: (id)customData {
-    self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:self.state.context
-                                                                 vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
-                                                               withDelegate:self];
+    if ([SFSpeechRecognizer class]) {
+        self.recordingSession = [[WITSFSpeechRecordingSession alloc] initWithWitContext:self.state.context
+                                                                     vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
+                                                                   withDelegate:self];
+    } else {
+        self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:self.state.context
+                                                                     vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
+                                                                   withDelegate:self];
+    }
+
     self.recordingSession.customData = customData;
     self.recordingSession.delegate = self;
+    //[self.recordingSession start];
 }
 
 - (void)stop{
