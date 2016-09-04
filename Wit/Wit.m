@@ -222,6 +222,12 @@
     }
 }
 
+
+- (void)recordingSessionDidRecognizePreviewText:(NSString *)previewText {
+    if ([self.delegate respondsToSelector:@selector(witDidRecognizePreviewText:)]) {
+        [self.delegate witDidRecognizePreviewText: (NSString *) previewText];
+    }
+}
 - (void)recordingSessionDidDetectSpeech {
     if ([self.delegate respondsToSelector:@selector(witDidDetectSpeech)]) {
         [self.delegate witDidDetectSpeech];

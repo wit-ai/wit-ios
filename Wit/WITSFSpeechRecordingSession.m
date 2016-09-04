@@ -108,6 +108,10 @@
     recognitionTask = [speechRecognizer recognitionTaskWithRequest:recognitionRequest resultHandler:^(SFSpeechRecognitionResult * _Nullable result, NSError * _Nullable error) {
         BOOL isFinal = result.isFinal;
         NSLog(@"Speech result %d: %@", isFinal, result.bestTranscription.formattedString);
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self.delegate recordingSessionDidRecognizePreviewText:result.bestTranscription.formattedString];
+
+    });
         
         if (error || isFinal) {
             [audioEngine stop];
@@ -148,6 +152,7 @@
     }];
     [audioEngine prepare];
     [audioEngine startAndReturnError:&error];
+    [self.delegate recordingSessionDidStartRecording];
     if (error) {
         NSLog(@"start and return error was %@", error);
     }

@@ -156,9 +156,13 @@
 - (void)witDidDetectSpeech;
 
 /**
- Called whenever Wit reveices an audio chunk. The format of the returned audio is 16-bit PCM, 16 kHz mono.
+ Called whenever Wit receives an audio chunk. The format of the returned audio is 16-bit PCM, 16 kHz mono.
  */
 - (void)witDidGetAudio:(NSData *)chunk;
+/**
+ Called whenever SFSpeech sends a recognition preview of the recording.
+ */
+- (void) witDidRecognizePreviewText: (NSString *) previewText;
 
 @end
 
