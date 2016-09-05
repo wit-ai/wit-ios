@@ -78,11 +78,6 @@
       NSError *error;
     
     AVAudioSession *audiosession = [AVAudioSession sharedInstance];
-    
-    [audiosession setCategory:AVAudioSessionCategoryPlayAndRecord error:&error];
-    if (error) {
-        NSLog(@"cat error was %@", error);
-    }
    
     [audiosession setMode: AVAudioSessionModeMeasurement error:&error];
     if (error) {
@@ -125,6 +120,9 @@
                 
                 if (isFinal) {
                     [[Wit sharedInstance] interpretString:result.bestTranscription.formattedString customData:nil];
+                }
+                if (error) {
+                    [self.delegate recordingSessionReceivedError: error];
                 }
             });
         }

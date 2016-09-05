@@ -164,6 +164,8 @@
  */
 - (void) witDidRecognizePreviewText: (NSString *) previewText;
 
+- (void) witReceivedRecordingError: (NSError *) error;
+
 @end
 
 /***** Constants *****************/

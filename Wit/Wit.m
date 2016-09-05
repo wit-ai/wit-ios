@@ -222,6 +222,12 @@
     }
 }
 
+- (void)recordingSessionReceivedError:(NSError *)error {
+    if ([self.delegate respondsToSelector:@selector(witReceivedRecordingError:)]) {
+        [self.delegate witReceivedRecordingError: error];
+    }
+}
+
 
 - (void)recordingSessionDidRecognizePreviewText:(NSString *)previewText {
     if ([self.delegate respondsToSelector:@selector(witDidRecognizePreviewText:)]) {

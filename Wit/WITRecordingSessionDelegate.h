@@ -13,6 +13,7 @@
 -(void)recordingSessionActivityDetectorStarted;
 -(void)recordingSessionDidStartRecording;
 -(void)recordingSessionDidStopRecording;
+- (void) recordingSessionReceivedError: (NSError *) error;
 -(void)recordingSessionDidRecognizePreviewText: (NSString *) previewText;
 -(void)recordingSessionDidDetectSpeech;
 -(void)recordingSessionRecorderGotChunk:(NSData *)chunk;
