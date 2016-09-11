@@ -47,7 +47,7 @@ static const CGFloat kMicMargin = 40.0f;
     
     // microphone mask
     // try to find image in mainBundle (CocoaPods), then frameworkBundle (.framework)
-    UIImage *micUIImage = [UIImage imageNamed:kMicrophoneImage];
+    UIImage *micUIImage = [UIImage imageNamed:@"microphoneWave.png"];
     if (!micUIImage) {
         NSString* path = [[WITState frameworkBundle] pathForResource:kMicrophoneImage ofType:nil];
         micUIImage = [UIImage imageWithContentsOfFile:path];
