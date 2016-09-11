@@ -89,6 +89,19 @@
     return self;
 }
 
+- (NSString *) fixGermanNumbers: (NSString *) numbers {
+    return [[[[[[[[[[numbers stringByReplacingOccurrencesOfString:@" eins" withString:@" 1"]
+            stringByReplacingOccurrencesOfString:@" zwei" withString:@" 2"]
+            stringByReplacingOccurrencesOfString:@" drei" withString:@" 3"]
+            stringByReplacingOccurrencesOfString:@" vier" withString:@" 4"]
+            stringByReplacingOccurrencesOfString:@" fünf" withString:@" 5"]
+            stringByReplacingOccurrencesOfString:@" sechs" withString:@" 6"]
+            stringByReplacingOccurrencesOfString:@" sieben" withString:@" 7"]
+            stringByReplacingOccurrencesOfString:@" acht" withString:@"8"]
+            stringByReplacingOccurrencesOfString:@" neun" withString:@"9"]
+            stringByReplacingOccurrencesOfString:@" zehn" withString:@"10"];
+}
+
 - (void) start {
     NSLog(@"START CALLED");
       NSError *error;
@@ -135,7 +148,7 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioPowerChanged object:newPower];
                 
                 if (isFinal) {
-                    [[Wit sharedInstance] interpretString:result.bestTranscription.formattedString customData:nil];
+                    [[Wit sharedInstance] interpretString:[self fixGermanNumbers: result.bestTranscription.formattedString ] customData:nil];
                 }
                 if (error) {
                     [self.delegate recordingSessionReceivedError: error];
