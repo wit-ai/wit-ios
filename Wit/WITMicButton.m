@@ -227,6 +227,8 @@ static const CGFloat kMicMargin = 40.0f;
         [audioSession requestRecordPermission:^(BOOL granted) {
             if (granted) {
                 [wit toggleCaptureVoiceIntent:self];
+            } else {
+                NSLog(@"No mic permission, sorry");
             }
         }];
     }

@@ -13,6 +13,7 @@
 
 @property (assign) WITVadConfig vadEnabled;
 @property (nonatomic, strong) WITContextSetter *wcs;
+@property (nonatomic, strong) WITVad *vad;
 
 @end
 
@@ -33,7 +34,7 @@
         self.delegate = delegate;
         _vadEnabled = vadEnabled;
         self.witToken = witToken;
-        
+        //self.vad = [[WITVad alloc] init];
         
         
         speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:[NSLocale localeWithLocaleIdentifier:@"de-AT"]];
@@ -47,11 +48,26 @@
             // could be non main queue, careful
             switch (status) {
                 case SFSpeechRecognizerAuthorizationStatusDenied:
+                {
                     NSLog(@"Speech denied");
+                    
+                    NSDictionary *userInfo = @{
+                                               NSLocalizedDescriptionKey: NSLocalizedString(@"Speech recognition not authorized. Please enable in the iOS Settings for this app.", nil)};
+                    NSError *tempError = [NSError errorWithDomain:@"WitRecognition" code:SFSpeechRecognizerAuthorizationStatusDenied userInfo:userInfo];
+            
+                    [self.delegate recordingSessionReceivedError: tempError];
                     break;
+                }
                 case SFSpeechRecognizerAuthorizationStatusRestricted:
+                {
+                    NSDictionary *userInfo = @{
+                                               NSLocalizedDescriptionKey: NSLocalizedString(@"Speech recognition not allowed on this device.",nil)};
+                    NSError *tempError = [NSError errorWithDomain:@"WitRecognition" code:SFSpeechRecognizerAuthorizationStatusRestricted userInfo:userInfo];
+                    
+                    [self.delegate recordingSessionReceivedError: tempError];
                     NSLog(@"Speech restricted");
                     break;
+                }
                     
                 case SFSpeechRecognizerAuthorizationStatusAuthorized:
                     NSLog(@"Speech authorized");
@@ -132,13 +148,16 @@
     [inputNode installTapOnBus:0 bufferSize:1024 format:recordingFormat block:^(AVAudioPCMBuffer * _Nonnull buffer, AVAudioTime * _Nonnull when) {
         [recognitionRequest appendAudioPCMBuffer:buffer];
         
+        NSData* audio = [NSData dataWithBytes:buffer.audioBufferList->mBuffers[0].mData length:buffer.audioBufferList->mBuffers[0].mDataByteSize];
+       // [self.vad gotAudioSamples:audio];
+        
         UInt32 inNumberFrames = buffer.frameLength;
 
-            Float32* samples = (Float32*)buffer.floatChannelData[0];
-            Float32 avgValue = 0;
+        Float32* samples = (Float32*)buffer.floatChannelData[0];
+        Float32 avgValue = 0;
             
-            vDSP_meamgv((Float32*)samples, 1, &avgValue, inNumberFrames);
-            average1 = (0.9*((avgValue==0)?-100:20.0*log10f(avgValue))) + ((1-0.9)*average1 + 20) ;
+        vDSP_meamgv((Float32*)samples, 1, &avgValue, inNumberFrames);
+        average1 = (0.9*((avgValue==0)?-100:20.0*log10f(avgValue))) + ((1-0.9)*average1 + 20) ;
 
         
         

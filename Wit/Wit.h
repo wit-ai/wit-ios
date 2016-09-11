@@ -170,5 +170,5 @@
 
 /***** Constants *****************/
 static __unused NSString *const kWitNotificationAudioPowerChanged = @"WITAudioPowerChanged";
-static int const kWitAudioSampleRate = 16000;
-static int const kWitAudioBitDepth = 16;
+static int const kWitAudioSampleRate = 48000;
+static int const kWitAudioBitDepth = 32;
