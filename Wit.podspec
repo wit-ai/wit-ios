@@ -15,6 +15,7 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
   s.frameworks = 'QuartzCore','CoreTelephony', 'AudioToolbox'
+  s.weak_frameworks = 'Speech'
   s.dependency 'GCNetworkReachability', '~> 1.3'
   s.source_files = 'Classes', 'Classes/**/*.{h,m}', 'Wit/*.{h,m}'
   s.preserve_path = 'WitResources/Images'
