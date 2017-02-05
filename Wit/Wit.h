@@ -96,6 +96,11 @@
  */
 - (void)interpretString:(NSString *)string customData:(id)customData;
 
+/**
+ * Sends an NSString to wit.ai for conversation. To get the next message in the conversation.
+ */
+- (void)nextConverseAction:(NSString *)string customData:(id)customData;
+
 
 #pragma mark - Context management
 

@@ -18,6 +18,7 @@ static __unused NSString* const kWitSDKVersion = @"ios-4.1.0";
 static __unused NSString* const kWitKeyResponse = @"response";
 static __unused NSString* const kWitKeyError = @"error";
 static __unused NSString* const kWitKeyOutcome = @"outcomes";
+
 static __unused NSString* const kWitKeyProgress = @"progress"; // file upload, etc.
 static __unused NSString* const kWitKeyURL = @"url"; // record completed
 static __unused NSString* const kWitKeyBody = @"msg_body"; // response's msg body
