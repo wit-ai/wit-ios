@@ -90,10 +90,12 @@
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     debug(@"HTTP %@ %@", req.HTTPMethod, urlString);
 
+    
     // send HTTP request
-    [NSURLConnection sendAsynchronousRequest:req
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:req
+                completionHandler: ^(NSData *data, NSURLResponse *response, NSError *connectionError) {
                                if (WIT_DEBUG) {
                                    NSHTTPURLResponse* httpResp = (NSHTTPURLResponse*)response;
                                    NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
@@ -129,7 +131,7 @@
                                    return;
                                }
                                [self.delegate gotResponse:object error:nil];
-                           }];
+                           }] resume];
 
     return YES;
 }
