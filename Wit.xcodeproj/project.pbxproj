@@ -47,6 +47,7 @@
 		2BE5B2BD197832BA00B67304 /* util.h in Headers */ = {isa = PBXBuildFile; fileRef = 2BE5B2BB197832BA00B67304 /* util.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		2BE5B2BE197832BA00B67304 /* util.m in Sources */ = {isa = PBXBuildFile; fileRef = 2BE5B2BC197832BA00B67304 /* util.m */; };
 		69270C9875247A92B85C6108 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 33496D2620B742B797668671 /* libPods.a */; };
+		6C017C85C7565DA8F8136E5C /* libPods-Wit.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 0C316EB139851255B3A94701 /* libPods-Wit.a */; };
 		B95283E015F4459300F1D5E0 /* WITUploader.m in Sources */ = {isa = PBXBuildFile; fileRef = B95283DE15F4459300F1D5E0 /* WITUploader.m */; };
 		B95D958C15DD379A00DBBABD /* Wit.m in Sources */ = {isa = PBXBuildFile; fileRef = B95D958815DD34D000DBBABD /* Wit.m */; };
 		B95D960215DD3D7400DBBABD /* CoreFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B95D95F115DD3CDD00DBBABD /* CoreFoundation.framework */; };
@@ -112,9 +113,11 @@
 		03F276CD1992D1BC00B53E61 /* WITVadSimple.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WITVadSimple.h; sourceTree = "<group>"; };
 		0C316EB139851255B3A94701 /* libPods-Wit.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Wit.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		18A39D8B0CFA14849E154A51 /* Pods-WitTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WitTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WitTests/Pods-WitTests.debug.xcconfig"; sourceTree = "<group>"; };
+		1A6AAB2709DE1362E76100F7 /* Pods-Wit.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wit.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Wit/Pods-Wit.debug.xcconfig"; sourceTree = "<group>"; };
 		1D5769391A14281A009294C2 /* WITCvad.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITCvad.m; sourceTree = "<group>"; };
 		1D57693B1A1429C3009294C2 /* WITCvad.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WITCvad.h; sourceTree = "<group>"; };
 		25566F2161A3E6AEAC9FF065 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		2A5171527BB688DC435857A2 /* Pods-Wit.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Wit.release.xcconfig"; path = "Pods/Target Support Files/Pods-Wit/Pods-Wit.release.xcconfig"; sourceTree = "<group>"; };
 		2B10D7A7175561F900973536 /* WITCircleView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITCircleView.h; sourceTree = "<group>"; };
 		2B10D7A8175561F900973536 /* WITCircleView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITCircleView.m; sourceTree = "<group>"; };
 		2B25FE441829A25700F698ED /* WitPrivate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = WitPrivate.h; sourceTree = "<group>"; };
@@ -187,6 +190,7 @@
 				B9B8372C163A5C5100F9C914 /* CoreGraphics.framework in Frameworks */,
 				B9B8374E163A7C2100F9C914 /* QuartzCore.framework in Frameworks */,
 				69270C9875247A92B85C6108 /* libPods.a in Frameworks */,
+				6C017C85C7565DA8F8136E5C /* libPods-Wit.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -227,6 +231,8 @@
 				CF5900366A765EA20B3EB19D /* Pods-WitTests.release.xcconfig */,
 				25566F2161A3E6AEAC9FF065 /* Pods.debug.xcconfig */,
 				5EF4135D954033241F0018AD /* Pods.release.xcconfig */,
+				1A6AAB2709DE1362E76100F7 /* Pods-Wit.debug.xcconfig */,
+				2A5171527BB688DC435857A2 /* Pods-Wit.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -417,12 +423,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = B9C0166915DD327600C025BD /* Build configuration list for PBXNativeTarget "Wit" */;
 			buildPhases = (
-				9234382868CBACF6E78DCC83 /* Check Pods Manifest.lock */,
+				9234382868CBACF6E78DCC83 /* [CP] Check Pods Manifest.lock */,
 				B9C0164015DD327500C025BD /* Sources */,
 				B9C0164115DD327500C025BD /* Frameworks */,
 				B95D95E315DD3B3800DBBABD /* Headers */,
 				B95D958A15DD356000DBBABD /* Prepare framework */,
-				90C7FFE312D4E5E9952E5C8F /* Copy Pods Resources */,
+				90C7FFE312D4E5E9952E5C8F /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -437,12 +443,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = CDC0B9DC1CD8C7540046D9C9 /* Build configuration list for PBXNativeTarget "WitTests" */;
 			buildPhases = (
-				67E865D230B7B416E4E6B182 /* Check Pods Manifest.lock */,
+				67E865D230B7B416E4E6B182 /* [CP] Check Pods Manifest.lock */,
 				CDC0B9CE1CD8C7540046D9C9 /* Sources */,
 				CDC0B9CF1CD8C7540046D9C9 /* Frameworks */,
 				CDC0B9D01CD8C7540046D9C9 /* Resources */,
-				CCB15FE836B783BC98645352 /* Embed Pods Frameworks */,
-				59EC019D969E8C89D1D6A3FF /* Copy Pods Resources */,
+				CCB15FE836B783BC98645352 /* [CP] Embed Pods Frameworks */,
+				59EC019D969E8C89D1D6A3FF /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -460,7 +466,7 @@
 		B9C0163B15DD327500C025BD /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0730;
+				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Willy Blandin";
 				TargetAttributes = {
 					CDC0B9D11CD8C7540046D9C9 = {
@@ -508,14 +514,14 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		59EC019D969E8C89D1D6A3FF /* Copy Pods Resources */ = {
+		59EC019D969E8C89D1D6A3FF /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -523,49 +529,49 @@
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-WitTests/Pods-WitTests-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		67E865D230B7B416E4E6B182 /* Check Pods Manifest.lock */ = {
+		67E865D230B7B416E4E6B182 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
-		90C7FFE312D4E5E9952E5C8F /* Copy Pods Resources */ = {
+		90C7FFE312D4E5E9952E5C8F /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Copy Pods Resources";
+			name = "[CP] Copy Pods Resources";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Wit/Pods-Wit-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
-		9234382868CBACF6E78DCC83 /* Check Pods Manifest.lock */ = {
+		9234382868CBACF6E78DCC83 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Check Pods Manifest.lock";
+			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
 		B95D958A15DD356000DBBABD /* Prepare framework */ = {
@@ -596,14 +602,14 @@
 			shellPath = /bin/sh;
 			shellScript = "set -e\nset +u\n# Avoid recursively calling this script.\nif [[ $SF_MASTER_SCRIPT_RUNNING ]]\nthen\nexit 0\nfi\nset -u\nexport SF_MASTER_SCRIPT_RUNNING=1\n\nSF_TARGET_NAME=${PROJECT_NAME}\nSF_EXECUTABLE_PATH=\"lib${SF_TARGET_NAME}.a\"\nSF_WRAPPER_NAME=\"${SF_TARGET_NAME}.framework\"\n\n# The following conditionals come from\n# https://github.com/kstenerud/iOS-Universal-Framework\n\nif [[ \"$SDK_NAME\" =~ ([A-Za-z]+) ]]\nthen\nSF_SDK_PLATFORM=${BASH_REMATCH[1]}\nelse\necho \"Could not find platform name from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SDK_NAME\" =~ ([0-9]+.*$) ]]\nthen\nSF_SDK_VERSION=${BASH_REMATCH[1]}\nelse\necho \"Could not find sdk version from SDK_NAME: $SDK_NAME\"\nexit 1\nfi\n\nif [[ \"$SF_SDK_PLATFORM\" = \"iphoneos\" ]]\nthen\nSF_OTHER_PLATFORM=iphonesimulator\nelse\nSF_OTHER_PLATFORM=iphoneos\nfi\n\nif [[ \"$BUILT_PRODUCTS_DIR\" =~ (.*)$SF_SDK_PLATFORM$ ]]\nthen\nSF_OTHER_BUILT_PRODUCTS_DIR=\"${BASH_REMATCH[1]}${SF_OTHER_PLATFORM}\"\nelse\necho \"Could not find platform name from build products directory: $BUILT_PRODUCTS_DIR\"\nexit 1\nfi\n\n# Build the other platform.\nxcodebuild -project \"${PROJECT_FILE_PATH}\" -target \"${TARGET_NAME}\" -configuration \"${CONFIGURATION}\" -sdk ${SF_OTHER_PLATFORM}${SF_SDK_VERSION} BUILD_DIR=\"${BUILD_DIR}\" OBJROOT=\"${OBJROOT}\" BUILD_ROOT=\"${BUILD_ROOT}\" SYMROOT=\"${SYMROOT}\" $ACTION\n\n# Smash the two static libraries into one fat binary and store it in the .framework\nlipo -create \"${BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_EXECUTABLE_PATH}\" -output \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/${FRAMEWORK_VERSION}/${SF_TARGET_NAME}\"\n\n# Copy the binary to the other architecture folder to have a complete framework in both.\ncp -a \"${BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/${FRAMEWORK_VERSION}/${SF_TARGET_NAME}\" \"${SF_OTHER_BUILT_PRODUCTS_DIR}/${SF_WRAPPER_NAME}/Versions/${FRAMEWORK_VERSION}/${SF_TARGET_NAME}\"";
 		};
-		CCB15FE836B783BC98645352 /* Embed Pods Frameworks */ = {
+		CCB15FE836B783BC98645352 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
 			inputPaths = (
 			);
-			name = "Embed Pods Frameworks";
+			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -687,7 +693,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = "${PODS_HEADERS_SEARCH_PATHS}";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Debug;
@@ -696,7 +702,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				HEADER_SEARCH_PATHS = "${PODS_HEADERS_SEARCH_PATHS}";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
 			name = Release;
@@ -711,7 +717,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				INFOPLIST_FILE = "WitResources/WitResources-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = "wy.io.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Wit;
@@ -730,7 +736,7 @@
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				INFOPLIST_FILE = "WitResources/WitResources-Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Bundles";
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.8;
 				PRODUCT_BUNDLE_IDENTIFIER = "wy.io.${PRODUCT_NAME:rfc1034identifier}";
 				PRODUCT_NAME = Wit;
@@ -747,7 +753,9 @@
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
@@ -769,7 +777,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = YES;
 				SDKROOT = iphoneos;
 			};
@@ -784,7 +792,9 @@
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = YES;
@@ -798,7 +808,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				SDKROOT = iphoneos;
 				VALIDATE_PRODUCT = YES;
 			};
@@ -806,8 +816,9 @@
 		};
 		B9C0166A15DD327600C025BD /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 25566F2161A3E6AEAC9FF065 /* Pods.debug.xcconfig */;
+			baseConfigurationReference = 1A6AAB2709DE1362E76100F7 /* Pods-Wit.debug.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				DEAD_CODE_STRIPPING = NO;
 				DSTROOT = /tmp/Wit.dst;
@@ -825,7 +836,7 @@
 					"$(inherited)",
 					"${PODS_HEADERS_SEARCH_PATHS}",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				OTHER_LDFLAGS = (
 					"-ObjC",
 					"-all_load",
@@ -841,8 +852,9 @@
 		};
 		B9C0166B15DD327600C025BD /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 5EF4135D954033241F0018AD /* Pods.release.xcconfig */;
+			baseConfigurationReference = 2A5171527BB688DC435857A2 /* Pods-Wit.release.xcconfig */;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				COPY_PHASE_STRIP = NO;
 				DEAD_CODE_STRIPPING = NO;
@@ -857,7 +869,7 @@
 					"$(inherited)",
 					"${PODS_HEADERS_SEARCH_PATHS}",
 				);
-				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				ONLY_ACTIVE_ARCH = NO;
 				OTHER_LDFLAGS = (
 					"-ObjC",

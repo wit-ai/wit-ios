@@ -74,41 +74,52 @@
     [req setTimeoutInterval:15.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [NSURLConnection sendAsynchronousRequest:req
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-            
-                               [self witResponseHandler:response start:start type:@"message" data:data
-                                             customData:customData connectionError:connectionError];
-                               
-                           }];
+
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:req
+            completionHandler:^(NSData *data,
+                                NSURLResponse *response,
+                                NSError *connectionError) {
+                
+                [self witResponseHandler:response start:start type:@"message" data:data
+                              customData:customData connectionError:connectionError];
+            }] resume];
 }
 
-- (void)nextConverseAction:(NSString *) string customData:(id)customData sessionId:(NSNumber *)sessionId {
+- (void)nextConverseAction:(NSString *) string customData:(id)customData sessionId:(NSString *)sessionId {
     NSDictionary *context = [self.wcs contextFillup:self.state.context];
     NSDate *start = [NSDate date];
     NSString *contextEncoded = [WITContextSetter jsonEncode:context];
-    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/converse?"];
+
+    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/converse?session_id=%@&v=%@&q=%@", sessionId,kWitAPIVersion,urlencodeString(string)];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
-    NSDictionary *params = @{@"q": urlencodeString(string), @"v": kWitAPIVersion, @"context":contextEncoded, @"sessionId": sessionId};
+    NSDictionary *params = @{@"context":contextEncoded};
     [req setHTTPMethod:@"POST"];
     NSError *serializationError;
+
     [req setHTTPBody:[NSJSONSerialization dataWithJSONObject:params
-                                                     options:NSJSONWritingPrettyPrinted
+                                                     options:0
                                                        error:&serializationError]];
+    
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [req setTimeoutInterval:15.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
-    [NSURLConnection sendAsynchronousRequest:req
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
-                               
-                               [self witResponseHandler:response start:start type:@"converse" data:data
-                                             customData:customData connectionError:connectionError];
-                               
-                           }];
+    
+    
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:req
+                completionHandler:^(NSData *data,
+                                    NSURLResponse *response,
+                                    NSError *connectionError) {
+                    
+                    [self witResponseHandler:response start:start type:@"converse" data:data
+                                  customData:customData connectionError:connectionError];
+                }] resume];
 }
 
 -(void)witResponseHandler:(NSURLResponse *)response start:(NSDate *)start type:(NSString *)type data:(NSData *)data
@@ -165,9 +176,9 @@
     if([type isEqual:@"message"]){
         [self processMessage:resp customData:customData];
 
-    } else if([type  isEqual: @"converse"]){
-        [self processConverse:resp customData:customData];
 
+    } else if([type isEqual: @"converse"]){
+        [self processConverse:resp customData:customData];
     }
     
 }
@@ -201,12 +212,14 @@
         NSString *errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
         return [self errorWithDescription:errorDesc customData:customData];
     }
-    
-    NSLog(@"%@", resp);
-    NSArray * temp = nil;
+
+
+    NSMutableArray *resp_array = [[NSMutableArray alloc]init];
+    [resp_array addObject:resp];
+
     NSString *messageId = resp[kWitKeyMsgId];
     
-    [self.delegate witDidGraspIntent:temp messageId:messageId customData:customData error:error];
+    [self.delegate witDidGraspIntent:resp_array messageId:messageId customData:customData error:error];
     
 }
 
