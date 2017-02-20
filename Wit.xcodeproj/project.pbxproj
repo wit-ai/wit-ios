@@ -66,6 +66,8 @@
 		C50E65671709251C009F81E9 /* WITRecorder.h in Headers */ = {isa = PBXBuildFile; fileRef = B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		CD0FD54B1D76387E00905C48 /* WITSFSpeechRecordingSession.h in Headers */ = {isa = PBXBuildFile; fileRef = CD0FD5491D76387E00905C48 /* WITSFSpeechRecordingSession.h */; };
 		CD0FD54C1D76387E00905C48 /* WITSFSpeechRecordingSession.m in Sources */ = {isa = PBXBuildFile; fileRef = CD0FD54A1D76387E00905C48 /* WITSFSpeechRecordingSession.m */; };
+		CD5EB9831E5B16F40022CBB1 /* WitSession.h in Headers */ = {isa = PBXBuildFile; fileRef = CD5EB9811E5B16F40022CBB1 /* WitSession.h */; };
+		CD5EB9841E5B16F40022CBB1 /* WitSession.m in Sources */ = {isa = PBXBuildFile; fileRef = CD5EB9821E5B16F40022CBB1 /* WitSession.m */; };
 		CD6E6DFC1CD385A5003B0A7F /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = CD6E6DFB1CD385A5003B0A7F /* CoreTelephony.framework */; };
 		CD6E6DFE1CD3904A003B0A7F /* WITRecordingSessionDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = CD6E6DFD1CD3904A003B0A7F /* WITRecordingSessionDelegate.h */; };
 		CDC0B9D51CD8C7540046D9C9 /* WitTests.m in Sources */ = {isa = PBXBuildFile; fileRef = CDC0B9D41CD8C7540046D9C9 /* WitTests.m */; };
@@ -162,6 +164,8 @@
 		C5A1C8171745954500201A6B /* libPods.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libPods.a; path = "Pods/build/Release-iphoneos/libPods.a"; sourceTree = "<group>"; };
 		CD0FD5491D76387E00905C48 /* WITSFSpeechRecordingSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITSFSpeechRecordingSession.h; sourceTree = "<group>"; };
 		CD0FD54A1D76387E00905C48 /* WITSFSpeechRecordingSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WITSFSpeechRecordingSession.m; sourceTree = "<group>"; };
+		CD5EB9811E5B16F40022CBB1 /* WitSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WitSession.h; sourceTree = "<group>"; };
+		CD5EB9821E5B16F40022CBB1 /* WitSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WitSession.m; sourceTree = "<group>"; };
 		CD6E6DFB1CD385A5003B0A7F /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		CD6E6DFD1CD3904A003B0A7F /* WITRecordingSessionDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WITRecordingSessionDelegate.h; sourceTree = "<group>"; };
 		CDC0B9D21CD8C7540046D9C9 /* WitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -320,6 +324,8 @@
 				2B25FE441829A25700F698ED /* WitPrivate.h */,
 				B9A892B3163E7083005100F2 /* WITState.h */,
 				B9A892B4163E7083005100F2 /* WITState.m */,
+				CD5EB9811E5B16F40022CBB1 /* WitSession.h */,
+				CD5EB9821E5B16F40022CBB1 /* WitSession.m */,
 				B9E8526915E76FDE00EA8BC9 /* WITRecorder.h */,
 				B9E8526A15E76FDE00EA8BC9 /* WITRecorder.m */,
 				CD6E6DFD1CD3904A003B0A7F /* WITRecordingSessionDelegate.h */,
@@ -395,6 +401,7 @@
 				C50E65671709251C009F81E9 /* WITRecorder.h in Headers */,
 				03BAFA1D199D435C00CC2752 /* WITVadSimple.h in Headers */,
 				039C23C11992FE3B00BEA5C8 /* WITVad.h in Headers */,
+				CD5EB9831E5B16F40022CBB1 /* WitSession.h in Headers */,
 				03D32A6A1A01B9350081C7D3 /* WITContextSetter.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -646,6 +653,7 @@
 				2B10D7AA175561F900973536 /* WITCircleView.m in Sources */,
 				039C23C21992FE3B00BEA5C8 /* WITVad.m in Sources */,
 				2BE5B2BE197832BA00B67304 /* util.m in Sources */,
+				CD5EB9841E5B16F40022CBB1 /* WitSession.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

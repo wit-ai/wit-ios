@@ -88,20 +88,30 @@
             }] resume];
 }
 
-- (void)nextConverseAction:(NSString *) string customData:(id)customData sessionId:(NSString *)sessionId {
-    NSDictionary *context = [self.wcs contextFillup:self.state.context];
+
+
+- (void)converseWithString:(NSString *)string witSession:(WitSession *)session {
+    NSDictionary *context = session.context;
     NSDate *start = [NSDate date];
-    NSString *contextEncoded = [WITContextSetter jsonEncode:context];
 
-    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/converse?session_id=%@&v=%@&q=%@", sessionId,kWitAPIVersion,urlencodeString(string)];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/converse?session_id=%@&v=%@", session.sessionID, kWitAPIVersion];
+    if (string) {
+        urlString = [urlString stringByAppendingString:[NSString stringWithFormat:@"&q=%@", urlencodeString(string)]];
+    }
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
-    NSDictionary *params = @{@"context":contextEncoded};
     [req setHTTPMethod:@"POST"];
-    NSError *serializationError;
+    NSError *serializationError = nil;
 
-    [req setHTTPBody:[NSJSONSerialization dataWithJSONObject:params
-                                                     options:0
-                                                       error:&serializationError]];
+    if (session.context) {
+        [req setHTTPBody:[NSJSONSerialization dataWithJSONObject:context
+                                                         options:0
+                                                           error:&serializationError]];
+    }
+    
+    if (serializationError) {
+        NSLog(@"Wit could not serialize your context: %@", serializationError.localizedDescription);
+    }
+
     
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
     [req setTimeoutInterval:15.0];
@@ -110,15 +120,15 @@
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     
     
-    NSURLSession *session = [NSURLSession sharedSession];
+    NSURLSession *urlSsession = [NSURLSession sharedSession];
     
-    [[session dataTaskWithRequest:req
+    [[urlSsession dataTaskWithRequest:req
                 completionHandler:^(NSData *data,
                                     NSURLResponse *response,
                                     NSError *connectionError) {
                     
                     [self witResponseHandler:response start:start type:@"converse" data:data
-                                  customData:customData connectionError:connectionError];
+                                  customData:session connectionError:connectionError];
                 }] resume];
 }
 
@@ -206,20 +216,43 @@
 
 }
 
-- (void)processConverse:(NSDictionary *)resp customData:(id)customData {
-    id error = resp[kWitKeyError];
+- (void)processConverse:(NSDictionary *)response customData:(id)customData {
+    id error = response[kWitKeyError];
     if (error) {
         NSString *errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
         return [self errorWithDescription:errorDesc customData:customData];
     }
 
 
+    
+    WitSession *session = customData;
+    
+    NSString *type = response[@"type"];
+  
+    if ([type isEqualToString:@"action"]) {
+        session = [self.delegate didReceiveAction:response[@"action"] entities:response[@"entities"] witSession:session confidence:[response[@"confidence"] doubleValue]];
+    } else if ([type isEqualToString:@"msg"])  {
+        session = [self.delegate didReceiveMessage:response[@"msg"] witSession:session confidence:[response[@"confidence"] doubleValue]];
+    } else if ([type isEqualToString:@"stop"])  {
+        [self.delegate didStopSession:customData];
+        return;
+        
+    }
+    NSAssert(session != nil, @"You need to return the WitSession from your delegate call.");
+    
+    if (session.isCancelled == NO) {
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [self converseWithString:nil witSession:session];
+        });
+    }
+    /*
     NSMutableArray *resp_array = [[NSMutableArray alloc]init];
     [resp_array addObject:resp];
 
     NSString *messageId = resp[kWitKeyMsgId];
     
     [self.delegate witDidGraspIntent:resp_array messageId:messageId customData:customData error:error];
+     */
     
 }
 
