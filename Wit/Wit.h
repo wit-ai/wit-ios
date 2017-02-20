@@ -148,7 +148,7 @@
  @param confidence The confidence that Wit correctly guessed the users intent, between 0.0 and 1.0
  @return The WitSession to continue. Update the session parameter and return it. Returning nil is considered an error.
  */
-- (WitSession *) didReceiveMessage: (NSString *) message witSession: (WitSession *) session confidence: (double) confidence;
+- (WitSession *) didReceiveMessage: (NSString *) message quickReplies: (NSArray *) quickReplies witSession: (WitSession *) session confidence: (double) confidence;
 
 /**
  Called when your story has completed.

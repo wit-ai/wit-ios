@@ -217,6 +217,7 @@
 }
 
 - (void)processConverse:(NSDictionary *)response customData:(id)customData {
+    NSLog(@"response %@", response);
     id error = response[kWitKeyError];
     if (error) {
         NSString *errorDesc = [NSString stringWithFormat:@"Code %@: %@", error[@"code"], error[@"message"]];
@@ -232,7 +233,7 @@
     if ([type isEqualToString:@"action"]) {
         session = [self.delegate didReceiveAction:response[@"action"] entities:response[@"entities"] witSession:session confidence:[response[@"confidence"] doubleValue]];
     } else if ([type isEqualToString:@"msg"])  {
-        session = [self.delegate didReceiveMessage:response[@"msg"] witSession:session confidence:[response[@"confidence"] doubleValue]];
+        session = [self.delegate didReceiveMessage:response[@"msg"] quickReplies: response[@"quickreplies"] witSession:session confidence:[response[@"confidence"] doubleValue]];
     } else if ([type isEqualToString:@"stop"])  {
         [self.delegate didStopSession:customData];
         return;
