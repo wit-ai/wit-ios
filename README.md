@@ -6,7 +6,7 @@ The wit.ai iOS SDK is the easiest way to integrate [wit.ai](https://wit.ai) feat
 
 The SDK can capture intents and entities from:
 
-- the microphone of the device
+- the microphone of the device (legacy GET /message API only)
 - text
 
 
