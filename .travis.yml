@@ -2,4 +2,4 @@ language: objective-c
 osx_image: xcode8.2
 xcode_workspace: Wit.xcworkspace 
 xcode_scheme: WitTests
-script: xcodebuild clean build -workspace Wit.xcworkspace -scheme WitTests -sdk iphonesimulator ONLY_ACTIVE_ARCH=YES CODE_SIGNING_REQUIRED=NO
+script: xcodebuild clean build test -workspace Wit.xcworkspace -scheme Wit -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 6,OS=10.2' ONLY_ACTIVE_ARCH=YES CODE_SIGNING_REQUIRED=NO 
