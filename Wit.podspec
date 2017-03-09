@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         = "Wit"
-  s.version      = "4.1.0"
+  s.version      = "4.2.0"
   s.summary      = "Wit.AI Official SDK"
   s.description  = <<-DESC
                      Official Wit SDK, https://wit.ai/docs/ios-tutorial/
@@ -15,6 +15,7 @@ Pod::Spec.new do |s|
 
   s.requires_arc = true
   s.frameworks = 'QuartzCore','CoreTelephony', 'AudioToolbox'
+  s.weak_frameworks = 'Speech'
   s.dependency 'GCNetworkReachability', '~> 1.3'
   s.source_files = 'Classes', 'Classes/**/*.{h,m}', 'Wit/*.{h,m}'
   s.preserve_path = 'WitResources/Images'

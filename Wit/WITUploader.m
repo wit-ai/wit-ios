@@ -90,10 +90,12 @@
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
     debug(@"HTTP %@ %@", req.HTTPMethod, urlString);
 
+    
     // send HTTP request
-    [NSURLConnection sendAsynchronousRequest:req
-                                       queue:[NSOperationQueue mainQueue]
-                           completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+    NSURLSession *session = [NSURLSession sharedSession];
+    
+    [[session dataTaskWithRequest:req
+                completionHandler: ^(NSData *data, NSURLResponse *response, NSError *connectionError) {
                                if (WIT_DEBUG) {
                                    NSHTTPURLResponse* httpResp = (NSHTTPURLResponse*)response;
                                    NSTimeInterval t = [[NSDate date] timeIntervalSinceDate:start];
@@ -129,7 +131,7 @@
                                    return;
                                }
                                [self.delegate gotResponse:object error:nil];
-                           }];
+                           }] resume];
 
     return YES;
 }
@@ -209,17 +211,22 @@
     }
 }
 
-- (instancetype)init {
-    return [self initWithAudioFormat:kAudioFormatLinearPCM];
-}
-
-- (instancetype)initWithAudioFormat:(AudioFormatID) audioFormat {
-    self = [self init];
+-(id)init {
+    self = [super init];
     if (self) {
         _q = [[NSOperationQueue alloc] init];
         [_q setMaxConcurrentOperationCount:1];
         kWitSpeechURL = [NSString stringWithFormat: @"%@/speech?v=%@", kWitAPIUrl, kWitAPIVersion];
-        _audioFormat = audioFormat;
+        self.audioFormat = kAudioFormatLinearPCM;
+    }
+    
+    return self;
+}
+
+- (instancetype) initWithAudioFormat: (AudioFormatID) audioFormat {
+    self = [self init];
+    if (self) {
+        self.audioFormat = audioFormat;
     }
     
     return self;

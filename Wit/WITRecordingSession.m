@@ -96,6 +96,10 @@
     [_delegate recordingSessionDidStartRecording];
 }
 
+- (void) start {
+    // Does nothing here, but subclasses may do something;
+}
+
 - (void)stop
 {
     [self.recorder stop];

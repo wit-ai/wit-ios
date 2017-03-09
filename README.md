@@ -1,4 +1,4 @@
-# Wit-iOS 4.1.0
+# Wit-iOS-sdk
 
 *This SDK is community-maintained. Please use the HTTP API or the Node.js/Python/Ruby SDKs for non-experimental needs (https://wit.ai/docs). We gladly accept pull requests*
 
@@ -6,7 +6,7 @@ The wit.ai iOS SDK is the easiest way to integrate [wit.ai](https://wit.ai) feat
 
 The SDK can capture intents and entities from:
 
-- the microphone of the device
+- the microphone of the device (legacy GET /message API only)
 - text
 
 
@@ -17,7 +17,7 @@ The SDK can capture intents and entities from:
 
 Add the following dependency to your Podfile:
 ```ruby
-pod 'Wit', '~> 4.1.0'
+pod 'Wit', '~> 4.2.0'
 ```
 
 And then run the following command in your project home directory:
@@ -25,10 +25,6 @@ And then run the following command in your project home directory:
 pod install
 ```
 
-
-#### Using Wit.framework
-
-You can download an archive containing the the ***.framework*** and the ***.bundle*** files under the [release section](https://github.com/wit-ai/wit-ios-sdk/releases).
 
 
 ## API
@@ -74,12 +70,22 @@ Singleton instance accessor.
 
 ##### Understanding text
 ```objc
-InterpretString
-Sends an NSString to wit.ai for interpretation. Same as sending a voice input, but with text.
+InterpretString (deprecated)
+Sends an NSString to wit.ai for interpretation. Same as sending a voice input, but with text. This uses the legacy GET /message API. If you are using stories this is NOT for you.
 - (void) interpretString: (NSString *) string customData:(id)customData;
 ```
 
+```objc
+ConverseString
+Sends an NSString to wit.ai for interpretation. Will call delegate methods for every step of your story.
+- (void) converseWithString:(NSString *)string witSession: (WitSession *) session;
+```
+
+
+
 ##### Recording audio
+**The audio part of the API currently only supports the legacy GET /message API. If you are using stories (POST /converse) then this will not work, use ConverseString instead.
+
 ```objc
 Starts a new recording session. [self.delegate witDidGraspIntent:…] will be called once completed.
 - (void)start;
@@ -123,23 +129,50 @@ Returns the current context.
 ##### Implementing the WitDelegate protocol
 
 ```objc
-/**
- * Protocol used by Wit to communicate with the app
- */
 @protocol WitDelegate <NSObject>
 
-   /**
-    * Called when the Wit request is completed.
-    * param outcomes a NSDictionary of outcomes returned by the Wit API. Outcomes are ordered by confidence, highest first. Each outcome contains (at least) the following keys:
-    *       intent, entities[], confidence, _text. For more information please refer to our online documentation: https://wit.ai/docs/http/20141022#get-intent-via-text-link
-    *
-    * param messageId the message id returned by the api
-    * param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
-    * param error Nil if no error occurred during processing
-    */
-   - (void)witDidGraspIntent:(NSArray *)outcomes messageId:(NSString *)messageId customData:(id) customData error:(NSError*)e;
+
 
 @optional
+
+/**
+ Called when your story triggers an action and includes any new entities from Wit. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method.
+
+ @param action The action to perform, as specified in your story.
+ @param entities Any entities Wit found, as specified in your story.
+ @param session The previous WitSession object. Update session.context with any context changes (these will be sent to the Wit server) and optionally store any futher data in session.customData (this will not be sent to the Wit server) and return this WitSession.
+ @param confidence The confidence that Wit correctly guessed the users intent, between 0.0 and 1.0
+ @return The WitSession to continue. Update the session parameter and return it. Returning nil is considered an error.
+ */
+- (WitSession *) didReceiveAction: (NSString *) action entities: (NSDictionary *) entities witSession: (WitSession *) session confidence: (double) confidence;
+
+/**
+ Called when your story wants your app to display a message. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method. wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method.
+
+ @param message The message to display
+ @param session The previous WitSession object. Update session.context with any context changes (these will be sent to the Wit server) and optionally store any futher data in session.customData (this will not be sent to the Wit server) and return this WitSession.
+ @param confidence The confidence that Wit correctly guessed the users intent, between 0.0 and 1.0
+ @return The WitSession to continue. Update the session parameter and return it. Returning nil is considered an error.
+ */
+- (WitSession *) didReceiveMessage: (NSString *) message quickReplies: (NSArray *) quickReplies witSession: (WitSession *) session confidence: (double) confidence;
+
+/**
+ Called when your story has completed.
+
+ @param session The WitSession passed in from your last delegate call.
+ */
+- (void) didStopSession: (WitSession *) session;
+
+/**
+ * Called when a Wit request is completed. This is only called for legacy calls to interpretString (which uses the deprecated get /intent API). If you are using Wit stories (the post /converse API), use didReceiveAction, didReceiveMessage and didReceiveStop instead.
+ * param outcomes a NSDictionary of outcomes returned by the Wit API. Outcomes are ordered by confidence, highest first. Each outcome contains (at least) the following keys:
+ *       intent, entities[], confidence, _text. For more information please refer to our online documentation: https://wit.ai/docs/http/20141022#get-intent-via-text-link
+ *
+ * param messageId the message id returned by the api
+ * param customData any data attached when starting the request. See [Wit sharedInstance toggleCaptureVoiceIntent:... (id)customData] and [[Wit sharedInstance] start:... (id)customData];
+ * param error Nil if no error occurred during processing
+ */
+- (void)witDidGraspIntent:(NSArray *)outcomes messageId:(NSString *)messageId customData:(id)customData error:(NSError *)error;
 
 /**
  * When using the hands free voice activity detection option (WITVadConfigFull), this callback will be called when the microphone started to listen
@@ -158,16 +191,27 @@ Returns the current context.
 - (void)witDidStartRecording;
 
 /**
- Called when Wit stop recording the audio input.
+ Called when Wit stops recording the audio input.
  */
 - (void)witDidStopRecording;
 
 /**
- Called whenever Wit reveices an audio chunk. The format of the returned audio is 16-bit PCM, 16 kHz mono.
+ Called when Wit detects speech from the audio input.
+ */
+- (void)witDidDetectSpeech;
+
+/**
+ Called whenever Wit receives an audio chunk. The format of the returned audio is 16-bit PCM, 16 kHz mono.
  */
 - (void)witDidGetAudio:(NSData *)chunk;
+/**
+ Called whenever SFSpeech sends a recognition preview of the recording.
+ */
+- (void) witDidRecognizePreviewText: (NSString *) previewText;
 
- @end
+- (void) witReceivedRecordingError: (NSError *) error;
+
+@end
 ```
 
 ##### Notifications

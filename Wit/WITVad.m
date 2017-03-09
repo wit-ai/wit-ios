@@ -43,12 +43,14 @@
         
         if ( detected_speech == 1){
             //someone just started talking
+            NSLog(@"start talking...");
             debug(@"Starting......................");
             dispatch_async(dispatch_get_main_queue(), ^{
                 [self.delegate vadStartedTalking];
             });
         } else if ( detected_speech == 0) {
             //someone just stopped talking
+             NSLog(@"stop talking...");
             debug(@"Stopping......................");
             self.stoppedUsingVad = YES;
             dispatch_async(dispatch_get_main_queue(), ^{

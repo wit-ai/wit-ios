@@ -93,12 +93,13 @@ static void MyPropertyListener(void *userData, AudioQueueRef queue, AudioQueuePr
  * The thread used as of today is the main thread.
  */
 - (BOOL)start {
+       /*
     NSString *category = [[AVAudioSession sharedInstance] category];
     if (!([category isEqualToString:@"AVAudioSessionCategoryRecord"] ||
           [category isEqualToString:@"AVAudioSessionCategoryPlayAndRecord"])) {
         [NSException raise:@"Invalid AVAudioSession state" format:@"You should call setCategory and setActive, please see the documentation."];
     }
-    
+     */
     self.state->recording = YES;
     
     int err;

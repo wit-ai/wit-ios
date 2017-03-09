@@ -9,6 +9,7 @@
 #import "WITCircleLayer.h"
 
 @implementation WITCircleLayer
+@dynamic radius, lineWidth, strokeColor, fillColor, opacity;
 
 + (BOOL)needsDisplayForKey:(NSString *)key {
     if ([key isEqualToString:@"radius"]

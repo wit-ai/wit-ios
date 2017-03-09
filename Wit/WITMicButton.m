@@ -47,7 +47,7 @@ static const CGFloat kMicMargin = 40.0f;
     
     // microphone mask
     // try to find image in mainBundle (CocoaPods), then frameworkBundle (.framework)
-    UIImage *micUIImage = [UIImage imageNamed:kMicrophoneImage];
+    UIImage *micUIImage = [UIImage imageNamed:@"microphoneWave.png"];
     if (!micUIImage) {
         NSString* path = [[WITState frameworkBundle] pathForResource:kMicrophoneImage ofType:nil];
         micUIImage = [UIImage imageWithContentsOfFile:path];
@@ -209,6 +209,15 @@ static const CGFloat kMicMargin = 40.0f;
     });
 }
 
+#pragma mark - UIView
+- (UIView *)hitTest:(CGPoint)point withEvent:(UIEvent *)event {
+    if ([self pointInside:point withEvent:event]) {
+        return self;
+    }
+    
+    return nil;
+}
+
 #pragma mark - UIButton target
 - (void)buttonPressed:(id)sender {
     AVAudioSession *audioSession = [AVAudioSession sharedInstance];
@@ -218,6 +227,8 @@ static const CGFloat kMicMargin = 40.0f;
         [audioSession requestRecordPermission:^(BOOL granted) {
             if (granted) {
                 [wit toggleCaptureVoiceIntent:self];
+            } else {
+                NSLog(@"No mic permission, sorry");
             }
         }];
     }
@@ -239,6 +250,7 @@ static const CGFloat kMicMargin = 40.0f;
 
 #pragma mark - Audio Levels
 - (void)newAudioLevel:(NSNotification*)n {
+    
     NSNumber *NSPower = [n object];
     float power = [NSPower floatValue];
     //CGFloat coeff = fmax(0, fmin(1, (power+51) / 30));

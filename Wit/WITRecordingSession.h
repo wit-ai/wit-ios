@@ -26,6 +26,7 @@
 
 
 -(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate;
+-(void) start;
 -(void)stop;
 -(BOOL)isRecording;
 @end
