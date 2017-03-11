@@ -238,6 +238,9 @@
         [self.delegate didStopSession:customData];
         return;
         
+    } else if ([type isEqualToString:@"merge"])  {
+        session = [self.delegate didReceiveMergeEntities:response[@"entities"] witSession:session confidence:[response[@"confidence"] doubleValue]];
+        
     }
     NSAssert(session != nil, @"You need to return the WitSession from your delegate call.");
     

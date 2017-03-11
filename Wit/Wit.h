@@ -130,7 +130,18 @@
 @optional
 
 /**
- Called when your story triggers an action and includes any new entities from Wit. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method.
+ Called when your story triggers a merge and includes any new entities from Wit. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method. In many cases may wish to call simply call your didReceiveAction implementation and handle the merge there. Implementing this is required if you are using the converse api.
+ 
+ @param entities Any entities Wit found, as specified in your story.
+ @param session The previous WitSession object. Update session.context with any context changes (these will be sent to the Wit server) and optionally store any futher data in session.customData (this will not be sent to the Wit server) and return this WitSession.
+ @param confidence The confidence that Wit correctly guessed the users intent, between 0.0 and 1.0
+ @return The WitSession to continue. Update the session parameter and return it. Returning nil is considered an error.
+ */
+- (WitSession *) didReceiveMergeEntities: (NSDictionary *) entities witSession: (WitSession *) session confidence: (double) confidence;
+
+
+/**
+ Called when your story triggers an action and includes any new entities from Wit. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method. Implementing this is required if you are using the converse api.
 
  @param action The action to perform, as specified in your story.
  @param entities Any entities Wit found, as specified in your story.
@@ -141,7 +152,7 @@
 - (WitSession *) didReceiveAction: (NSString *) action entities: (NSDictionary *) entities witSession: (WitSession *) session confidence: (double) confidence;
 
 /**
- Called when your story wants your app to display a message. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method. wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method.
+ Called when your story wants your app to display a message. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method. wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method. Implementing this is required if you are using the converse api.
 
  @param message The message to display
  @param session The previous WitSession object. Update session.context with any context changes (these will be sent to the Wit server) and optionally store any futher data in session.customData (this will not be sent to the Wit server) and return this WitSession.
@@ -151,7 +162,7 @@
 - (WitSession *) didReceiveMessage: (NSString *) message quickReplies: (NSArray *) quickReplies witSession: (WitSession *) session confidence: (double) confidence;
 
 /**
- Called when your story has completed.
+ Called when your story has completed. Implementing this is required if you are using the converse api.
 
  @param session The WitSession passed in from your last delegate call.
  */

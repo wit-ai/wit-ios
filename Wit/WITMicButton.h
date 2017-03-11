@@ -17,6 +17,9 @@
 @property (nonatomic, strong) CALayer* microphoneLayer;
 @property (nonatomic, strong) WITCircleView* outerCircleView;
 @property (nonatomic, strong) WITCircleView* innerCircleView;
+/**
+ If you have a override-microphone.png in your mainbundle then that image will be used for the mic button, else the default image from the framework will be used.
+ */
 @property (nonatomic, strong) CALayer* micMask;
 
 - (void)newAudioLevel:(NSNotification*)n;
