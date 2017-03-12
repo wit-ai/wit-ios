@@ -161,7 +161,7 @@
     [inputNode installTapOnBus:0 bufferSize:1024 format:recordingFormat block:^(AVAudioPCMBuffer * _Nonnull buffer, AVAudioTime * _Nonnull when) {
         [recognitionRequest appendAudioPCMBuffer:buffer];
         
-        NSData* audio = [NSData dataWithBytes:buffer.audioBufferList->mBuffers[0].mData length:buffer.audioBufferList->mBuffers[0].mDataByteSize];
+        //NSData* audio = [NSData dataWithBytes:buffer.audioBufferList->mBuffers[0].mData length:buffer.audioBufferList->mBuffers[0].mDataByteSize];
        // [self.vad gotAudioSamples:audio];
         
         UInt32 inNumberFrames = buffer.frameLength;

@@ -12,6 +12,7 @@
 @interface WitTests : XCTestCase <WitDelegate> {
     XCTestExpectation *stringInterpretedExpectation;
     XCTestExpectation *converseExpectation;
+    XCTestExpectation *converseErrorExpectation;
 }
 
 
@@ -62,6 +63,13 @@
     [converseExpectation fulfill];
     
 }
+
+- (void)didReceiveConverseError:(NSError *)error witSession:(WitSession *)session {
+    XCTAssert(session != nil, @"got no session information, error");
+    XCTAssert(error != nil, @"got no error information, error");
+    [converseErrorExpectation fulfill];
+    
+}
 - (void)testStringIntent {
     [Wit sharedInstance].accessToken = @"TFMXQC4W5PKGPONSMX2LRBR3BZ44XSWK";
     [Wit sharedInstance].delegate = self;
@@ -84,6 +92,23 @@
     [Wit sharedInstance].delegate = self;
     
     converseExpectation = [self expectationWithDescription:@"gotGetLocation"];
+    WitSession *session = [[WitSession alloc] initWithSessionID:[[NSUUID UUID] UUIDString]];
+    [[Wit sharedInstance] converseWithString:@"Where is the nearest Starbucks?" witSession:session];
+    
+    // The test will pause here, running the run loop, until the timeout is hit
+    // or all expectations are fulfilled.
+    [self waitForExpectationsWithTimeout:15 handler:^(NSError *error) {
+        
+    }];
+    
+}
+
+- (void)testConverseError {
+    
+    [Wit sharedInstance].accessToken = @"CDK44N5OBSB7WRDQ7ZQA53A6GK3ZJGVRZ"; //wrong access token to test converse error
+    [Wit sharedInstance].delegate = self;
+    
+    converseErrorExpectation = [self expectationWithDescription:@"waitingForError"];
     WitSession *session = [[WitSession alloc] initWithSessionID:[[NSUUID UUID] UUIDString]];
     [[Wit sharedInstance] converseWithString:@"Where is the nearest Starbucks?" witSession:session];
     
