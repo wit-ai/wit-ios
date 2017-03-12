@@ -169,6 +169,14 @@
 - (void) didStopSession: (WitSession *) session;
 
 /**
+ Called when you receive an error from the converse endpoint. Implementing this is required if you are using the converse api.
+
+ @param error The NSError you received.
+ @param session The session that received the error.
+ */
+- (void) didReceiveConverseError: (NSError *) error witSession: (WitSession *) session;
+
+/**
  * Called when a Wit request is completed. This is only called for legacy calls to interpretString (which uses the deprecated get /intent API). If you are using Wit stories (the post /converse API), use didReceiveAction, didReceiveMessage and didReceiveStop instead.
  * param outcomes a NSDictionary of outcomes returned by the Wit API. Outcomes are ordered by confidence, highest first. Each outcome contains (at least) the following keys:
  *       intent, entities[], confidence, _text. For more information please refer to our online documentation: https://wit.ai/docs/http/20141022#get-intent-via-text-link

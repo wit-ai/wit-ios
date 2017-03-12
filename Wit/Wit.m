@@ -261,7 +261,14 @@
 }
 
 - (void)error:(NSError*)e customData:(id)customData; {
-    [self.delegate witDidGraspIntent:nil messageId:nil customData:customData error:e];
+    if ([customData isKindOfClass:[WitSession class]]) {
+        [self.delegate didReceiveConverseError:e witSession:customData];
+    } else {
+        if ([self.delegate respondsToSelector:@selector(witDidGraspIntent:messageId:customData:error:)]) {
+            [self.delegate witDidGraspIntent:nil messageId:nil customData:customData error:e];
+        }
+    }
+    
 }
 
 #pragma mark - Getters and setters
