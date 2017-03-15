@@ -28,9 +28,10 @@
 }
 
 
--(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
+-(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken customData: (id) customData withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
+        self.customData = customData;
         self.delegate = delegate;
         _vadEnabled = vadEnabled;
         self.witToken = witToken;
@@ -133,7 +134,7 @@
         BOOL isFinal = result.isFinal;
         NSLog(@"Speech result %d: %@", isFinal, result.bestTranscription.formattedString);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate recordingSessionDidRecognizePreviewText:result.bestTranscription.formattedString];
+        [self.delegate recordingSessionDidRecognizePreviewText:result.bestTranscription.formattedString final: isFinal];
 
     });
         
@@ -148,7 +149,12 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioPowerChanged object:newPower];
                 
                 if (isFinal) {
-                    [[Wit sharedInstance] interpretString:[self fixGermanNumbers: result.bestTranscription.formattedString ] customData:nil];
+                    if ([self.customData isKindOfClass:[WitSession class]]) {
+                        [[Wit sharedInstance] converseWithString:[self fixGermanNumbers: result.bestTranscription.formattedString] witSession:self.customData];
+                    } else {
+                        [[Wit sharedInstance] interpretString:[self fixGermanNumbers: result.bestTranscription.formattedString] customData:nil];
+                    }
+
                 }
                 if (error) {
                     [self.delegate recordingSessionReceivedError: error];

@@ -11,12 +11,14 @@
 #import "WITCircleLayer.h"
 #import "WITCircleView.h"
 #import "WITRecorder.h"
+#import "WitSession.h"
 
 @interface WITMicButton : UIButton
 @property (nonatomic, strong) CALayer* volumeLayer;
 @property (nonatomic, strong) CALayer* microphoneLayer;
 @property (nonatomic, strong) WITCircleView* outerCircleView;
 @property (nonatomic, strong) WITCircleView* innerCircleView;
+@property (nonatomic, strong) WitSession *session;
 /**
  If you have a override-microphone.png in your mainbundle then that image will be used for the mic button, else the default image from the framework will be used.
  */

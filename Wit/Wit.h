@@ -220,7 +220,7 @@
 /**
  Called whenever SFSpeech sends a recognition preview of the recording.
  */
-- (void) witDidRecognizePreviewText: (NSString *) previewText;
+- (void) witDidRecognizePreviewText: (NSString *) previewText final: (BOOL) isFinal;
 
 - (void) witReceivedRecordingError: (NSError *) error;
 

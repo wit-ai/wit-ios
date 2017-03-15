@@ -44,7 +44,7 @@
     if ([SFSpeechRecognizer class]) {
         self.recordingSession = [[WITSFSpeechRecordingSession alloc] initWithWitContext:self.state.context
                                                                      vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
-                                                                   withDelegate:self];
+                                                                             customData: customData withDelegate:self];
     } else {
         self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:self.state.context
                                                                      vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
@@ -53,7 +53,6 @@
 
     self.recordingSession.customData = customData;
     self.recordingSession.delegate = self;
-    //[self.recordingSession start];
 }
 
 - (void)stop{
@@ -114,7 +113,7 @@
 
     
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-    [req setTimeoutInterval:15.0];
+    [req setTimeoutInterval:30];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
@@ -344,9 +343,9 @@
 }
 
 
-- (void)recordingSessionDidRecognizePreviewText:(NSString *)previewText {
-    if ([self.delegate respondsToSelector:@selector(witDidRecognizePreviewText:)]) {
-        [self.delegate witDidRecognizePreviewText: (NSString *) previewText];
+- (void)recordingSessionDidRecognizePreviewText:(NSString *)previewText final: (BOOL) isFinal {
+    if ([self.delegate respondsToSelector:@selector(witDidRecognizePreviewText:final:)]) {
+        [self.delegate witDidRecognizePreviewText: (NSString *) previewText final: isFinal];
     }
 }
 - (void)recordingSessionDidDetectSpeech {
