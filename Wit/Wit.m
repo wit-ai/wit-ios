@@ -70,7 +70,7 @@
     NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@&context=%@&verbose=true", urlencodeString(string), kWitAPIVersion, contextEncoded];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-    [req setTimeoutInterval:15.0];
+    [req setTimeoutInterval:30.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 
