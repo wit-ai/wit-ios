@@ -107,12 +107,14 @@
     NSLog(@"START CALLED");
       NSError *error;
     
+    /*
     AVAudioSession *audiosession = [AVAudioSession sharedInstance];
    
     [audiosession setMode: AVAudioSessionModeMeasurement error:&error];
     if (error) {
         NSLog(@"mode error was %@", error);
     }
+     */
      /*
     [audiosession setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error];
     if (error) {
