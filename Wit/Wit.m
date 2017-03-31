@@ -93,7 +93,7 @@
     NSDictionary *context = session.context;
     NSDate *start = [NSDate date];
 
-    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/converse?session_id=%@&v=%@", session.sessionID, kWitAPIVersion];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/converse?session_id=%@&v=%@&verbose=true", session.sessionID, kWitAPIVersion];
     if (string) {
         urlString = [urlString stringByAppendingString:[NSString stringWithFormat:@"&q=%@", urlencodeString(string)]];
     }
