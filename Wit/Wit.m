@@ -44,7 +44,7 @@
     if ([SFSpeechRecognizer class]) {
         self.recordingSession = [[WITSFSpeechRecordingSession alloc] initWithWitContext:self.state.context
                                                                      vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
-                                                                   withDelegate:self];
+                                                                             customData: customData withDelegate:self];
     } else {
         self.recordingSession = [[WITRecordingSession alloc] initWithWitContext:self.state.context
                                                                      vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
@@ -53,7 +53,6 @@
 
     self.recordingSession.customData = customData;
     self.recordingSession.delegate = self;
-    //[self.recordingSession start];
 }
 
 - (void)stop{
@@ -71,7 +70,7 @@
     NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/message?q=%@&v=%@&context=%@&verbose=true", urlencodeString(string), kWitAPIVersion, contextEncoded];
     NSMutableURLRequest* req = [NSMutableURLRequest requestWithURL:[NSURL URLWithString: urlString]];
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-    [req setTimeoutInterval:15.0];
+    [req setTimeoutInterval:30.0];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
 
@@ -94,7 +93,7 @@
     NSDictionary *context = session.context;
     NSDate *start = [NSDate date];
 
-    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/converse?session_id=%@&v=%@", session.sessionID, kWitAPIVersion];
+    NSString *urlString = [NSString stringWithFormat:@"https://api.wit.ai/converse?session_id=%@&v=%@&verbose=true", session.sessionID, kWitAPIVersion];
     if (string) {
         urlString = [urlString stringByAppendingString:[NSString stringWithFormat:@"&q=%@", urlencodeString(string)]];
     }
@@ -114,7 +113,7 @@
 
     
     [req setCachePolicy:NSURLRequestReloadIgnoringLocalCacheData];
-    [req setTimeoutInterval:15.0];
+    [req setTimeoutInterval:30];
     [req setValue:[NSString stringWithFormat:@"Bearer %@", self.accessToken] forHTTPHeaderField:@"Authorization"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Content-Type"];
     [req setValue:@"application/json" forHTTPHeaderField:@"Accept"];
@@ -238,6 +237,9 @@
         [self.delegate didStopSession:customData];
         return;
         
+    } else if ([type isEqualToString:@"merge"])  {
+        session = [self.delegate didReceiveMergeEntities:response[@"entities"] witSession:session confidence:[response[@"confidence"] doubleValue]];
+        
     }
     NSAssert(session != nil, @"You need to return the WitSession from your delegate call.");
     
@@ -258,7 +260,14 @@
 }
 
 - (void)error:(NSError*)e customData:(id)customData; {
-    [self.delegate witDidGraspIntent:nil messageId:nil customData:customData error:e];
+    if ([customData isKindOfClass:[WitSession class]]) {
+        [self.delegate didReceiveConverseError:e witSession:customData];
+    } else {
+        if ([self.delegate respondsToSelector:@selector(witDidGraspIntent:messageId:customData:error:)]) {
+            [self.delegate witDidGraspIntent:nil messageId:nil customData:customData error:e];
+        }
+    }
+    
 }
 
 #pragma mark - Getters and setters
@@ -334,9 +343,9 @@
 }
 
 
-- (void)recordingSessionDidRecognizePreviewText:(NSString *)previewText {
-    if ([self.delegate respondsToSelector:@selector(witDidRecognizePreviewText:)]) {
-        [self.delegate witDidRecognizePreviewText: (NSString *) previewText];
+- (void)recordingSessionDidRecognizePreviewText:(NSString *)previewText final: (BOOL) isFinal {
+    if ([self.delegate respondsToSelector:@selector(witDidRecognizePreviewText:final:)]) {
+        [self.delegate witDidRecognizePreviewText: (NSString *) previewText final: isFinal];
     }
 }
 - (void)recordingSessionDidDetectSpeech {

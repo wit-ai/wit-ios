@@ -10,5 +10,5 @@
 #import "WITRecordingSession.h"
 
 @interface WITSFSpeechRecordingSession : WITRecordingSession
-
+-(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken customData: (id) customData withDelegate:(id<WITRecordingSessionDelegate>)delegate;
 @end

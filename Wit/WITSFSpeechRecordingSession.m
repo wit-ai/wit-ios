@@ -28,9 +28,10 @@
 }
 
 
--(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken withDelegate:(id<WITRecordingSessionDelegate>)delegate {
+-(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken customData: (id) customData withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
+        self.customData = customData;
         self.delegate = delegate;
         _vadEnabled = vadEnabled;
         self.witToken = witToken;
@@ -106,12 +107,14 @@
     NSLog(@"START CALLED");
       NSError *error;
     
+    /*
     AVAudioSession *audiosession = [AVAudioSession sharedInstance];
    
     [audiosession setMode: AVAudioSessionModeMeasurement error:&error];
     if (error) {
         NSLog(@"mode error was %@", error);
     }
+     */
      /*
     [audiosession setActive:YES withOptions:AVAudioSessionSetActiveOptionNotifyOthersOnDeactivation error:&error];
     if (error) {
@@ -133,7 +136,7 @@
         BOOL isFinal = result.isFinal;
         NSLog(@"Speech result %d: %@", isFinal, result.bestTranscription.formattedString);
     dispatch_async(dispatch_get_main_queue(), ^{
-        [self.delegate recordingSessionDidRecognizePreviewText:result.bestTranscription.formattedString];
+        [self.delegate recordingSessionDidRecognizePreviewText:result.bestTranscription.formattedString final: isFinal];
 
     });
         
@@ -148,7 +151,12 @@
                 [[NSNotificationCenter defaultCenter] postNotificationName:kWitNotificationAudioPowerChanged object:newPower];
                 
                 if (isFinal) {
-                    [[Wit sharedInstance] interpretString:[self fixGermanNumbers: result.bestTranscription.formattedString ] customData:nil];
+                    if ([self.customData isKindOfClass:[WitSession class]]) {
+                        [[Wit sharedInstance] converseWithString:[self fixGermanNumbers: result.bestTranscription.formattedString] witSession:self.customData];
+                    } else {
+                        [[Wit sharedInstance] interpretString:[self fixGermanNumbers: result.bestTranscription.formattedString] customData:nil];
+                    }
+
                 }
                 if (error) {
                     [self.delegate recordingSessionReceivedError: error];
@@ -161,7 +169,7 @@
     [inputNode installTapOnBus:0 bufferSize:1024 format:recordingFormat block:^(AVAudioPCMBuffer * _Nonnull buffer, AVAudioTime * _Nonnull when) {
         [recognitionRequest appendAudioPCMBuffer:buffer];
         
-        NSData* audio = [NSData dataWithBytes:buffer.audioBufferList->mBuffers[0].mData length:buffer.audioBufferList->mBuffers[0].mDataByteSize];
+        //NSData* audio = [NSData dataWithBytes:buffer.audioBufferList->mBuffers[0].mData length:buffer.audioBufferList->mBuffers[0].mDataByteSize];
        // [self.vad gotAudioSamples:audio];
         
         UInt32 inNumberFrames = buffer.frameLength;

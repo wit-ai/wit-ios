@@ -22,16 +22,6 @@
 }
 
 // Load the framework bundle.
-+ (NSBundle *)frameworkBundle {
-    static NSBundle* frameworkBundle = nil;
-    static dispatch_once_t predicate;
-    dispatch_once(&predicate, ^{
-        NSString* mainBundlePath = [[NSBundle mainBundle] resourcePath];
-        NSString* frameworkBundlePath = [mainBundlePath stringByAppendingPathComponent:@"Wit.bundle"];
-        frameworkBundle = [NSBundle bundleWithPath:frameworkBundlePath];
-    });
-    return frameworkBundle;
-}
 
 #pragma mark - Defaults
 - (void)readPlist {
@@ -55,7 +45,6 @@
 - (instancetype)init {
     self = [super init];
     if (self) {
-        _resourcePath = [[self.class frameworkBundle] resourcePath];
         [self readPlist];
         _context = [[NSDictionary alloc] init];
     }

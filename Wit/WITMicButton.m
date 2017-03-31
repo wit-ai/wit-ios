@@ -46,17 +46,16 @@ static const CGFloat kMicMargin = 40.0f;
     self.innerCircleView.fillColor = [UIColor whiteColor];;
     
     // microphone mask
-    // try to find image in mainBundle (CocoaPods), then frameworkBundle (.framework)
-    UIImage *micUIImage = [UIImage imageNamed:@"microphoneWave.png"];
+    // try to find image override image mainBundle (CocoaPods), then default image in frameworkBundle (.framework)
+    UIImage *micUIImage = [UIImage imageNamed:@"override-microphone.png"];
     if (!micUIImage) {
-        NSString* path = [[WITState frameworkBundle] pathForResource:kMicrophoneImage ofType:nil];
-        micUIImage = [UIImage imageWithContentsOfFile:path];
+        NSBundle *bundle = [NSBundle bundleForClass:[self class]];
+        micUIImage = [UIImage imageNamed:@"microphone.png" inBundle:bundle compatibleWithTraitCollection:nil];
         
         if (!micUIImage) {
-            NSLog(@"Wit: couldn't find microphone image: %@", kMicrophoneImage);
+            NSLog(@"Wit: couldn't find microphone image: %@", @"microphone.png");
         }
-    }
-    CGImageRef micImage = micUIImage.CGImage;
+    }    CGImageRef micImage = micUIImage.CGImage;
     self.micMask = [CALayer layer];
     self.micMask.contents = (__bridge id)micImage;
     
@@ -226,14 +225,14 @@ static const CGFloat kMicMargin = 40.0f;
     if ([audioSession respondsToSelector:@selector(requestRecordPermission:)]) {
         [audioSession requestRecordPermission:^(BOOL granted) {
             if (granted) {
-                [wit toggleCaptureVoiceIntent:self];
+                [wit toggleCaptureVoiceIntent:self.session];
             } else {
                 NSLog(@"No mic permission, sorry");
             }
         }];
     }
     else{
-        [wit toggleCaptureVoiceIntent:self];
+        [wit toggleCaptureVoiceIntent:self.session];
     }
 }
 
