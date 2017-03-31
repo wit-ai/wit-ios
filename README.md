@@ -1,4 +1,4 @@
-# Wit-iOS-sdk
+# Wit-iOS-sdk [![Build Status](https://travis-ci.org/wit-ai/wit-ios-sdk.svg?branch=master)](https://travis-ci.org/wit-ai/wit-ios-sdk)
 
 *This SDK is community-maintained. Please use the HTTP API or the Node.js/Python/Ruby SDKs for non-experimental needs (https://wit.ai/docs). We gladly accept pull requests*
 
