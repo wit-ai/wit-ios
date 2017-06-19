@@ -43,6 +43,7 @@
 - (void)start: (id)customData {
     if ([SFSpeechRecognizer class]) {
         self.recordingSession = [[WITSFSpeechRecordingSession alloc] initWithWitContext:self.state.context
+                                                                                 locale: self.speechRecognitionLocale
                                                                      vadEnabled:[Wit sharedInstance].detectSpeechStop withWitToken:[WITState sharedInstance].accessToken
                                                                              customData: customData withDelegate:self];
     } else {
@@ -285,6 +286,7 @@
     self.detectSpeechStop = WITVadConfigDetectSpeechStop;
     self.vadTimeout = 7000;
     self.vadSensitivity = 0;
+    self.speechRecognitionLocale = @"en-US";
 }
 
 - (instancetype)init {

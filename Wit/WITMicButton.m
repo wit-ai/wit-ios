@@ -299,7 +299,6 @@ static const CGFloat kMicMargin = 40.0f;
 }
 
 - (void)dealloc {
-    [self removeObserver:self forKeyPath:@"frame"];
     [[NSNotificationCenter defaultCenter] removeObserver:self];
     [self removeTarget:self action:@selector(buttonPressed:) forControlEvents:UIControlEventTouchUpInside];
 }

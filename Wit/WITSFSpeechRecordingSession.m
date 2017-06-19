@@ -28,7 +28,7 @@
 }
 
 
--(instancetype)initWithWitContext:(NSDictionary *)upContext vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken customData: (id) customData withDelegate:(id<WITRecordingSessionDelegate>)delegate {
+-(instancetype)initWithWitContext:(NSDictionary *)upContext locale: (NSString *) locale vadEnabled:(WITVadConfig)vadEnabled withWitToken:(NSString *)witToken customData: (id) customData withDelegate:(id<WITRecordingSessionDelegate>)delegate {
     self = [super init];
     if (self) {
         self.customData = customData;
@@ -38,7 +38,7 @@
         //self.vad = [[WITVad alloc] init];
         
         
-        speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:[NSLocale localeWithLocaleIdentifier:@"de-AT"]];
+        speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:[NSLocale localeWithLocaleIdentifier:locale]];
         audioEngine = [[AVAudioEngine alloc] init];
         average1 = 0.0;
         average2 = 0.0;
