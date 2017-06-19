@@ -17,7 +17,7 @@ The SDK can capture intents and entities from:
 
 Add the following dependency to your Podfile:
 ```ruby
-pod 'Wit', '~> 4.2.0'
+pod 'Wit', '~> 4.2.1'
 ```
 
 And then run the following command in your project home directory:
@@ -84,7 +84,9 @@ Sends an NSString to wit.ai for interpretation. Will call delegate methods for e
 
 
 ##### Recording audio
-**The audio part of the API currently only supports the legacy GET /message API. If you are using stories (POST /converse) then this will not work, use ConverseString instead.
+If you provide a WitSession to the WitMicButton.session then Wit-iOS-SDK will use the /converse endpoint (stories), else the /message endpoint will be used
+
+Make sure to set Wit's speechRecognitionLocale to the same language as your Wit model. The default value is en-US (American English)
 
 ```objc
 Starts a new recording session. [self.delegate witDidGraspIntent:…] will be called once completed.

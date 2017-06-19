@@ -38,7 +38,6 @@
  https://developer.apple.com/documentation/speech/sfspeechrecognizer/1649889-supportedlocales
  Note that this locale must match the language of your wit model.
  The default value is @"en_US"
- 
  */
 @property (nonatomic, copy) NSString *speechRecognitionLocale;
 
