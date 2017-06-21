@@ -38,7 +38,7 @@
         //self.vad = [[WITVad alloc] init];
         
         
-        speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:[NSLocale localeWithLocaleIdentifier:@"de-AT"]];
+        speechRecognizer = [[SFSpeechRecognizer alloc] initWithLocale:[NSLocale localeWithLocaleIdentifier:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleDevelopmentRegion"]]];
         audioEngine = [[AVAudioEngine alloc] init];
         average1 = 0.0;
         average2 = 0.0;
