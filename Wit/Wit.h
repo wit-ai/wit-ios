@@ -33,6 +33,15 @@
 @property (nonatomic, copy) NSString *accessToken;
 
 /**
+ On iOS 10 and above wit-ios-sdk uses Apple's speech recognition. The speech recognition
+ needs to know which locale to use for recognition. A list of supported locales can be found via:
+ https://developer.apple.com/documentation/speech/sfspeechrecognizer/1649889-supportedlocales
+ Note that this locale must match the language of your wit model.
+ The default value is @"en_US"
+ */
+@property (nonatomic, copy) NSString *speechRecognitionLocale;
+
+/**
  * Configure the voice activity detection algorithm:
  * - WITVadConfigDisabled
  * - WITVadConfigDetectSpeechStop (default)
