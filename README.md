@@ -6,10 +6,10 @@ The wit.ai iOS SDK is the easiest way to integrate [wit.ai](https://wit.ai) feat
 
 The SDK can capture intents and entities from:
 
-- the microphone of the device (legacy GET /message API only)
+- the microphone of the device (GET /message API only)
 - text
 
-
+Supports both the /converse and the /message API. Note: the /converse (story) based API has been **deprecated** - see [our blog post](https://wit.ai/blog/2017/07/27/sunsetting-stories) for a migration plan.
 ## Link to the SDK
 
 
@@ -70,14 +70,14 @@ Singleton instance accessor.
 
 ##### Understanding text
 ```objc
-InterpretString (deprecated)
-Sends an NSString to wit.ai for interpretation. Same as sending a voice input, but with text. This uses the legacy GET /message API. If you are using stories this is NOT for you.
+InterpretString
+Sends an NSString to /message wit.ai for interpretation. Same as sending a voice input, but with text. This uses the legacy GET /message API. If you are using stories this is NOT for you.
 - (void) interpretString: (NSString *) string customData:(id)customData;
 ```
 
 ```objc
-ConverseString
-Sends an NSString to wit.ai for interpretation. Will call delegate methods for every step of your story.
+ConverseString (deprecated)
+Sends an NSString to /converse wit.ai for interpretation. Will call delegate methods for every step of your story.
 - (void) converseWithString:(NSString *)string witSession: (WitSession *) session;
 ```
 
@@ -138,7 +138,7 @@ Returns the current context.
 @optional
 
 /**
- Called when your story triggers an action and includes any new entities from Wit. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method.
+ DEPRECATED: Called when your story triggers an action and includes any new entities from Wit. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method.
 
  @param action The action to perform, as specified in your story.
  @param entities Any entities Wit found, as specified in your story.
@@ -149,7 +149,7 @@ Returns the current context.
 - (WitSession *) didReceiveAction: (NSString *) action entities: (NSDictionary *) entities witSession: (WitSession *) session confidence: (double) confidence;
 
 /**
- Called when your story wants your app to display a message. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method. wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method.
+ DEPRECATED: Called when your story wants your app to display a message. Update session.context with any keys required for the next step of the story and return it here, wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method. wit-ios-sdk will automatically perform the next converse request for you and call the appropriate delegate method.
 
  @param message The message to display
  @param session The previous WitSession object. Update session.context with any context changes (these will be sent to the Wit server) and optionally store any futher data in session.customData (this will not be sent to the Wit server) and return this WitSession.
@@ -159,14 +159,14 @@ Returns the current context.
 - (WitSession *) didReceiveMessage: (NSString *) message quickReplies: (NSArray *) quickReplies witSession: (WitSession *) session confidence: (double) confidence;
 
 /**
- Called when your story has completed.
+ DEPRECATED: Called when your story has completed.
 
  @param session The WitSession passed in from your last delegate call.
  */
 - (void) didStopSession: (WitSession *) session;
 
 /**
- * Called when a Wit request is completed. This is only called for legacy calls to interpretString (which uses the deprecated get /intent API). If you are using Wit stories (the post /converse API), use didReceiveAction, didReceiveMessage and didReceiveStop instead.
+ * Called when a Wit request is completed. This is only called for  calls to interpretString (which uses the  get /message API). If you are using deprecated Wit stories (the post /converse API), use didReceiveAction, didReceiveMessage and didReceiveStop instead.
  * param outcomes a NSDictionary of outcomes returned by the Wit API. Outcomes are ordered by confidence, highest first. Each outcome contains (at least) the following keys:
  *       intent, entities[], confidence, _text. For more information please refer to our online documentation: https://wit.ai/docs/http/20141022#get-intent-via-text-link
  *
