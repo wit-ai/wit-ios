@@ -1,16 +1,16 @@
-# Wit-iOS-sdk [![Build Status](https://travis-ci.org/wit-ai/wit-ios-sdk.svg?branch=master)](https://travis-ci.org/wit-ai/wit-ios-sdk)
+# wit-ios [![Build Status](https://travis-ci.org/wit-ai/wit-ios.svg?branch=master)](https://travis-ci.org/wit-ai/wit-ios)
 
-*This SDK is community-maintained. Please use the HTTP API or the Node.js/Python/Ruby SDKs for non-experimental needs (https://wit.ai/docs). We gladly accept pull requests*
+*This repository is community-maintained. We gladly accept pull requests. Please see the [Wit HTTP Reference](https://wit.ai/docs/http/latest) for all supported endpoints.*
 
 The wit.ai iOS SDK is the easiest way to integrate [wit.ai](https://wit.ai) features into your iOS application.
 
-The SDK can capture intents and entities from:
+The client lets you capture intents and entities from:
 
 - the microphone of the device (GET /message API only)
 - text
 
 Supports both the /converse and the /message API. Note: the /converse (story) based API has been **deprecated** - see [our blog post](https://wit.ai/blog/2017/07/27/sunsetting-stories) for a migration plan.
-## Link to the SDK
+## Link to this library
 
 
 #### Using CocoaPods
