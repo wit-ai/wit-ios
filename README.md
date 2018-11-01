@@ -229,3 +229,7 @@ static NSString* const kWitNotificationAudioPowerChanged = @"WITAudioPowerChange
 static int const kWitAudioSampleRate = 16000;
 static int const kWitAudioBitDepth = 16;
 ```
+
+## License
+
+The license for wit-ios can be found in LICENSE file in the root directory of this source tree.
