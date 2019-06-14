@@ -3,7 +3,7 @@
 //  Wit
 //
 //  Created by patrick on 30/08/2016.
-//  Copyright © 2016 Willy Blandin. All rights reserved.
+//  Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 //
 
 #import "WITSFSpeechRecordingSession.h"
