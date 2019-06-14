@@ -3,7 +3,7 @@
 //  Wit
 //
 //  Created by Willy Blandin on 12. 9. 3..
-//  Copyright (c) 2012년 Willy Blandin. All rights reserved.
+//  Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 //
 
 #import "WitPrivate.h"
