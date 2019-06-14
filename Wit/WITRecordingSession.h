@@ -3,7 +3,7 @@
 //  Wit
 //
 //  Created by Aric Lasry on 8/14/14.
-//  Copyright (c) 2014 Willy Blandin. All rights reserved.
+//  Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 //
 
 #import <Foundation/Foundation.h>
