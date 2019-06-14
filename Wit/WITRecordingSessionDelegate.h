@@ -3,7 +3,7 @@
 //  Wit
 //
 //  Created by patrick on 29/04/16.
-//  Copyright © 2016 Willy Blandin. All rights reserved.
+//  Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 //
 
 #import <Foundation/Foundation.h>
