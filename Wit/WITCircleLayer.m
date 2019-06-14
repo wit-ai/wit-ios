@@ -3,7 +3,7 @@
 //  Wit
 //
 //  Created by Willy Blandin on 21/05/2013.
-//  Copyright (c) 2013 Willy Blandin. All rights reserved.
+//  Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 //
 
 #import "WITCircleLayer.h"
