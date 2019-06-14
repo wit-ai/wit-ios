@@ -3,7 +3,7 @@
 //  WitTests
 //
 //  Created by patrick on 03/05/16.
-//  Copyright © 2016 Willy Blandin. All rights reserved.
+//  Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 //
 
 #import <XCTest/XCTest.h>
