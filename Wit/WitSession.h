@@ -3,6 +3,7 @@
 //  Wit
 //
 //  Created by patrick on 20/02/2017.
+//  Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 //
 
 #import <Foundation/Foundation.h>
