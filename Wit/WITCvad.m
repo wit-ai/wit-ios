@@ -3,7 +3,7 @@
 //  Wit
 //
 //  Created by Anthony Kesich on 11/12/14.
-//  Copyright (c) 2014 Willy Blandin. All rights reserved.
+//  Copyright (c) Facebook, Inc. and its affiliates. All Rights Reserved.
 //
 
 #include "WITCvad.h"
